@@ -59,7 +59,7 @@ if (url_id()) {
 		$f->set_field(array('name'=>'object_links', 'type'=>'checkboxes', 'label'=>'Linked Objects', 'linking_table'=>'app_objects_links', 'options_table'=>'app_objects', 'option_id'=>'object_id', 'option_title'=>'title', 'options'=>$options));
 	}
 } else {
-	$f->unset_fields('table_name,order_by,web_page,show_published');
+	$f->unset_fields('table_name,group_by_field,order_by,web_page,show_published');
 	$f->set_field(array('name'=>'direction', 'type'=>'hidden', 'value'=>'ASC'));
 }
 
