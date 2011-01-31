@@ -148,7 +148,7 @@ function drawTop($title='CMS') {
 }
 
 function drawBottom() {
-	$return = '</div></body></html>';
+	$return = '</div>' . draw_google_analytics('UA-21096000-1') . '</body></html>';
 	return $return;
 }
 
@@ -367,6 +367,10 @@ function getNewObjectName($table, $field=false) {
 function joshlib() {
 	global $_josh;
 	$possibilities = array(
+		'../joshlib/index.php',
+		'../../joshlib/index.php'
+		
+		/*don't need this anymore
 		'/home/content/b/r/a/brad100/html/joshlib/index.php',				//brad ascalon							Dec 31, 2010
 		'/home/seedco/www/joshlib/index.php',								//seedco								Dec 10, 2010
 		'/home/policy/www/joshlib/index.php',								//policy studies associates				Dec  4, 2010
@@ -386,6 +390,7 @@ function joshlib() {
 		'/Users/joshreisner/Sites/joshlib/index.php',						//josh dev
 		'/Users/diegolorenzo/Sites/joshlib/index.php',						//diego dev
 		'/Users/Michael/Documents/Bureau Blank/joshlib/trunk/index.php'		//michael dev
+		*/
 	);
 	foreach ($possibilities as $p) if (@include($p)) return $_josh;
 	die('Help me find my library.  I am at ' . $_SERVER['DOCUMENT_ROOT']);
