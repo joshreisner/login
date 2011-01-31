@@ -1,0 +1,112 @@
+body, table, input, textarea, select { font-family:Verdana; font-size:12px; }
+body { text-align:center; }
+
+#page { width:920px; margin:20px auto; text-align:left; position:relative; }
+
+#banner { height:105px; overflow:hidden; }
+#logo { margin-bottom:20px; }
+
+#panel { position:absolute; top:0px; right:0px; width:209px; min-height:200px; margin-top:100px; border-left:1px dashed #ccc; padding:0px 20px; color:#888; line-height:20px; }
+#panel textarea { color:#888; line-height:20px; border:0; padding:10px; margin:-10px; background-color:#f4f4f4; }
+
+.c { text-align:center; }
+.r { text-align:right; }
+
+a, select, input, textarea { outline:none; }
+
+input.checkbox { border:0; margin:0px; }
+select { margin-right:5px; }
+
+a { text-decoration:none; cursor:pointer; }
+a:hover { text-decoration:underline; }
+
+.g { color:#aaa; }
+
+ul.nav { list-style:none; margin:0px 0px 10px 0px; padding:0px; overflow:auto; }
+ul.nav li { float:left; }
+ul.nav li a { background-color:#eee; color:#333; border:1px solid #999; padding:3px 6px 3px 6px; display:block; margin-right:4px; text-decoration:none; }
+ul.nav li a:hover { background-color:#f9f9f9; cursor:pointer; }
+
+h1 { font-weight:normal; padding-left:3px; font-size:19px; margin-bottom:22px; }
+h2 { font-weight:normal; padding-left:3px; font-size:17px; margin-top:10px; }
+
+hr { border-width:1px 0px 0px 0px; border-style:dashed; border-color:#ccc; width:200px; margin:30px 0px 20px 0px; padding:0px; }
+
+/* table */
+table				{ width:650px; }
+table td, table th	{ padding:4px; border-bottom:1px solid #eee; vertical-align:top; min-height:20px; }
+th					{ text-align:left; font-weight:normal; color:#aaa; }
+table tr.admin td		{ background-color:#ffe9e9; }
+table tr.deleted td, table tr.deleted td a		{ color:#bbb; text-decoration: line-through; font-style: italic; }
+
+table td.delete, table th.delete		{ width:20px; min-width:20px; text-align:center; }
+table td.is_published {  }
+table td.icon, table th.icon			{ width:20px; min-width:20px; text-align:center; }
+table td.checkbox, table th.checkbox	{ width:20px; min-width:20px; text-align:center; padding:0px; }
+table td.draggy							{ cursor:move; width:20px; min-width:20px; text-align:center; padding:0px; background:#fff url(/login/images/move.png) no-repeat 4px 4px; }
+table tr.group td						{ height:40px; vertical-align:bottom; text-transform:uppercase; font-weight:bold; font-size:11px;	 }
+table td.empty							{ height:220px; background-color:#f4f4f4; text-align:center; font:italic 15px/18px Georgia; border:1px solid #ddd; vertical-align:middle; color:#888; }
+table td.updated, table td.date			{ white-space: nowrap; }
+
+table tr.dragclass td {
+	border-width:1px 0px 1px 0px;
+	border-color:#000;
+	border-style:solid;
+}
+table td input.checkbox { margin-top:6px; }
+span.light { color:#ccc; font-size:12px; }
+#sql { width:610px; height:100px; padding:19px; border:1px dashed #ccc; background-color:#ffe; margin:20px 0px 20px 0px; font-family:Consolata, Droid Sans Mono, monospace; font-size:13px; }
+#web_page_msg { width:632px; padding:10px; border:1px dashed #ccc; background-color:#ffe; margin:20px 0px 20px 0px; font-size:13px; }
+table tr td div.empty { font-style:italic; text-transform:lowercase; opacity:.75; display:inline; }
+
+/* login */
+body.login { background-color:#ddd; color:#fff; width:100%; height:100%; margin:0px; padding:0px; }
+form.login { position:absolute; top:50%; left:50%; margin:-143px 0px 0px -243px; text-align:left; width:400px; height:200px; background-color:#445566; padding:40px; border:6px solid #aaa; -webkit-border-radius: 20px; -moz-border-radius: 20px; border-radius: 20px; }
+form.login fieldset { border:none; padding:0px; margin-top:40px; }
+form.login legend { display:none; }
+
+/* form */
+input, textarea					{ border:1px solid #ccc; padding:3px; margin:0px;  }
+input.text, input.file			{ width:270px; }
+input.file						{ border-color:#fff; }
+input.password					{ width:200px; }
+input.button					{ background-color:#f0f0f0; border:1px outset #ddd; min-width:140px; padding:3px 10px 3px 10px; }
+input.button:hover				{ background-color:#fff; cursor:pointer; }
+
+input.submit					{ background-color:#f0f0f0; border:1px outset #ddd; min-width:140px; padding:3px 10px 3px 10px; }
+input.submit:hover				{ background-color:#fff; cursor:pointer; }
+
+textarea.textarea				{ font-family:'Courier New', Courier; font-size:13px; height:160px; width:537px; margin-bottom:7px; }
+textarea.tinymce				{ width:537px; height:300px; margin-bottom:7px; }
+
+#page form fieldset				{ border:none; padding:0px; width:800px; }
+#page form legend				{ display:none; }
+
+form div.field					{ min-height:25px; overflow:auto; margin-bottom:5px; /* border:1px solid red; */ }
+form div.field					{ line-height:23px; }
+form div.file img.preview		{ float:left; clear:left; margin:0 0 10px 110px; }
+
+form div.checkbox				{ min-height:0px; vertical-align:middle; }
+form div.checkbox label			{ min-height:0px; }
+
+form div.checkboxes				{ margin-bottom: 20px; }
+form label						{ min-height:25px; line-height:17px; padding-top:3px; width:110px; display:block; float:left; clear:left; }
+form label span.additional 		{ display:block; margin:4px 10px 0px 0px; }
+form div.img img				{ display:block; margin:10px 10px 10px 110px; }
+form ul							{ margin-left:110px; margin:0px; padding:0px; float:left; list-style-type:none; width:570px; }
+form ul li						{ width:164px; margin:2px 2px 6px 16px; float:left; font-size:11px; }
+form input.submit				{ margin:10px 0px 0px 110px; }
+#page input.big					{ font-size:20px; width:500px; }
+#page input.medium, $page form div.field_1 input.text	{ font-size:16px; width:400px; }
+form div.checkboxes input		{ margin-left:-16px; }
+form div.checkboxes	ul			{ line-height:10px; margin-top:5px; }
+form span.option_name			{ cursor:pointer; padding:1px; margin-left:2px; }
+#page form span.option_name:hover		{  background-color:#f0f0f0;  }
+form span.additional			{ color:#999; font-size:11px; line-height:10px; margin-left:7px; }
+
+/* div object */
+form div.html table				{ width:548px; }
+form div.html table thead		{ display:block; }
+form div.html table thead th	{ width:400px; }
+form div.html table tbody td	{ width:400px; }
+form div.html table tbody		{ display:block; max-height:200px; overflow:auto; }
