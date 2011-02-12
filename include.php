@@ -70,11 +70,8 @@ if (!user()) {
 
 function dbCheck() {
 	global $schema, $base;
-	if (!db_table_exists('app_users')) {
+	if (!db_schema_check($schema)) {
 		
-		//create any missing tables
-		foreach ($schema as $table=>$fields) db_table_create($table, $fields, true);
-	
 		//log in the current user	
 		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "josh@joshreisner.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
 		$_SESSION['name']			= 'Josh';
