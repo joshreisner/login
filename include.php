@@ -122,8 +122,8 @@ function drawTop($title='CMS') {
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
 		draw_title($title) . 
-		draw_javascript_src() . 
 		lib_get('jquery') . 
+		draw_javascript_src() . 
 		draw_javascript_src($base . 'javascript.js') . 
 		draw_css_src($base . 'styles/screen.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')

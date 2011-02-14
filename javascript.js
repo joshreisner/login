@@ -1,3 +1,10 @@
+$(function(){
+	$('a.lorem_ipsum').click(function(e){
+		e.preventDefault();
+		$(this).closest('div.field').find('textarea').tinymce().setContent(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));
+	});
+});
+
 function showSQL() {
 	$("#sql").slideToggle();
 	

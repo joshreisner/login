@@ -83,7 +83,7 @@ if (url_action('delete')) {
 		}
 	}
 	
-	url_change_post('../');
+	url_change_post('../?id=' . $_GET['object_id']);
 } elseif ($editing) {
 	$action = 'Edit';
 	$button = 'Save Changes';
@@ -191,7 +191,7 @@ while ($r = db_fetch($result)) {
 				//add lorem ipsum generator to tinymce
 				if (admin()) {
 					echo lib_get('lorem_ipsum');
-					$label .= '<br/>' . draw_link('javascript:tinyMCE.activeEditor.setContent(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));', 'Lorem Ipsum');
+					$label .= '<br/>' . draw_link('#', 'Lorem Ipsum', false, array('class'=>'lorem_ipsum'));
 				}
 			}
 			
