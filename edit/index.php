@@ -32,6 +32,20 @@ if ($posting) {
 		db_query('DELETE FROM app_objects WHERE id = ' . $_GET['id']);
 	}
 	url_change($base);
+} elseif (url_action('resize')) {
+	//resize all images in object according to new field rules
+	//todo move this to field edit?
+	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']);
+	$cols = db_table('SELECT field_name, width, height FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)');
+	$rows = db_table('SELECT id, ' . implode(', ', array_key_values($cols, 'field_name')) . ' FROM ' . $table);
+	foreach ($rows as $r) {
+		$updates = array();
+		foreach ($cols as $c) {
+			if ($r[$c['field_name']]) $updates[] = $c['field_name'] . ' = ' . format_binary(format_image_resize($r[$c['field_name']], $c['width'], $c['height']));
+		}
+		if (count($updates)) db_query('UPDATE ' . $table . ' SET ' . implode(', ', $updates) . ', updated_date = NOW(), updated_user = ' . user() . ' WHERE id = ' . $r['id']);
+	}
+	url_drop('action');
 } elseif ($editing) {
 	$title = db_grab('SELECT title FROM app_objects WHERE id = ' . $_GET['id']);
 	$action = 'Edit Settings';
@@ -73,7 +87,13 @@ if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND is_admin <> 
 $f->unset_fields('list_help,form_help');
 echo $f->draw();
 
-if (url_id()) echo draw_div('panel', 'You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.');
+if (url_id()) {
+	$images = false;
+	if (db_grab('SELECT COUNT(*) FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)')) {
+		$images = draw_p('You can also ' . draw_link(url_action_add('resize'), 'resize all images') . '.');
+	}
+	echo draw_div('panel', draw_p('You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.') . $images);
+}
 
 echo drawBottom();
 ?>
