@@ -8,11 +8,11 @@ $object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, 
 //security
 if (!$object['permission'] && !admin()) url_change('../../');
 
-if (url_action('delete')) {
+/* if (url_action('delete')) {
 	//handle an object delete
 	db_delete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
 	url_change('./?id=' . $_GET['id'] . '&object_id=' . $_GET['object_id']);
-} elseif (url_action('undelete')) {
+} else*/ if (url_action('undelete')) {
 	//handle an object delete
 	db_undelete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
 	url_change('./?id=' . $_GET['id'] . '&object_id=' . $_GET['object_id']);

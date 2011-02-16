@@ -154,7 +154,7 @@ function drawBottom() {
 function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	
 	//get content
-	$object		= db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id);
+	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
 	
 	//security
 	if (!$object['permission'] && !admin()) return false;
@@ -323,9 +323,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 		$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
 		if (!$r['is_active']) {
 			$r['class'] = 'deleted';
-			$r['delete'] = draw_link(url_query_add(array('action'=>'undelete', 'delete_id'=>$r['id'], 'delete_object'=>$object_id), false), '&curren;');
+			$r['delete'] = draw_link(false, '&curren;', false, 'delete');
 		} else {
-			$r['delete'] = draw_link(url_query_add(array('action'=>'delete', 'delete_id'=>$r['id'], 'delete_object'=>$object_id), false), '&#215;');
+			$r['delete'] = draw_link(false, '&#215;', false, 'delete');
 		}
 	}
 	return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');

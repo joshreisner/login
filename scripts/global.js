@@ -18,6 +18,29 @@ $(function(){
 		$(this).html(($('#sql').is(':visible') ? 'Show' : 'Hide') + ' SQL');
 		$('#sql').slideToggle();
 	});
+	
+	//object value delete
+	$('a.delete').click(function(e) {
+		e.preventDefault();
+		var tr = $(this).closest('tr');
+		parts = tr.attr('id').split('-');
+		$.ajax({
+			url : '/login/ajax/object_value_delete.php',
+			type : 'POST',
+			data : { object_id : url_id(), id : parts[parts.length-1] },
+			success : function(data) {
+				if (tr.hasClass('deleted')) {
+					tr.removeClass('deleted');
+				} else {
+					if (tr.parent().find('tr.deleted').size()) {
+						tr.addClass('deleted');
+					} else {
+						tr.fadeOut().slideUp();
+					}
+				}
+			}
+		});
+	});
 });
 
 function clearImg(table, column, id, title) {

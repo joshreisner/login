@@ -40,7 +40,7 @@ if ($posting) {
 	db_table_duplicate(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']), $table_name);
 	//going to skip copying permissions
 	db_query('INSERT INTO app_objects_links ( object_id, linked_id ) SELECT ' . $object_id . ', linked_id FROM app_objects_links WHERE object_id = ' . $_GET['id']);
-	db_query('INSERT INTO app_fields ( object_id, type, title, field_name, visibility, required, related_field_id, width, height, additional, created_date, created_user, is_active ) SELECT ' . $object_id . ', type, title, field_name, visibility, required, related_field_id, width, height, additional, ' . db_date() . ', ' . user() . ', 1 FROM app_fields WHERE object_id = ' . $_GET['id']);
+	db_query('INSERT INTO app_fields ( object_id, type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, created_date, created_user, is_active ) SELECT ' . $object_id . ', type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, ' . db_date() . ', ' . user() . ', 1 FROM app_fields WHERE object_id = ' . $_GET['id']);
 	
 	//fix app_objects.group_by_field
 	if ($field_name = db_grab('SELECT f.field_name FROM app_fields f JOIN app_objects o ON f.id = o.group_by_field WHERE o.id = ' . $object_id)) {
