@@ -3,7 +3,9 @@ session_start();
 extract(joshlib());
 
 //define vars
-$base				= '/login/';
+if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
+
+
 $schema				= array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
 	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
@@ -69,7 +71,7 @@ if (!user()) {
 }
 
 function dbCheck() {
-	global $schema, $base;
+	global $schema;
 	if (!db_schema_check($schema)) {
 		
 		//log in the current user	
@@ -107,7 +109,7 @@ function dbCheck() {
 		db_save('user_snippets', false, array('title'=>'Meta Keywords', 'content'=>''));
 		db_save('user_snippets', false, array('title'=>'Copyright', 'content'=>'This site copyright &copy; ' . date('Y') . ' All rights reserved.'));
 		
-		url_change($base);
+		url_change(DIRECTORY_BASE);
 	}
 	
 	//CMS 
@@ -115,7 +117,7 @@ function dbCheck() {
 }
 
 function drawTop($title='CMS') {
-	global $_josh, $base;
+	global $_josh;
 	if (!$app = db_grab('SELECT link_color, ' . db_updated() . ' FROM app WHERE id = 1')) $app = array();
 	if (empty($app['link_color'])) $app['link_color'] = '336699';
 	if (empty($app['updated'])) $app['updated'] = 0;
@@ -124,17 +126,17 @@ function drawTop($title='CMS') {
 		draw_title($title) . 
 		lib_get('jquery') . 
 		draw_javascript_src() . 
-		draw_javascript_src($base . 'javascript.js') . 
-		draw_css_src($base . 'styles/screen.css') .
+		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
+		draw_css_src(DIRECTORY_BASE . 'styles/screen.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
 	if (user()) {
-		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), $base));
+		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= '<h1>CMS</h1>';
 		} else {
-			$return .= '<h1>' . draw_link($base, 'CMS') . ' &gt; ';
+			$return .= '<h1>' . draw_link(DIRECTORY_BASE, 'CMS') . ' &gt; ';
 			$return .= $title . '</h1>';
 		}
 	} else {
@@ -150,7 +152,6 @@ function drawBottom() {
 }
 
 function drawObjectTable($object_id, $from_type=false, $from_id=false) {
-	global $base;
 	
 	//get content
 	$object		= db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id);
@@ -263,8 +264,8 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	//set up nav
 	if (admin()) {
 		if (!$from_type) {
-			$nav[$base . 'edit/?id=' . $_GET['id']] = $object['title'] . ' Settings';
-			$nav[$base . 'object/fields/?id=' . $_GET['id']] = 'Fields';
+			$nav[DIRECTORY_BASE . 'edit/?id=' . $_GET['id']] = $object['title'] . ' Settings';
+			$nav[DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id']] = 'Fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
@@ -273,14 +274,14 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 				$nav[url_action_add('show_deleted')] = 'Show ' . format_quantitize($deleted, 'Deleted ' . $object['title']);
 			}
 		}
-		$nav['javascript:showSQL();'] = 'Show SQL';
+		$nav['#sql'] = 'Show SQL';
 		$return .= draw_container('textarea', $sql, array('id'=>'sql', 'style'=>'display:none;')); //todo disambiguate
 	}
 	if ($from_type && $from_id) {
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
-		$nav[$base . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id] = 'Add New';
+		$nav[DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id] = 'Add New';
 	} else {
-		$nav[$base . 'object/edit/?object_id=' . $object_id] = 'Add New';
+		$nav[DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id] = 'Add New';
 	}
 	$return = draw_nav($nav) . $return;
 		
@@ -305,7 +306,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 				$r[$f['field_name']] = file_icon($r[$f['field_name']]);
 			} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {
 				$img = file_dynamic($object['table_name'], $f['field_name'], $r['id'], 'jpg', $r['updated']);
-				$r[$f['field_name']] = draw_img_thumbnail($img, $base . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, 60);
+				$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, 60);
 			} elseif ($f['type'] == 'select') {
 				$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
 			} elseif ($f['type'] == 'textarea') {
@@ -315,7 +316,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 			}
 			if (!$linked) {
 				if (empty($r[$f['field_name']])) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
-				$r[$f['field_name']] = draw_link($base . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $r[$f['field_name']]);
+				$r[$f['field_name']] = draw_link(DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $r[$f['field_name']]);
 				if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
 			}
 		}

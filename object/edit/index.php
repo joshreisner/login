@@ -157,7 +157,7 @@ while ($r = db_fetch($result)) {
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
 					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
 				}
-				if ($rel_object['permission'] || admin()) $additional = draw_link($base . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
+				if ($rel_object['permission'] || admin()) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 
 				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql));
 			}
@@ -169,7 +169,7 @@ while ($r = db_fetch($result)) {
 					(SELECT f.field_name FROM app_fields f WHERE f.object_id = o.id AND f.is_active = 1 ORDER BY f.precedence LIMIT 1) field_name,
 					(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 				FROM app_objects o WHERE o.id = ' . $r['related_object_id']);
-			if ($rel_object['permission'] || admin()) $additional = draw_link($base . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
+			if ($rel_object['permission'] || admin()) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 			$f->set_field(array('label'=>$r['title'], 'maxlength'=>24, 'additional'=>$additional, 'name'=>$r['field_name'], 'type'=>'checkboxes', 'options_table'=>$rel_object['table_name'], 'linking_table'=>$r['field_name'], 'option_id'=>substr($rel_object['table_name'], 5) . '_id', 'object_id'=>substr($object['table_name'], 5) . '_id', 'option_title'=>$rel_object['field_name'], 'value'=>@$_GET['id']));
 		} else {
 			$label = $r['title'];

@@ -1,7 +1,7 @@
 <?php
 include('../include.php');
 
-if (!admin()) url_change($base);
+if (!admin()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if ($uploading) $_POST['banner_image'] = format_image_resize(file_get_uploaded('banner_image'), false, 95);

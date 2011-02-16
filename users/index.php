@@ -1,7 +1,7 @@
 <?php
 include('../include.php');
 
-if (!admin()) url_change($base);
+if (!admin()) url_change(DIRECTORY_BASE);
 
 if (url_action('delete')) {
 	db_delete('app_users');

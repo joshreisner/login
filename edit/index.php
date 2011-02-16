@@ -2,7 +2,7 @@
 //add a new object to the CMS or edit its settings
 include('../include.php');
 
-if (!admin()) url_change($base);
+if (!admin()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if (!$editing) {
@@ -31,7 +31,32 @@ if ($posting) {
 		db_query('DELETE FROM app_users_to_objects WHERE object_id = ' . $_GET['id']);
 		db_query('DELETE FROM app_objects WHERE id = ' . $_GET['id']);
 	}
-	url_change($base);
+	url_change(DIRECTORY_BASE);
+} elseif (url_action('duplicate')) {
+	//duplicate an object and all its meta and values
+	//todo fix app_objects precedence
+	$table_name = getNewObjectName('user ' . $_GET['title']);
+	$object_id = db_query('INSERT INTO app_objects ( title, table_name, order_by, direction, group_by_field, list_help, form_help, show_published, web_page, created_date, created_user, is_active ) SELECT "' . $_GET['title'] . '", "' . $table_name . '", order_by, direction, group_by_field, list_help, form_help, show_published, web_page, ' . db_date() . ', ' . user() . ', 1 FROM app_objects WHERE id = ' . $_GET['id']);
+	db_table_duplicate(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']), $table_name);
+	//going to skip copying permissions
+	db_query('INSERT INTO app_objects_links ( object_id, linked_id ) SELECT ' . $object_id . ', linked_id FROM app_objects_links WHERE object_id = ' . $_GET['id']);
+	db_query('INSERT INTO app_fields ( object_id, type, title, field_name, visibility, required, related_field_id, width, height, additional, created_date, created_user, is_active ) SELECT ' . $object_id . ', type, title, field_name, visibility, required, related_field_id, width, height, additional, ' . db_date() . ', ' . user() . ', 1 FROM app_fields WHERE object_id = ' . $_GET['id']);
+	
+	//fix app_objects.group_by_field
+	if ($field_name = db_grab('SELECT f.field_name FROM app_fields f JOIN app_objects o ON f.id = o.group_by_field WHERE o.id = ' . $object_id)) {
+		$field_id = db_grab('SELECT id FROM app_fields WHERE field_name = "' . $field_name . '" AND object_id = ' . $object_id);
+		db_query('UPDATE app_objects SET group_by_field = ' . $field_id . ' WHERE id = ' . $object_id);
+	}
+	
+	//fix app_fields.related_field_id
+	if ($field_names = db_table('SELECT f1.id, f2.field_name FROM app_fields f1 JOIN app_fields f2 ON f1.related_field_id = f2.id WHERE f1.object_id = ' . $object_id)) {
+		foreach ($field_names as $field) {
+			$field_id = db_grab('SELECT id FROM app_fields WHERE field_name = "' . $field['field_name'] . '" AND object_id = ' . $object_id);
+			db_query('UPDATE app_fields SET related_field_id = ' . $field_id . ' WHERE id = ' . $field['id']);
+		}
+	}
+	
+	url_change(DIRECTORY_BASE . 'object/?id=' . $object_id);
 } elseif (url_action('resize')) {
 	//resize all images in object according to new field rules
 	//todo move this to field edit?
@@ -92,7 +117,11 @@ if (url_id()) {
 	if (db_grab('SELECT COUNT(*) FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)')) {
 		$images = draw_p('You can also ' . draw_link(url_action_add('resize'), 'resize all images') . '.');
 	}
-	echo draw_div('panel', draw_p('You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.') . $images);
+	echo draw_div('panel', 
+		draw_p('You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.') . 
+		$images . 
+		draw_p('You can also ' . draw_link(false, 'duplicate this object', false, array('class'=>'object_duplicate')) . ' and all of its values.')
+	);
 }
 
 echo drawBottom();
