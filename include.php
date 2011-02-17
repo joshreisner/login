@@ -5,7 +5,6 @@ extract(joshlib());
 //define vars
 if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 
-
 $schema				= array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
 	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
@@ -164,7 +163,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	$joins		= $columns = $nav = array();
 	$t			= new table($object['table_name']);
 	$where		= $where_str = $return = '';
-	$rel_fields = array();
+	$rel_fields = $nav = $classes = array();
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -265,7 +264,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	if (admin()) {
 		if (!$from_type) {
 			$nav[DIRECTORY_BASE . 'edit/?id=' . $_GET['id']] = $object['title'] . ' Settings';
+			$classes[] = 'settings';
 			$nav[DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id']] = 'Fields';
+			$classes[] = 'fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
@@ -274,7 +275,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 				$nav[url_action_add('show_deleted')] = 'Show ' . format_quantitize($deleted, 'Deleted ' . $object['title']);
 			}
 		}
+		$classes[] = 'deleted';
 		$nav['#sql'] = 'Show SQL';
+		$classes[] = 'sql';
 		$return .= draw_container('textarea', $sql, array('id'=>'sql', 'style'=>'display:none;')); //todo disambiguate
 	}
 	if ($from_type && $from_id) {
@@ -283,7 +286,8 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	} else {
 		$nav[DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id] = 'Add New';
 	}
-	$return = draw_nav($nav) . $return;
+	$classes[] = 'new';
+	$return = draw_nav($nav) . $return; //todo pass $classes to draw_nav
 		
 	$t->set_column('updated', 'r', 'Updated', 120);
 	$t->set_column('delete', 'delete', '&nbsp;', 20);

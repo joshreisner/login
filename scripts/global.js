@@ -29,6 +29,7 @@ $(function(){
 			type : 'POST',
 			data : { object_id : url_id(), id : parts[parts.length-1] },
 			success : function(data) {
+				if ($('ul.nav li').size() == 5) $('ul.nav li.option3 a').html(data); //todo genericize this with classes
 				if (tr.hasClass('deleted')) {
 					tr.removeClass('deleted');
 				} else {
