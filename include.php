@@ -3,9 +3,12 @@ session_start();
 extract(joshlib());
 
 //define vars
+if (!defined('CHAR_DELETE')) define('CHAR_DELETE', '&curren;');
+if (!defined('CHAR_UNDELETE')) define('CHAR_UNDELETE', '&curren;');
 if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 
-$schema				= array(
+
+$schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
 	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar'),
@@ -18,7 +21,7 @@ $schema				= array(
 	'user_sections'=>array('title'=>'varchar'),
 	'user_snippets'=>array('title'=>'varchar', 'content'=>'varchar')
 );
-$visibilty_levels	= array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
+$visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
 if (url_action('show_deleted,hide_deleted') && admin()) {
 	$_SESSION['show_deleted'] = url_action('show_deleted');
@@ -126,7 +129,7 @@ function drawTop($title='CMS') {
 		lib_get('jquery') . 
 		draw_javascript_src() . 
 		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
-		draw_css_src(DIRECTORY_BASE . 'styles/screen.css') .
+		draw_css_src(DIRECTORY_BASE . 'styles/screen/global.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
@@ -327,9 +330,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 		$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
 		if (!$r['is_active']) {
 			$r['class'] = 'deleted';
-			$r['delete'] = draw_link(false, '&curren;', false, 'delete');
+			$r['delete'] = draw_link(false, CHAR_UNDELETE, false, 'delete');
 		} else {
-			$r['delete'] = draw_link(false, '&#215;', false, 'delete');
+			$r['delete'] = draw_link(false, CHAR_DELETE, false, 'delete');
 		}
 	}
 	return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');

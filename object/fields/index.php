@@ -42,7 +42,7 @@ foreach($result as &$r) {
 	$r['updated']	= format_date($r['updated']);
 	$r['type']		= $_josh['field_types'][$r['type']];
 	$r['required']	= format_boolean($r['required']);
-	$r['delete']	= draw_link(url_query_add(array('action'=>'delete', 'delete_id'=>$r['id']), false), 'X');
+	$r['delete']	= draw_link(url_query_add(array('action'=>'delete', 'delete_id'=>$r['id']), false), CHAR_DELETE);
 }
 echo $t->draw($result, 'No fields have been added to this object yet!');
 
