@@ -3,7 +3,7 @@ session_start();
 extract(joshlib());
 
 //define vars
-if (!defined('CHAR_DELETE')) define('CHAR_DELETE', '&curren;');
+if (!defined('CHAR_DELETE')) define('CHAR_DELETE', '&times;');
 if (!defined('CHAR_UNDELETE')) define('CHAR_UNDELETE', '&curren;');
 if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 
@@ -14,13 +14,15 @@ $schema = array(
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar'),
 	'app_objects_links'=>array('object_id'=>'int', 'linked_id'=>'int'),
 	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'is_admin'=>'tinyint'),
-	'app_users_to_objects'=>array('user_id'=>'int', 'object_id'=>'int'),
-	
+	'app_users_to_objects'=>array('user_id'=>'int', 'object_id'=>'int')	
+);
+
+/* 
 	//adding these by default
 	'user_pages'=>array('title'=>'varchar', 'url'=>'varchar', 'content'=>'text', 'meta_description'=>'varchar', 'meta_keywords'=>'varchar', 'section_id'=>'int'),
 	'user_sections'=>array('title'=>'varchar'),
 	'user_snippets'=>array('title'=>'varchar', 'content'=>'varchar')
-);
+*/
 $visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
 if (url_action('show_deleted,hide_deleted') && admin()) {
@@ -266,16 +268,16 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	//set up nav
 	if (admin()) {
 		if (!$from_type) {
-			$nav[DIRECTORY_BASE . 'edit/?id=' . $_GET['id']] = $object['title'] . ' Settings';
+			$nav[DIRECTORY_BASE . 'edit/?id=' . $_GET['id']] = 'Object Settings';
 			$classes[] = 'settings';
 			$nav[DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id']] = 'Fields';
 			$classes[] = 'fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
-				$nav[url_action_add('hide_deleted')] = 'Hide ' . format_quantitize($deleted, 'Deleted ' . $object['title']);
+				$nav[url_action_add('hide_deleted')] = 'Hide ' . format_quantity($deleted) . ' Deleted';
 			} else {
-				$nav[url_action_add('show_deleted')] = 'Show ' . format_quantitize($deleted, 'Deleted ' . $object['title']);
+				$nav[url_action_add('show_deleted')] = 'Show ' . format_quantity($deleted) . ' Deleted';
 			}
 		}
 		$classes[] = 'deleted';
