@@ -17,12 +17,6 @@ $schema = array(
 	'app_users_to_objects'=>array('user_id'=>'int', 'object_id'=>'int')	
 );
 
-/* 
-	//adding these by default
-	'user_pages'=>array('title'=>'varchar', 'url'=>'varchar', 'content'=>'text', 'meta_description'=>'varchar', 'meta_keywords'=>'varchar', 'section_id'=>'int'),
-	'user_sections'=>array('title'=>'varchar'),
-	'user_snippets'=>array('title'=>'varchar', 'content'=>'varchar')
-*/
 $visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
 if (url_action('show_deleted,hide_deleted') && admin()) {
@@ -77,6 +71,12 @@ if (!user()) {
 function dbCheck() {
 	global $schema;
 	if (!db_schema_check($schema)) {
+		
+		db_schema_check(array( 	//adding these by default
+			'user_pages'=>array('title'=>'varchar', 'url'=>'varchar', 'content'=>'text', 'meta_description'=>'varchar', 'meta_keywords'=>'varchar', 'section_id'=>'int'),
+			'user_sections'=>array('title'=>'varchar'),
+			'user_snippets'=>array('title'=>'varchar', 'content'=>'varchar')
+		));
 		
 		//log in the current user	
 		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "josh@joshreisner.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
