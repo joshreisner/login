@@ -34,8 +34,8 @@ $f->set_field(array('name'=>'type', 'type'=>'select', 'options'=>$_josh['field_t
 $f->set_field(array('name'=>'object_id', 'type'=>'hidden', 'value'=>$_GET['object_id']));
 $f->set_field(array('name'=>'visibility', 'type'=>'select', 'options'=>$visibilty_levels, 'default'=>'normal', 'required'=>true));
 $f->set_field(array('name'=>'additional', 'label'=>'Additional Instructions', 'type'=>'textarea'));
-$f->set_field(array('name'=>'related_field_id', 'type'=>'select', 'sql'=>'SELECT id, title FROM app_fields WHERE object_id = ' . $_GET['object_id'] . ' and is_active = 1 ORDER BY title'));
-$f->set_field(array('name'=>'related_object_id', 'type'=>'select', 'sql'=>'SELECT id, title FROM app_objects WHERE id <> ' . $_GET['object_id'] . ' and is_active = 1 ORDER BY title'));
+$f->set_field(array('name'=>'related_field_id', 'type'=>'select', 'sql'=>'SELECT id, title FROM app_fields WHERE object_id = ' . $_GET['object_id'] . ' AND is_active = 1 ORDER BY title'));
+$f->set_field(array('name'=>'related_object_id', 'type'=>'select', 'sql'=>'SELECT id, title FROM app_objects WHERE is_active = 1 ORDER BY title'));
 $f->set_field(array('name'=>'width', 'type'=>'text'));
 $f->set_field(array('name'=>'height', 'type'=>'text'));
 $f->unset_fields('field_name,external_table');

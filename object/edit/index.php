@@ -144,7 +144,13 @@ while ($r = db_fetch($result)) {
 						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 					FROM app_objects o
 					WHERE o.id = ' . $r['related_object_id']);
-				if ($rel_object['group_by_field']) {
+				if ($_GET['object_id'] == $rel_object['id']) {
+					//nested object
+					$sql = 'SELECT id, ' . $rel_object['field_name'] . ' FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
+					if (url_id()) $sql .= ' AND id <> ' . url_id();
+					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
+					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
+				} elseif ($rel_object['group_by_field']) {
 					//this needs to be a grouped select
 					$group = db_grab('SELECT o.order_by, o.direction, o.table_name, f.field_name field_name_from, (SELECT f2.field_name FROM app_fields f2 WHERE f2.object_id = o.id AND f2.visibility = "list" ORDER BY f2.precedence LIMIT 1) field_name_to FROM app_fields f JOIN app_objects o ON f.related_object_id = o.id WHERE f.id = ' . $rel_object['group_by_field']);
 					$sql = 'SELECT r.id, r.' . $rel_object['field_name'] . ', g.' . $group['field_name_to'] . ' optgroup FROM ' . $rel_object['table_name'] . ' r LEFT JOIN ' . $group['table_name'] . ' g ON r.' . $group['field_name_from'] . ' = g.id WHERE r.is_active = 1';
@@ -157,7 +163,7 @@ while ($r = db_fetch($result)) {
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
 					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
 				}
-				if ($rel_object['permission'] || admin()) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
+				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || admin())) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 
 				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql));
 			}
