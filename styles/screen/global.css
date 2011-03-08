@@ -46,6 +46,13 @@ table td.icon, table th.icon			{ width:20px; min-width:20px; text-align:center; 
 table td.checkbox, table th.checkbox	{ width:20px; min-width:20px; text-align:center; padding:0px; }
 table td.draggy							{ cursor:move; width:20px; min-width:20px; text-align:center; padding:0px; background:#fff url(/login/images/move.png) no-repeat 4px 4px; }
 table tr.group td						{ height:40px; vertical-align:bottom; text-transform:uppercase; font-weight:bold; font-size:11px;	 }
+table tr.depth-1 td a					{ margin-left:16px; }
+table tr.depth-2 td a					{ margin-left:32px; }
+table tr.depth-3 td a					{ margin-left:48px; }
+table tr.depth-4 td a					{ margin-left:64px; }
+table tr.depth-5 td a					{ margin-left:80px; }
+table tr.depth-6 td a					{ margin-left:96px; }
+table tr td a.delete					{ margin-left: 0; }
 table td.empty							{ height:220px; background-color:#f4f4f4; text-align:center; font:italic 15px/18px Georgia; border:1px solid #ddd; vertical-align:middle; color:#888; }
 table td.updated, table td.date			{ white-space: nowrap; }
 

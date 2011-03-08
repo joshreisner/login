@@ -73,7 +73,7 @@ function dbCheck() {
 	if (!db_schema_check($schema)) {
 		
 		db_schema_check(array( 	//adding these by default
-			'user_pages'=>array('title'=>'varchar', 'url'=>'varchar', 'content'=>'text', 'meta_description'=>'varchar', 'meta_keywords'=>'varchar', 'parent_id'=>'int'),
+			'user_pages'=>array('title'=>'varchar', 'url'=>'varchar', 'content'=>'text', 'meta_description'=>'varchar', 'meta_keywords'=>'varchar', 'parent_id'=>'int', 'subsequence'=>'int'),
 			'user_snippets'=>array('title'=>'varchar', 'content'=>'varchar')
 		));
 		
@@ -96,8 +96,12 @@ function dbCheck() {
 		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'textarea', 'title'=>'Content', 'field_name'=>'content', 'visibility'=>'normal', 'required'=>0));
 		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'text', 'title'=>'Meta Description', 'field_name'=>'meta_description', 'visibility'=>'normal', 'required'=>0, 'additional'=>'for search engines'));
 		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'text', 'title'=>'Meta Keywords', 'field_name'=>'meta_keywords', 'visibility'=>'normal', 'required'=>0));
-		db_save('user_pages', false, array('title'=>'About Us', 'url'=>'/about/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
-		db_save('user_pages', false, array('title'=>'Contact Us', 'url'=>'/contact/', 'content'=>'<p>Pharetra eget ligula molestie cursus sit ornare mattis amet eros urna bibendum magna pellentesque. Donec justo porta mattis pharetra ornare lorem sapien nec cursus. Ut mattis et risus ultricies ipsum at congue eu rutrum ultricies congue. Sit massa ipsum sodales sagittis vivamus enim adipiscing maecenas curabitur porta enim in mauris fusce vitae non gravida donec. Mattis cursus molestie urna sit gravida donec sodales maecenas justo bibendum cursus lectus quisque at cursus mattis nam rutrum. Sit quam magna in bibendum gravida ornare enim adipiscing ut fusce eros gravida enim orci in justo donec urna tellus justo sodales integer eget.</p><p>Non metus congue metus molestie integer lectus massa sit arcu integer eu sapien malesuada. In non diam elementum nulla porttitor quisque sit ligula sed nulla quisque vulputate enim massa eu risus et vitae non integer justo. Congue eget mattis integer non magna tempus maecenas sit urna sem gravida sagittis eget porttitor nec arcu.</p>', 'is_published'=>1));
+		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'int', 'title'=>'Subsequence', 'field_name'=>'subsequence', 'visibility'=>'hidden', 'required'=>0));
+		db_save('user_pages', false, array('title'=>'Home', 'url'=>'/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
+		db_save('user_pages', false, array('title'=>'About Us', 'parent_id'=>1, 'url'=>'/about/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
+		db_save('user_pages', false, array('title'=>'Our History', 'parent_id'=>2, 'url'=>'/about/history/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
+		db_save('user_pages', false, array('title'=>'Contact Us', 'parent_id'=>1, 'url'=>'/contact/', 'content'=>'<p>Pharetra eget ligula molestie cursus sit ornare mattis amet eros urna bibendum magna pellentesque. Donec justo porta mattis pharetra ornare lorem sapien nec cursus. Ut mattis et risus ultricies ipsum at congue eu rutrum ultricies congue. Sit massa ipsum sodales sagittis vivamus enim adipiscing maecenas curabitur porta enim in mauris fusce vitae non gravida donec. Mattis cursus molestie urna sit gravida donec sodales maecenas justo bibendum cursus lectus quisque at cursus mattis nam rutrum. Sit quam magna in bibendum gravida ornare enim adipiscing ut fusce eros gravida enim orci in justo donec urna tellus justo sodales integer eget.</p><p>Non metus congue metus molestie integer lectus massa sit arcu integer eu sapien malesuada. In non diam elementum nulla porttitor quisque sit ligula sed nulla quisque vulputate enim massa eu risus et vitae non integer justo. Congue eget mattis integer non magna tempus maecenas sit urna sem gravida sagittis eget porttitor nec arcu.</p>', 'is_published'=>1));
+		treeRebuild('user_pages');
 		
 		$object_id = db_save('app_objects', false, array('title'=>'Snippets', 'table_name'=>'user_snippets', 'show_published'=>0, 'order_by'=>'title'));
 		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'text', 'title'=>'Title', 'field_name'=>'title', 'visibility'=>'list', 'required'=>1));
@@ -162,7 +166,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	$joins		= $columns = $nav = array();
 	$t			= new table($object['table_name']);
 	$where		= $where_str = $return = '';
-	$rel_fields = $nav = $classes = array();
+	$rel_fields = $nav = $classes = $right = array();
+	$nested		= false;
+	$depth		= 0;
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -208,6 +214,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 				$t->set_column($f['field_name'], 'l', $f['title']);
 			}
 		}
+		
 		$selects[] = TAB . 't.' . $f['field_name'];
 		if ($f['type'] == 'select') {
 			
@@ -218,7 +225,8 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 			if ($f['id'] == $object['group_by_field']) {
 				if ($f['related_object_id'] == $object_id) {
 					//nested object
-					
+					$nested = true;
+					$selects[] = TAB . 't.precedence';
 				} elseif ($f['related_object_id'] != $from_type) {
 					//skip this if it's the from_type
 					//figure out which column to group by and label it group
@@ -300,6 +308,21 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	//get rows, iterate
 	$rows = db_table($sql);
 	foreach($rows as &$r) {
+		if ($nested) {
+			//do nesty things (see treeDisplay for a simpler version of this)
+			$t->set_nested();
+			$r['descendants'] = ($r['subsequence'] - $r['precedence'] - 1) / 2;
+			$r['depth'] = count($right);
+			if ($r['depth'] > 0) {  
+				//check if we should remove a node from the stack  
+				while ($right[$r['depth'] - 1] < $r['subsequence']) {
+					array_pop($right);
+					$r['depth']--;
+				}
+			}
+			$right[] = $r['subsequence'];
+			array_argument($r, 'depth-' . $r['depth']);
+		}
 		if ($orderingByPrecedence) $r['draggy'] = '&nbsp;'; //'<img src="../images/move.png" alt="move" width="16" height="16" border="0"/>';
 		//$b['is_published'] = draw_form_checkbox('chk_posts_' . $b['id'], $b['is_published']);
 		if ($object['show_published']) $r['is_published'] = draw_form_checkbox('chk_' . str_replace('_', '-', $object['table_name']) . '_' . $r['id'], $r['is_published'], false, 'ajax_publish(this);');
@@ -331,7 +354,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 		}
 		$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
 		if (!$r['is_active']) {
-			$r['class'] = 'deleted';
+			array_argument($r, 'deleted');
 			$r['delete'] = draw_link(false, CHAR_UNDELETE, false, 'delete');
 		} else {
 			$r['delete'] = draw_link(false, CHAR_DELETE, false, 'delete');
@@ -404,5 +427,79 @@ function joshlib() {
 	foreach ($possibilities as $p) if (@include($p)) return $_josh;
 	die('Help me find my library.  I am at ' . $_SERVER['DOCUMENT_ROOT']);
 }
+
+function treeDisplay($table, $root=false) {
+	//default to main page
+	if (!$root) $root = 1;
+	
+	//retrieve the left and right value of the $root node  
+	$root = db_grab('SELECT precedence, subsequence FROM ' . $table . ' WHERE id = ' . $root);
+	
+	//start with an empty $right stack  
+	$right = $depths = array();  
+	
+	//now, retrieve all descendants of the $root node  
+	$result = db_table('SELECT title, precedence, subsequence FROM ' . $table . ' WHERE precedence BETWEEN ' . $root['precedence'] . ' AND ' . $root['subsequence'] . ' ORDER BY precedence');
+	
+	//display each row  
+	echo '<ul>' . NEWLINE;
+	$last_depth = -1;
+	foreach ($result as $r) {
+	
+		$descendants = ($r['subsequence'] - $r['precedence'] - 1) / 2;
+		$depth = count($right);
+		
+		//only check stack if there is one  
+		if ($depth > 0) {  
+			//check if we should remove a node from the stack  
+			while ($right[$depth - 1] < $r['subsequence']) {
+				array_pop($right);
+				$depth--;
+			}
+		}
+		
+		//shrinking?
+		if ($depth < $last_depth) echo '</ul>' . NEWLINE;
+
+		//display indented node title  
+		echo str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['subsequence'] . ', ' . $r['precedence'] . ')') . NEWLINE;
+		
+		//add this node to the stack  
+		$right[] = $r['subsequence'];
+		
+		//growing?
+		if ($descendants) echo '<ul>' . NEWLINE;
+		
+		$last_depth = $depth;
+	}
+	while ($depth > 0) {
+		echo '</ul>' . NEWLINE;
+		$depth--;
+	}
+	echo '</ul>' . NEWLINE;
+}  
+
+function treeRebuild($table, $parent_id=false, $left=false) {
+	//default val
+	if (!$parent_id && !$left) $parent_id = $left = 1;
+	
+	//the right value of this node is the left value + 1   
+	$right = $left + 1;
+	
+	//get all children of this node   
+	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id = ' . $parent_id);   
+	foreach ($ids as $id) {
+	   //recursive execution of this function for each child of this node   
+	   //$right is the current right value, which is incremented by the treeRebuild function   
+	   $right = treeRebuild($table, $id, $right);   
+	}   
+	
+	//we've got the left value, and now that we've processed   
+	//the children of this node we also know the right value   
+	db_query('UPDATE ' . $table . ' SET precedence = ' . $left . ', subsequence = ' . $right . ' WHERE id = ' . $parent_id);   
+	
+	//return the right value of this node + 1   
+	return $right + 1;
+}   
 
 ?>

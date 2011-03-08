@@ -57,7 +57,13 @@ if (!$object['permission'] && !admin()) url_change('../../');
 	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "checkboxes" AND o.id = ' . $_GET['object_id']);
 	foreach ($fields as $f) db_checkboxes($f['field_name'], $f['field_name'], substr($f['table_name'], 5) . '_id', substr($f['rel_table'], 5) . '_id', $id);
 	
-	//objects
+	//tree?  rebuild
+	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
+		treeRebuild($object['table_name']);
+	}
+	
+	
+	//objects -- deprecated?
 	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "object" AND o.id = ' . $_GET['object_id']);
 	foreach ($fields as $f) {
 		$chbxes = array_post_checkboxes($f['field_name']);
