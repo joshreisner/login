@@ -484,7 +484,8 @@ function treeDisplay($table, $root=false) {
 function treeRebuild($table, $parent_id=false, $left=false) {
 	//default val
 	//todo, needs to support multiple trees??
-	if (!$parent_id && !$left) $parent_id = $left = 1;
+	if (!$parent_id) $parent_id = 'NULL';
+	if (!$left) $left = 1;
 	
 	//the right value of this node is the left value + 1   
 	$right = $left + 1;
