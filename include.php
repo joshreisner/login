@@ -435,17 +435,17 @@ function treeDisplay($table, $root=false) {
 	//retrieve the left and right value of the $root node  
 	$root = db_grab('SELECT precedence, subsequence FROM ' . $table . ' WHERE id = ' . $root);
 	
-	//start with an empty $right stack  
-	$right = $depths = array();  
-	
 	//now, retrieve all descendants of the $root node  
-	$result = db_table('SELECT title, precedence, subsequence FROM ' . $table . ' WHERE precedence BETWEEN ' . $root['precedence'] . ' AND ' . $root['subsequence'] . ' ORDER BY precedence');
+	$result = db_table('SELECT title, precedence, subsequence, parent_id FROM ' . $table . ' WHERE precedence BETWEEN ' . $root['precedence'] . ' AND ' . $root['subsequence'] . ' ORDER BY precedence');
 	
 	//display each row  
 	echo '<ul>' . NEWLINE;
 	$last_depth = -1;
 	foreach ($result as $r) {
-	
+		
+		//root of a tree
+		if (!$r['parent_id']) $right = array();
+
 		$descendants = ($r['subsequence'] - $r['precedence'] - 1) / 2;
 		$depth = count($right);
 		
@@ -459,10 +459,12 @@ function treeDisplay($table, $root=false) {
 		}
 		
 		//shrinking?
-		if ($depth < $last_depth) echo '</ul>' . NEWLINE;
+		if ($depth < $last_depth) {
+			echo str_repeat('</ul>' . NEWLINE, $last_depth - $depth);
+		}
 
 		//display indented node title  
-		echo str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['subsequence'] . ', ' . $r['precedence'] . ')') . NEWLINE;
+		echo str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['precedence'] . ', ' . $r['subsequence'] . ')') . NEWLINE;
 		
 		//add this node to the stack  
 		$right[] = $r['subsequence'];
@@ -472,15 +474,16 @@ function treeDisplay($table, $root=false) {
 		
 		$last_depth = $depth;
 	}
-	while ($depth > 0) {
+	/*while ($depth > 0) {
 		echo '</ul>' . NEWLINE;
 		$depth--;
-	}
+	}*/
 	echo '</ul>' . NEWLINE;
 }  
 
 function treeRebuild($table, $parent_id=false, $left=false) {
 	//default val
+	//todo, needs to support multiple trees??
 	if (!$parent_id && !$left) $parent_id = $left = 1;
 	
 	//the right value of this node is the left value + 1   
