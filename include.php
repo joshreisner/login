@@ -118,6 +118,17 @@ function dbCheck() {
 	return true;
 }
 
+function drawNav($pages) {
+	$return = '<ul>';
+	foreach ($pages as $p) {
+		$return .= '<li>' . draw_link($p['url'], $p['title']);
+		if (count($p['children'])) $return .= drawNav($p['children']);
+		$return .= '</li>';
+	}
+	$return .= '</ul>';
+	return $return;
+}
+
 function drawTop($title='CMS') {
 	global $_josh;
 	if (!$app = db_grab('SELECT link_color, ' . db_updated() . ' FROM app WHERE id = 1')) $app = array();
@@ -166,7 +177,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	$joins		= $columns = $nav = array();
 	$t			= new table($object['table_name']);
 	$where		= $where_str = $return = '';
-	$rel_fields = $nav = $classes = $right = array();
+	$rel_fields = $nav = $classes = array();
 	$nested		= false;
 	$depth		= 0;
 	
@@ -227,6 +238,7 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 					//nested object
 					$nested = true;
 					$selects[] = TAB . 't.precedence';
+					$selects[] = TAB . 't.parent_id';
 				} elseif ($f['related_object_id'] != $from_type) {
 					//skip this if it's the from_type
 					//figure out which column to group by and label it group
@@ -311,10 +323,11 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 		if ($nested) {
 			//do nesty things (see treeDisplay for a simpler version of this)
 			$t->set_nested();
+			if (empty($r['parent_id'])) $right = array();
 			$r['descendants'] = ($r['subsequence'] - $r['precedence'] - 1) / 2;
 			$r['depth'] = count($right);
 			if ($r['depth'] > 0) {  
-				//check if we should remove a node from the stack  
+				//check if we should remove a node from the stack
 				while ($right[$r['depth'] - 1] < $r['subsequence']) {
 					array_pop($right);
 					$r['depth']--;
@@ -395,42 +408,15 @@ function getNewObjectName($table, $field=false) {
 }
 
 function joshlib() {
+	//look for joshlib at joshlib/index.php, ../joshlib/index.php, ../../joshlib.index.php, etc all the way down
 	global $_josh;
-	$possibilities = array(
-		'../joshlib/index.php',
-		'../../joshlib/index.php',
-		'../../../joshlib/index.php',
-		'../../../../joshlib/index.php',
-		'../../../../../joshlib/index.php'
-		/*
-		'/home/content/b/r/a/brad100/html/joshlib/index.php',				//brad ascalon							Dec 31, 2010
-		'/home/seedco/www/joshlib/index.php',								//seedco								Dec 10, 2010
-		'/home/policy/www/joshlib/index.php',								//policy studies associates				Dec  4, 2010
-		'/home/tncsaco/public_html/tenncareadvocacy.com/joshlib/index.php',	//tenncare								Dec  1, 2010
-		'/home/admiral/www/joshlib/index.php',								//admiral center						Nov 18, 2010
-		'/home/seedcofinancial/www/joshlib/index.php',						//seedco financial						Oct 20, 2010
-		'/home/magnetic/www/joshlib/index.php',								//magnetic								May 25, 2010
-		'/home/phoebemurer/www/joshlib/index.php',							//phoebe murer							May 23, 2010
-		'/home/jeffreymonteiro/www/joshlib/index.php',						//jeffrey monteiro						May  9, 2010
-		'/home/promise/www/joshlib/index.php',								//promise neighborhoods institute		May  7, 2010
-		'/home/northernborder/www/joshlib/index.php',						//northern border investments			May  5, 2010
-		'/home/powerofsocial/www/joshlib/index.php',						//harvard goldsmith posi				Apr 26, 2010
-		'/home/theforeign/www/joshlib/index.php',							//matt murrell
-		'/home/bureaublank/www/joshlib/index.php',							//bureau blank
-		'/home/brianbooker/www/joshlib/index.php',							//brian booker
-		'/home/joshreisner/www/joshlib/joshlib/index.php',					//josh demo sites
-		'/Users/joshreisner/Sites/joshlib/index.php',						//josh dev
-		'/Users/diegolorenzo/Sites/joshlib/index.php',						//diego dev
-		'/Users/Michael/Documents/Bureau Blank/joshlib/trunk/index.php'		//michael dev
-		*/
-	);
-	foreach ($possibilities as $p) if (@include($p)) return $_josh;
-	die('Help me find my library.  I am at ' . $_SERVER['DOCUMENT_ROOT']);
+	$count = substr_count($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'], '/');
+	for ($i = 0; $i < $count; $i++) if (@include(str_repeat('../', $i) . 'joshlib/index.php')) return $_josh;
+	die('Could not find Joshlib.');
 }
 
-function treeDisplay($table, $root=false) {
+function treeDisplay($table, $root=false, $show_parent=true) {
 	//default to main page
-	if (!$root) $root = 1;
 	
 	//retrieve the left and right value of the $root node  
 	$root = db_grab('SELECT precedence, subsequence FROM ' . $table . ' WHERE id = ' . $root);
@@ -439,13 +425,13 @@ function treeDisplay($table, $root=false) {
 	$result = db_table('SELECT title, precedence, subsequence, parent_id FROM ' . $table . ' WHERE precedence BETWEEN ' . $root['precedence'] . ' AND ' . $root['subsequence'] . ' ORDER BY precedence');
 	
 	//display each row  
-	echo '<ul>' . NEWLINE;
+	$return = '<ul>' . NEWLINE;
 	$last_depth = -1;
 	foreach ($result as $r) {
 		
 		//root of a tree
-		if (!$r['parent_id']) $right = array();
-
+		if (!$r['parent_id'] || !isset($right)) $right = array();
+		
 		$descendants = ($r['subsequence'] - $r['precedence'] - 1) / 2;
 		$depth = count($right);
 		
@@ -459,51 +445,68 @@ function treeDisplay($table, $root=false) {
 		}
 		
 		//shrinking?
-		if ($depth < $last_depth) {
-			echo str_repeat('</ul>' . NEWLINE, $last_depth - $depth);
-		}
+		if ($depth < $last_depth) $return .= str_repeat('</ul>' . NEWLINE, $last_depth - $depth);
 
 		//display indented node title  
-		echo str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['precedence'] . ', ' . $r['subsequence'] . ')') . NEWLINE;
+		$return .= str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['precedence'] . ', ' . $r['subsequence'] . ')') . NEWLINE;
 		
 		//add this node to the stack  
 		$right[] = $r['subsequence'];
 		
 		//growing?
-		if ($descendants) echo '<ul>' . NEWLINE;
+		if ($descendants) $return .= '<ul>' . NEWLINE;
 		
+		//save last depth for next loop
 		$last_depth = $depth;
 	}
-	/*while ($depth > 0) {
-		echo '</ul>' . NEWLINE;
-		$depth--;
-	}*/
-	echo '</ul>' . NEWLINE;
+	$return .= str_repeat('</ul>' . NEWLINE, $depth);
+	return $return . '</ul>' . NEWLINE;
 }  
 
-function treeRebuild($table, $parent_id=false, $left=false) {
-	//default val
-	//todo, needs to support multiple trees??
-	if (!$parent_id) $parent_id = 'NULL';
-	if (!$left) $left = 1;
-	
-	//the right value of this node is the left value + 1   
+function getPages() {
+	$return = array();
+	$pages = db_table('SELECT id, title, parent_id, url, precedence, subsequence FROM user_pages WHERE is_active = 1 AND is_published = 1 ORDER BY precedence');
+	foreach ($pages as $p) {
+		$p['children'] = array();
+		if (empty($p['parent_id'])) {
+			$return[] = $p;
+		} elseif (nodeExists(&$return, $p['parent_id'], $p)) {
+			//attached child to parent node
+		} else {
+			//an error occurred, because a parent exists but is not in the tree
+		}
+	}
+	return $return;
+}
+
+function nodeExists(&$array, $parent_id, $child) {
+	foreach ($array as &$a) {
+		if ($a['id'] == $parent_id) {
+			$a['children'][] = $child;
+			return true;
+		} elseif (count($a['children']) && nodeExists($a['children'], $parent_id, $child)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function treeRebuild($table, $parent_id=false, $left=1) {
+	//the right value of this node (in case there are no children) is + 1
 	$right = $left + 1;
 	
 	//get all children of this node   
-	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id = ' . $parent_id);   
-	foreach ($ids as $id) {
-	   //recursive execution of this function for each child of this node   
-	   //$right is the current right value, which is incremented by the treeRebuild function   
-	   $right = treeRebuild($table, $id, $right);   
-	}   
+	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL'));
+
+	//recursive execution of this function for each child of this node   
+	//$right is the current right value, which is incremented by the treeRebuild function   
+	foreach ($ids as $id) $right = treeRebuild($table, $id, $right);   
 	
-	//we've got the left value, and now that we've processed   
-	//the children of this node we also know the right value   
-	db_query('UPDATE ' . $table . ' SET precedence = ' . $left . ', subsequence = ' . $right . ' WHERE id = ' . $parent_id);   
+	//we've got the left value, and now that we've processed the children of this node we also know the right value   
+	if ($parent_id) db_query('UPDATE ' . $table . ' SET precedence = ' . $left . ', subsequence = ' . $right . ' WHERE id = ' . $parent_id);   
 	
 	//return the right value of this node + 1   
 	return $right + 1;
 }   
 
-?>
+?> 

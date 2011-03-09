@@ -16,6 +16,18 @@ INSERT INTO user_pages SET precedence = 6, subsequence = 7, title='Strawberry';
 
 */
 treeRebuild('user_pages');
-treeDisplay('user_pages');
 
+$array = getPages();
+
+echo drawNav($array[0]['children']);
+
+
+exit;
+
+$ids = db_array('SELECT id FROM user_pages WHERE parent_id IS NULL');
+foreach ($ids as $id) {
+	echo treeDisplay('user_pages', $id);
+}
+
+//echo treeDisplay('user_pages', 1);
 ?>
