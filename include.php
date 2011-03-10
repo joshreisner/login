@@ -408,87 +408,11 @@ function getNewObjectName($table, $field=false) {
 }
 
 function joshlib() {
-	//look for joshlib at joshlib/index.php, ../joshlib/index.php, ../../joshlib.index.php, etc all the way down
+	//look for joshlib at joshlib/index.php, ../joshlib/index.php, all the way down
 	global $_josh;
 	$count = substr_count($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'], '/');
 	for ($i = 0; $i < $count; $i++) if (@include(str_repeat('../', $i) . 'joshlib/index.php')) return $_josh;
 	die('Could not find Joshlib.');
-}
-
-function treeDisplay($table, $root=false, $show_parent=true) {
-	//default to main page
-	
-	//retrieve the left and right value of the $root node  
-	$root = db_grab('SELECT precedence, subsequence FROM ' . $table . ' WHERE id = ' . $root);
-	
-	//now, retrieve all descendants of the $root node  
-	$result = db_table('SELECT title, precedence, subsequence, parent_id FROM ' . $table . ' WHERE precedence BETWEEN ' . $root['precedence'] . ' AND ' . $root['subsequence'] . ' ORDER BY precedence');
-	
-	//display each row  
-	$return = '<ul>' . NEWLINE;
-	$last_depth = -1;
-	foreach ($result as $r) {
-		
-		//root of a tree
-		if (!$r['parent_id'] || !isset($right)) $right = array();
-		
-		$descendants = ($r['subsequence'] - $r['precedence'] - 1) / 2;
-		$depth = count($right);
-		
-		//only check stack if there is one  
-		if ($depth > 0) {  
-			//check if we should remove a node from the stack  
-			while ($right[$depth - 1] < $r['subsequence']) {
-				array_pop($right);
-				$depth--;
-			}
-		}
-		
-		//shrinking?
-		if ($depth < $last_depth) $return .= str_repeat('</ul>' . NEWLINE, $last_depth - $depth);
-
-		//display indented node title  
-		$return .= str_repeat(TAB, $depth) . draw_li($r['title'] . ' (' . $descendants . ',' . $depth . ',' . $r['precedence'] . ', ' . $r['subsequence'] . ')') . NEWLINE;
-		
-		//add this node to the stack  
-		$right[] = $r['subsequence'];
-		
-		//growing?
-		if ($descendants) $return .= '<ul>' . NEWLINE;
-		
-		//save last depth for next loop
-		$last_depth = $depth;
-	}
-	$return .= str_repeat('</ul>' . NEWLINE, $depth);
-	return $return . '</ul>' . NEWLINE;
-}  
-
-function getPages() {
-	$return = array();
-	$pages = db_table('SELECT id, title, parent_id, url, precedence, subsequence FROM user_pages WHERE is_active = 1 AND is_published = 1 ORDER BY precedence');
-	foreach ($pages as $p) {
-		$p['children'] = array();
-		if (empty($p['parent_id'])) {
-			$return[] = $p;
-		} elseif (nodeExists(&$return, $p['parent_id'], $p)) {
-			//attached child to parent node
-		} else {
-			//an error occurred, because a parent exists but is not in the tree
-		}
-	}
-	return $return;
-}
-
-function nodeExists(&$array, $parent_id, $child) {
-	foreach ($array as &$a) {
-		if ($a['id'] == $parent_id) {
-			$a['children'][] = $child;
-			return true;
-		} elseif (count($a['children']) && nodeExists($a['children'], $parent_id, $child)) {
-			return true;
-		}
-	}
-	return false;
 }
 
 function treeRebuild($table, $parent_id=false, $left=1) {
