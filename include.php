@@ -433,4 +433,4 @@ function treeRebuild($table, $parent_id=false, $left=1) {
 	return $right + 1;
 }   
 
-?> 
+?>
