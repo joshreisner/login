@@ -118,10 +118,21 @@ function dbCheck() {
 	return true;
 }
 
-function drawNav($pages) {
-	$return = '<ul>';
+function drawNav($pages, $class='') {
+	
+	if($class == '')
+	{
+		$return = '<ul>';
+	}
+	else
+	{
+		$return = "<ul class='" . $class . "'>";
+	}
+	
 	foreach ($pages as $p) {
-		$return .= '<li>' . draw_link($p['url'], $p['title']);
+		$return .= '<li><div><input type="checkbox" name="" id="" value="">' . draw_link($p['url'], $p['title']);
+		$return .= '<span class="col"><span class="light">Josh</span> Mar 08, 2011</span>';
+		$return .= '</div>';
 		if (count($p['children'])) $return .= drawNav($p['children']);
 		$return .= '</li>';
 	}

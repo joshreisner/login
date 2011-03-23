@@ -1,5 +1,5 @@
 <?php
-include('include.php');
+include('../include.php');
 /*
 get all ancestors
 SELECT title FROM user_pages WHERE precedence < 4 AND subsequnce > 5 ORDER BY precedence ASC;
@@ -14,7 +14,7 @@ UPDATE user_pages SET precedence = precedence + 2 WHERE precedence > 5;
 INSERT INTO user_pages SET precedence = 6, subsequence = 7, title='Strawberry';
 
 
-*/
+
 treeRebuild('user_pages');
 
 $array = getPages();
@@ -30,7 +30,7 @@ foreach ($ids as $id) {
 }
 
 //echo treeDisplay('user_pages', 1);
-
+*/
 
 function treeDisplay($table, $root=false, $show_parent=true) {
 	//default to main page
