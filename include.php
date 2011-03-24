@@ -119,25 +119,18 @@ function dbCheck() {
 }
 
 function drawNav($pages, $class='') {
-	
-	if($class == '')
-	{
-		$return = '<ul>';
+	if (!count($pages)) return false;
+	foreach ($pages as &$p) {
+		$p = draw_container('div', 
+			draw_form_checkbox('foo') .
+			draw_link($p['url'], $p['title']) . 
+			draw_span('col',
+				draw_span('light', 'Josh') . 
+				' Mar 08, 2011'
+			)
+		) . drawNav($p['children']);
 	}
-	else
-	{
-		$return = "<ul class='" . $class . "'>";
-	}
-	
-	foreach ($pages as $p) {
-		$return .= '<li><div><input type="checkbox" name="" id="" value="">' . draw_link($p['url'], $p['title']);
-		$return .= '<span class="col"><span class="light">Josh</span> Mar 08, 2011</span>';
-		$return .= '</div>';
-		if (count($p['children'])) $return .= drawNav($p['children']);
-		$return .= '</li>';
-	}
-	$return .= '</ul>';
-	return $return;
+	return draw_list($pages, $class);
 }
 
 function drawTop($title='CMS') {
