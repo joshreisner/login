@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+	
+	//add try/catch console.log statement
+	
 	$('ul.sortable').nestedSortable({
 		disableNesting: 'no-nest',
 		listType: 'ul',
@@ -13,7 +15,8 @@ $(document).ready(function(){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		update: function(event, ui) { 
-			$('#panel').html('<pre>' + $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0}) + '</pre>');
+			$('#panel').html('updated');
+			//$('#panel').html('<pre>' + $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0}) + '</pre>');
 		}
 	});
 	

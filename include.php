@@ -113,7 +113,7 @@ function dbCheck() {
 		
 		url_change(DIRECTORY_BASE);
 	}
-	
+
 	//CMS 
 	return true;
 }
@@ -121,13 +121,11 @@ function dbCheck() {
 function drawNav($pages, $class='') {
 	if (!count($pages)) return false;
 	foreach ($pages as &$p) {
-		$p = draw_container('div', 
-			draw_form_checkbox('foo') .
+		//die(draw_array($p));
+		$p = draw_div('item_' . $p['id'], 
+			draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)') .
 			draw_link($p['url'], $p['title']) . 
-			draw_span('col',
-				draw_span('light', 'Josh') . 
-				' Mar 08, 2011'
-			)
+			draw_span('col', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated_date']))
 		) . drawNav($p['children']);
 	}
 	return draw_list($pages, $class);
