@@ -123,7 +123,7 @@ form div.html table tbody		{ display:block; max-height:200px; overflow:auto; }
 .placeholder { background:#eee !important; border:0; }
 .ui-nestedSortable-error { background:#fbe3e4; color:#8a1f11; }
 ul.nested { list-style-type:none; margin:0; padding:0; display: block; width:650px; }
-ul.nested li { margin:0; padding:0; line-height:20px; color:#369; }
+ul.nested li { margin:0; padding:0; line-height:20px; }
 ul.nested li div { cursor:move; margin:-1px 0 0 0; padding:4px 0 4px; background:#fff; border:1px solid #ddd; }
 ul.nested li div span.col { display:block; float:right; margin-right:5px; }
 ul.nested li ul { list-style-type:none; padding:0; margin-left:10px; background:url(/login/images/vline.png) repeat-y; }
