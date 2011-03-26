@@ -18,7 +18,7 @@
 			tabSize: 20,
 			disableNesting: 'ui-nestedSortable-no-nesting',
 			errorClass: 'ui-nestedSortable-error',
-			listType: 'ol',
+			listType: 'ul',
 			noJumpFix: '0'
 		},
 
@@ -164,7 +164,7 @@
 		},
 
 		serialize: function(o) {
-
+			console.log('serialize: ');
 			var items = this._getItemsAsjQuery(o && o.connected);
 			var str = []; o = o || {};
 

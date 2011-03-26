@@ -1,9 +1,16 @@
 $(document).ready(function(){
 	
-	//add try/catch console.log statement
+	function log($msg)
+	{
+		try {
+			console.log($msg);
+		}
+		catch(e) { }
+	}
 	
 	$('ul.sortable').nestedSortable({
 		disableNesting: 'no-nest',
+		items : "li:not(.disabled)",
 		listType: 'ul',
 		forcePlaceholderSize: true,
 		handle: 'div',
@@ -11,22 +18,34 @@ $(document).ready(function(){
 		items: 'li',
 		opacity: 0.8,
 		tabSize: 25,
+		delay: 300,
+		distance: 15,
 		placeholder: 'placeholder',
 		tolerance: 'pointer',
 		toleranceElement: '> div',
-		update: function(event, ui) { 
-			$('#panel').html('updated');
-			//$('#panel').html('<pre>' + $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0}) + '</pre>');
-		}
+		update: function(event, ui) {
+			var arrayed = $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0});
+			var item_id = $(event.originalTarget).attr('id').replace("item_", '');
+			
+			for(var i = 0; i < arrayed.length; i++)
+			{
+				if(arrayed[i].item_id == item_id)
+				{
+					$.ajax({
+						url : '../ajax/nested_reorder.php',
+						type : 'POST',
+						data : arrayed[i],
+						success : function(data) {
+							$('#panel').html(data);
+						}
+					});
+				}
+			}
+		}	
 	});
 	
 	$('#serialize').click(function(){
-		serialized = $('ul.sortable').nestedSortable('serialize');
-		if(!serialized) {
-			$('#serializeOutput').text("undefined");			
-		} else {
-			$('#serializeOutput').text(serialized);
-		}
+		console.log($('ul.sortable').nestedSortable('serialize'));
 	});
 
 	$('#toHierarchy').click(function(e){
@@ -38,6 +57,8 @@ $(document).ready(function(){
 
 	$('#toArray').click(function(e){
 		arraied = $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0});
+		log(arraied);
+		
 		arraied = dump(arraied);
 		(typeof($('#toArrayOutput')[0].textContent) != 'undefined') ?
 		$('#toArrayOutput')[0].textContent = arraied : $('#toArrayOutput')[0].innerText = arraied;
