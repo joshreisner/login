@@ -25,7 +25,7 @@ $(document).ready(function(){
 		toleranceElement: '> div',
 		update: function(event, ui) {
 			var arrayed = $('ul.sortable').nestedSortable('toArray', {startDepthCount: 0});
-			var item_id = $(event.originalTarget).attr('id').replace("item_", '');
+			var item_id = $(event.originalEvent.target).attr('id').replace("item_", '');
 			
 			for(var i = 0; i < arrayed.length; i++)
 			{
