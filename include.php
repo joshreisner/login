@@ -361,10 +361,10 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	}
 	
 	if ($nested && $orderingByPrecedence) {
-		return 
+		return $return .
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') . 
-			draw_javascript_src(DIRECTORY_BASE . 'scripts/sortable.js') . 
+			draw_javascript_src(DIRECTORY_BASE . 'scripts/nested.js') . 
 			nestedList($list, 'nested');
 	} else {
 		return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
