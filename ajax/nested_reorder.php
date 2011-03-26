@@ -50,7 +50,7 @@ else
 	$what .= '/nudge left';
 }
 
-treeRebuild('user_pages');
+nestedTreeRebuild('user_pages');
 
 echo $what;
 //echo draw_array($array);

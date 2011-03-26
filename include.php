@@ -51,13 +51,13 @@ if (!user()) {
 		$_SESSION['isLoggedIn']	= true;
 	} else {
 		//login form
-		echo drawTop();
+		echo drawFirst();
 		$f = new form('login', false, 'Log In');
 		$f->set_field(array('type'=>'text', 'name'=>'email', 'value'=>@$_COOKIE['last_email']));
 		$f->set_field(array('type'=>'password', 'name'=>'password'));
 		$f->set_field(array('type'=>'checkbox', 'name'=>'remember_me', 'default'=>true));
 		echo $f->draw();
-		echo drawBottom();
+		echo drawLast();
 		exit;
 	}
 } elseif (url_action('logout')) {
@@ -101,7 +101,7 @@ function dbCheck() {
 		db_save('user_pages', false, array('title'=>'About Us', 'parent_id'=>1, 'url'=>'/about/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
 		db_save('user_pages', false, array('title'=>'Our History', 'parent_id'=>2, 'url'=>'/about/history/', 'content'=>'<p>Pellentesque amet massa mauris justo vitae mauris maecenas nam ligula nulla pellentesque arcu ornare. Ornare integer orci eget integer proin porta quisque cursus eu sit malesuada maecenas eu amet auctor morbi. Mattis pellentesque a molestie auctor commodo ultricies enim a commodo nam commodo nulla cursus orci risus sagittis massa porttitor eros enim proin vivamus. Justo curabitur ornare porttitor molestie at odio magna lorem morbi sit tellus at gravida curabitur donec tempus urna ultricies molestie. Vivamus integer orci eros tellus quam mattis molestie quam maecenas vitae sed. Orci nulla porta et ultricies risus adipiscing nibh maecenas metus sed quam sed pellentesque vitae odio donec sit ornare massa ultricies eros.</p><p>Molestie malesuada risus et ornare metus fusce quisque leo lorem quam proin congue a. Non sagittis magna diam curabitur nulla a molestie ipsum in duis risus porttitor risus ultricies leo pharetra. Justo proin lorem odio at non ipsum diam bibendum orci diam leo nulla. Bibendum commodo auctor curabitur bibendum pellentesque vivamus mattis eget fusce nibh donec pharetra orci arcu. Integer eros integer et a arcu pharetra elementum diam pellentesque integer vivamus ut odio sodales ut magna duis congue malesuada. Diam congue elementum sodales porta auctor arcu leo porttitor amet massa vitae sapien lorem.</p>', 'is_published'=>1));
 		db_save('user_pages', false, array('title'=>'Contact Us', 'parent_id'=>1, 'url'=>'/contact/', 'content'=>'<p>Pharetra eget ligula molestie cursus sit ornare mattis amet eros urna bibendum magna pellentesque. Donec justo porta mattis pharetra ornare lorem sapien nec cursus. Ut mattis et risus ultricies ipsum at congue eu rutrum ultricies congue. Sit massa ipsum sodales sagittis vivamus enim adipiscing maecenas curabitur porta enim in mauris fusce vitae non gravida donec. Mattis cursus molestie urna sit gravida donec sodales maecenas justo bibendum cursus lectus quisque at cursus mattis nam rutrum. Sit quam magna in bibendum gravida ornare enim adipiscing ut fusce eros gravida enim orci in justo donec urna tellus justo sodales integer eget.</p><p>Non metus congue metus molestie integer lectus massa sit arcu integer eu sapien malesuada. In non diam elementum nulla porttitor quisque sit ligula sed nulla quisque vulputate enim massa eu risus et vitae non integer justo. Congue eget mattis integer non magna tempus maecenas sit urna sem gravida sagittis eget porttitor nec arcu.</p>', 'is_published'=>1));
-		treeRebuild('user_pages');
+		nestedTreeRebuild('user_pages');
 		
 		$object_id = db_save('app_objects', false, array('title'=>'Snippets', 'table_name'=>'user_snippets', 'show_published'=>0, 'order_by'=>'title'));
 		db_save('app_fields', false, array('object_id'=>$object_id, 'type'=>'text', 'title'=>'Title', 'field_name'=>'title', 'visibility'=>'list', 'required'=>1));
@@ -118,30 +118,7 @@ function dbCheck() {
 	return true;
 }
 
-function drawNav($pages, $class='') {
-	global $request;
-	
-	if (!count($pages)) return false;
-	
-	$classes = array();
-	$selected = false;
-	
-	foreach ($pages as &$p) {
-		//die(draw_array($p));
-		$classes[] = 'list_' . $p['id'];
-		
-		if ($request['path'] == $p['url']) $selected = count($classes);
-		$p = draw_div('item_' . $p['id'], 
-			draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)') .
-			draw_link($p['url'], $p['title'] . '-' . $p['id'] . '.' . $p['precedence'] . '.' . $p['subsequence']) . 
-			draw_span('col', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated_date']))
-		) . drawNav($p['children']);
-	}
-
-	return draw_list($pages, $class, 'ul', $selected, $classes);
-}
-
-function drawTop($title='CMS') {
+function drawFirst($title='CMS') {
 	global $_josh;
 	if (!$app = db_grab('SELECT link_color, ' . db_updated() . ' FROM app WHERE id = 1')) $app = array();
 	if (empty($app['link_color'])) $app['link_color'] = '336699';
@@ -171,12 +148,12 @@ function drawTop($title='CMS') {
 	return $return;
 }
 
-function drawBottom() {
+function drawLast() {
 	$return = '</div>' . draw_google_analytics('UA-21096000-1') . '</body></html>';
 	return $return;
 }
 
-function drawObjectTable($object_id, $from_type=false, $from_id=false) {
+function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	
 	//get content
 	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
@@ -186,12 +163,10 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 
 	//define variables
 	$selects	= array(TAB . 't.id');
-	$joins		= $columns = $nav = array();
+	$joins = $columns = $list = $rel_fields = $nav = $classes = array();
 	$t			= new table($object['table_name']);
 	$where		= $where_str = $return = '';
-	$rel_fields = $nav = $classes = array();
 	$nested		= false;
-	$depth		= 0;
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -248,9 +223,9 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 			if ($f['id'] == $object['group_by_field']) {
 				if ($f['related_object_id'] == $object_id) {
 					//nested object
-					$nested = true;
+					$nested = $f['field_name']; //might need this later?
 					$selects[] = TAB . 't.precedence';
-					$selects[] = TAB . 't.parent_id';
+					$selects[] = TAB . 't.' . $f['field_name'];
 				} elseif ($f['related_object_id'] != $from_type) {
 					//skip this if it's the from_type
 					//figure out which column to group by and label it group
@@ -332,60 +307,68 @@ function drawObjectTable($object_id, $from_type=false, $from_id=false) {
 	//get rows, iterate
 	$rows = db_table($sql);
 	foreach($rows as &$r) {
-		if ($nested) {
-			//do nesty things (see treeDisplay for a simpler version of this)
-			$t->set_nested();
-			if (empty($r['parent_id'])) $right = array();
-			$r['descendants'] = ($r['subsequence'] - $r['precedence'] - 1) / 2;
-			$r['depth'] = count($right);
-			if ($r['depth'] > 0) {  
-				//check if we should remove a node from the stack
-				while ($right[$r['depth'] - 1] < $r['subsequence']) {
-					array_pop($right);
-					$r['depth']--;
+		$link = DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id;
+		if ($nested && $orderingByPrecedence) {
+			//do nesty things (see test/sortable.php for a simpler version of this)
+			if (empty($r['updated_user'])) $r['updated_user'] = $r['created_user'];
+			$r['children'] = array();
+			$r['url'] = $link;
+			if (empty($r[$nested])) { //nested is for ex parent_id
+				$list[] = $r;
+			} elseif (nestedNodeExists($list, $r[$nested], $r)) {
+				//attached child to parent node
+			} else {
+				//an error occurred, because a parent exists but is not in the tree
+			}
+		} else {
+			if ($orderingByPrecedence) $r['draggy'] = '&nbsp;'; //'<img src="../images/move.png" alt="move" width="16" height="16" border="0"/>';
+			//$b['is_published'] = draw_form_checkbox('chk_posts_' . $b['id'], $b['is_published']);
+			if ($object['show_published']) $r['is_published'] = draw_form_checkbox('chk_' . str_replace('_', '-', $object['table_name']) . '_' . $r['id'], $r['is_published'], false, 'ajax_publish(this);');
+			$linked = false;
+			foreach ($columns as $f) {
+				if ($f['type'] == 'checkbox') {
+					$r[$f['field_name']] = format_boolean($r[$f['field_name']]);
+				} elseif ($f['type'] == 'date') {
+					$r[$f['field_name']] = format_date($r[$f['field_name']]);
+				} elseif ($f['type'] == 'datetime') {
+					$r[$f['field_name']] = format_date_time($r[$f['field_name']]);
+				} elseif ($f['type'] == 'file-type') {
+					$r[$f['field_name']] = file_icon($r[$f['field_name']]);
+				} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {
+					$img = file_dynamic($object['table_name'], $f['field_name'], $r['id'], 'jpg', $r['updated']);
+					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, 60);
+				} elseif ($f['type'] == 'select') {
+					$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
+				} elseif ($f['type'] == 'textarea') {
+					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
+				} elseif ($f['type'] == 'text') {
+					//$r[$f['field_name']] = format_string($r[$f['field_name']], 50);
+				}
+				if (!$linked) {
+					if (empty($r[$f['field_name']])) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
+					$r[$f['field_name']] = draw_link($link, $r[$f['field_name']]);
+					if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
 				}
 			}
-			$right[] = $r['subsequence'];
-			array_argument($r, 'depth-' . $r['depth']);
-		}
-		if ($orderingByPrecedence) $r['draggy'] = '&nbsp;'; //'<img src="../images/move.png" alt="move" width="16" height="16" border="0"/>';
-		//$b['is_published'] = draw_form_checkbox('chk_posts_' . $b['id'], $b['is_published']);
-		if ($object['show_published']) $r['is_published'] = draw_form_checkbox('chk_' . str_replace('_', '-', $object['table_name']) . '_' . $r['id'], $r['is_published'], false, 'ajax_publish(this);');
-		$linked = false;
-		foreach ($columns as $f) {
-			if ($f['type'] == 'checkbox') {
-				$r[$f['field_name']] = format_boolean($r[$f['field_name']]);
-			} elseif ($f['type'] == 'date') {
-				$r[$f['field_name']] = format_date($r[$f['field_name']]);
-			} elseif ($f['type'] == 'datetime') {
-				$r[$f['field_name']] = format_date_time($r[$f['field_name']]);
-			} elseif ($f['type'] == 'file-type') {
-				$r[$f['field_name']] = file_icon($r[$f['field_name']]);
-			} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {
-				$img = file_dynamic($object['table_name'], $f['field_name'], $r['id'], 'jpg', $r['updated']);
-				$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, 60);
-			} elseif ($f['type'] == 'select') {
-				$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
-			} elseif ($f['type'] == 'textarea') {
-				$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
-			} elseif ($f['type'] == 'text') {
-				//$r[$f['field_name']] = format_string($r[$f['field_name']], 50);
+			$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
+			if (!$r['is_active']) {
+				array_argument($r, 'deleted');
+				$r['delete'] = draw_link(false, CHAR_UNDELETE, false, 'delete');
+			} else {
+				$r['delete'] = draw_link(false, CHAR_DELETE, false, 'delete');
 			}
-			if (!$linked) {
-				if (empty($r[$f['field_name']])) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
-				$r[$f['field_name']] = draw_link(DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $r[$f['field_name']]);
-				if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
-			}
-		}
-		$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
-		if (!$r['is_active']) {
-			array_argument($r, 'deleted');
-			$r['delete'] = draw_link(false, CHAR_UNDELETE, false, 'delete');
-		} else {
-			$r['delete'] = draw_link(false, CHAR_DELETE, false, 'delete');
 		}
 	}
-	return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+	
+	if ($nested && $orderingByPrecedence) {
+		return 
+			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
+			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') . 
+			draw_javascript_src(DIRECTORY_BASE . 'scripts/sortable.js') . 
+			nestedList($list, 'nested');
+	} else {
+		return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+	}
 }
 
 function getNewObjectName($table, $field=false) {
@@ -427,7 +410,38 @@ function joshlib() {
 	die('Could not find Joshlib.');
 }
 
-function treeRebuild($table, $parent_id=false, $left=1) {
+function nestedList($pages, $class='') {
+	
+	if (!count($pages)) return false;
+	
+	$classes = array();
+	
+	foreach ($pages as &$p) {
+		//die(draw_array($p));
+		$classes[] = 'list_' . $p['id'];
+		$p = draw_div('item_' . $p['id'], 
+			draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)') .
+			draw_link($p['url'], $p['title']) . 
+			draw_span('col', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated']))
+		) . nestedList($p['children']);
+	}
+
+	return draw_list($pages, $class, 'ul', false, $classes);
+}
+
+function nestedNodeExists(&$array, $parent_id, $child) {
+	foreach ($array as &$a) {
+		if ($a['id'] == $parent_id) {
+			$a['children'][] = $child;
+			return true;
+		} elseif (count($a['children']) && nestedNodeExists($a['children'], $parent_id, $child)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function nestedTreeRebuild($table, $parent_id=false, $left=1) {
 	//the right value of this node (in case there are no children) is + 1
 	$right = $left + 1;
 	
@@ -435,14 +449,12 @@ function treeRebuild($table, $parent_id=false, $left=1) {
 	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL') . ' ORDER BY precedence ASC');
 
 	//recursive execution of this function for each child of this node   
-	//$right is the current right value, which is incremented by the treeRebuild function   
-	foreach ($ids as $id) $right = treeRebuild($table, $id, $right);   
+	//$right is the current right value, which is incremented by the nestedTreeRebuild function   
+	foreach ($ids as $id) $right = nestedTreeRebuild($table, $id, $right);   
 	
 	//we've got the left value, and now that we've processed the children of this node we also know the right value   
 	if ($parent_id) db_query('UPDATE ' . $table . ' SET precedence = ' . $left . ', subsequence = ' . $right . ' WHERE id = ' . $parent_id);   
 	
 	//return the right value of this node + 1   
 	return $right + 1;
-}   
-
-?>
+}

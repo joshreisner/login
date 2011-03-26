@@ -1,7 +1,7 @@
 <?php
 include('include.php');
 
-echo drawTop();
+echo drawFirst();
 
 $objects = db_table('SELECT 
 	o.id, 
@@ -43,5 +43,5 @@ echo $t->draw($objects, 'No objects have been added yet!');
 
 echo draw_div('panel', 'This is the main directory of website &#8216;objects.&#8217;  Those that are linked you have permission to edit.<br/><br/>You\'re logged in as <b>' . $_SESSION['name'] . '</b>.<br/>Click ' . draw_link(url_query_add(array('action'=>'logout'), false), 'here') . ' to log out.');
 
-echo drawBottom();
+echo drawLast();
 ?>

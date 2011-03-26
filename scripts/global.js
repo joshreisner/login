@@ -1,4 +1,11 @@
 $(function(){
+	function log($msg) {
+		try {
+			console.log($msg);
+		} catch(e) {
+		}
+	}
+	
 	//lorem ipsum for rich textareas
 	$('a.lorem_ipsum').click(function(e){
 		e.preventDefault();

@@ -15,11 +15,11 @@ INSERT INTO user_pages SET precedence = 6, subsequence = 7, title='Strawberry';
 
 
 
-treeRebuild('user_pages');
+nestedTreeRebuild('user_pages');
 
 $array = getPages();
 
-echo drawNav($array[0]['children']);
+echo nestedList($array[0]['children']);
 
 
 exit;
@@ -87,7 +87,7 @@ function getPages() {
 		$p['children'] = array();
 		if (empty($p['parent_id'])) {
 			$return[] = $p;
-		} elseif (nodeExists(&$return, $p['parent_id'], $p)) {
+		} elseif (nestedNodeExists(&$return, $p['parent_id'], $p)) {
 			//attached child to parent node
 		} else {
 			//an error occurred, because a parent exists but is not in the tree
@@ -95,17 +95,3 @@ function getPages() {
 	}
 	return $return;
 }
-
-function nodeExists(&$array, $parent_id, $child) {
-	foreach ($array as &$a) {
-		if ($a['id'] == $parent_id) {
-			$a['children'][] = $child;
-			return true;
-		} elseif (count($a['children']) && nodeExists($a['children'], $parent_id, $child)) {
-			return true;
-		}
-	}
-	return false;
-}
-
-?>

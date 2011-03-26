@@ -8,12 +8,12 @@ if ($posting) {
 	db_save('app', db_grab('SELECT COUNT(*) FROM app'));
 	url_change_post('../');
 }
-echo drawTop('Site Settings');
+echo drawFirst('Site Settings');
 
 $t = new form('app', 1, 'Edit Site Settings');
 echo $t->draw();
 
 echo draw_div('panel', 'The banner image will be resized to 920px x 105px.');
 
-echo drawBottom();
+echo drawLast();
 ?>

@@ -8,7 +8,7 @@ if (url_action('delete')) {
 	url_drop('action,id');
 }
 
-echo drawTop('Users');
+echo drawFirst('Users');
 
 echo draw_nav(array('edit/'=>'add new user'));
 
@@ -39,5 +39,5 @@ echo $t->draw($result, 'No users have been added yet!');
 
 echo draw_div('panel', 'These users have access to this content management website.');
 
-echo drawBottom();
+echo drawLast();
 ?>

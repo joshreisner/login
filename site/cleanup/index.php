@@ -1,7 +1,7 @@
 <?php
 include('../../include.php');
 
-echo drawTop(draw_link('../', 'Site Settings') . ' &gt; Cleanup');
+echo drawFirst(draw_link('../', 'Site Settings') . ' &gt; Cleanup');
 
 db_query('DELETE FROM app_objects WHERE is_active <> 1');
 db_query('DELETE FROM app_fields WHERE is_active <> 1');
@@ -48,5 +48,5 @@ while ($o = db_fetch($objects)) {
 //todo alter table spacetime change wind_direction_id direction_id tinyint(3) unsigned;
 
 
-echo drawBottom();
+echo drawLast();
 ?>

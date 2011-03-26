@@ -59,7 +59,7 @@ if (!$object['permission'] && !admin()) url_change('../../');
 	
 	//tree?  rebuild
 	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
-		treeRebuild($object['table_name']);
+		nestedTreeRebuild($object['table_name']);
 	}
 	
 	
@@ -98,7 +98,7 @@ if (!$object['permission'] && !admin()) url_change('../../');
 	$button = 'Add New';
 }
 
-echo drawTop(draw_link('../?id=' . $_GET['object_id'], $object['title']) . ' &gt; ' . $action);
+echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . ' &gt; ' . $action);
 
 $f = new form($object['table_name'], @$_GET['id'], $button);
 
@@ -235,12 +235,12 @@ echo $f->draw();
 if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app_objects o JOIN app_objects_links l ON l.linked_id = o.id WHERE l.object_id = ' . $_GET['object_id'])) {
 	foreach ($objects as $o) {
 		echo '<hr/>' . draw_container('h2', 'Related ' . $o['title']);
-		echo drawObjectTable($o['id'], $_GET['object_id'], $_GET['id']);
+		echo drawObjectList($o['id'], $_GET['object_id'], $_GET['id']);
 	}	
 }
 
 //help panel on right side, potentially editable
 echo draw_div('panel', str_ireplace("\n", '<br/>', $object['form_help']), false, (admin() ? 'app_objects.form_help.' . $_GET['object_id'] : false));
 
-echo drawBottom();
+echo drawLast();
 ?>

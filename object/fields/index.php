@@ -14,7 +14,7 @@ if (url_action('delete')) {
 }
 
 
-echo drawTop(draw_link('../?id=' . $_GET['id'], $object['title']) . ' &gt; Fields');
+echo drawFirst(draw_link('../?id=' . $_GET['id'], $object['title']) . ' &gt; Fields');
 
 echo draw_nav(array('edit/?object_id=' . $_GET['id']=>'Add Field'));
 
@@ -48,5 +48,5 @@ echo $t->draw($result, 'No fields have been added to this object yet!');
 
 echo draw_div('panel', 'These are the fields that belong to the ' . $object['title'] . ' object.');
 
-echo drawBottom();
+echo drawLast();
 ?>

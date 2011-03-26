@@ -20,13 +20,13 @@ $object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_
 if (!$object['permission'] && !admin()) url_change('../');
 
 //draw the header
-echo drawTop($object['title']);
+echo drawFirst($object['title']);
 
 //draw nav + table
-echo drawObjectTable($_GET['id']);
+echo drawObjectList($_GET['id']);
 
 //help panel on right side, potentially editable
 echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin() ? 'app_objects.list_help.' . $_GET['id'] : false));
 
-echo drawBottom();
+echo drawLast();
 ?>

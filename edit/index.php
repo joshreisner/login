@@ -74,10 +74,10 @@ if ($posting) {
 } elseif ($editing) {
 	$title = db_grab('SELECT title FROM app_objects WHERE id = ' . $_GET['id']);
 	$action = 'Edit Settings';
-	echo drawTop(draw_link('../object/?id=' . $_GET['id'], $title) . ' &gt; ' . $action);
+	echo drawFirst(draw_link('../object/?id=' . $_GET['id'], $title) . ' &gt; ' . $action);
 } else { //adding
 	$action = 'Add New Object';
-	echo drawTop($action);
+	echo drawFirst($action);
 }
 
 $f = new form('app_objects', @$_GET['id'], $action);
@@ -124,5 +124,5 @@ if (url_id()) {
 	);
 }
 
-echo drawBottom();
+echo drawLast();
 ?>

@@ -1,3 +1,7 @@
+<!-- 
+this page is attempting to replicate a table layout using only ULs.  it's not working.
+-->
+
 <style>	
 	* { margin: 0; padding: 0; }
 	div.container { background: yellow; display: table; width: 100%; }
