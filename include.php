@@ -119,16 +119,26 @@ function dbCheck() {
 }
 
 function drawNav($pages, $class='') {
+	global $request;
+	
 	if (!count($pages)) return false;
+	
+	$classes = array();
+	$selected = false;
+	
 	foreach ($pages as &$p) {
 		//die(draw_array($p));
+		$classes[] = 'list_' . $p['id'];
+		
+		if ($request['path'] == $p['url']) $selected = count($classes);
 		$p = draw_div('item_' . $p['id'], 
 			draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)') .
-			draw_link($p['url'], $p['title']) . 
+			draw_link($p['url'], $p['title'] . '-' . $p['id'] . '.' . $p['precedence'] . '.' . $p['subsequence']) . 
 			draw_span('col', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated_date']))
 		) . drawNav($p['children']);
 	}
-	return draw_list($pages, $class);
+
+	return draw_list($pages, $class, 'ul', $selected, $classes);
 }
 
 function drawTop($title='CMS') {
@@ -140,8 +150,8 @@ function drawTop($title='CMS') {
 		draw_meta_utf8() .
 		draw_title($title) . 
 		lib_get('jquery') . 
-		draw_javascript_src() . 
 		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
+		draw_javascript_src() . 
 		draw_css_src(DIRECTORY_BASE . 'styles/screen/global.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
@@ -422,7 +432,7 @@ function treeRebuild($table, $parent_id=false, $left=1) {
 	$right = $left + 1;
 	
 	//get all children of this node   
-	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL'));
+	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL') . ' ORDER BY precedence ASC');
 
 	//recursive execution of this function for each child of this node   
 	//$right is the current right value, which is incremented by the treeRebuild function   
