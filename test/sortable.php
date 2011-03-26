@@ -24,7 +24,7 @@ function getPages() {
 		$p['children'] = array();
 		if (empty($p['parent_id'])) {
 			$return[] = $p;
-		} elseif (nodeExists(&$return, $p['parent_id'], $p)) {
+		} elseif (nodeExists($return, $p['parent_id'], $p)) {
 			//attached child to parent node
 		} else {
 			//an error occurred, because a parent exists but is not in the tree
