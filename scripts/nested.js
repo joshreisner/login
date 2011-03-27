@@ -15,18 +15,24 @@ $(function(){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		update: function(event, ui) {
-			var item_id = $(event.originalEvent.target).attr('id').replace('item_', '');
-			console.log('item_id was ' + $(event.originalEvent.target).attr('id'));
+			var item_id = ui.item.attr('id').replace('list_', '');
+			if (item_id) {
+				console.log('item_id was ' + item_id);
+			} else {
+				console.log('sorry, item_id was not captured');
+			}
+			//console.log('item_id was ' + $(event.originalEvent.target).attr('id'));
 			var arrayed = $('ul.nested').nestedSortable('toArray', {startDepthCount: 0});
 			for (var i = 0; i < arrayed.length; i++) {
 				if (arrayed[i].item_id == item_id) {
 					arrayed[i]['table'] = $('#table_name').val();
+					arrayed[i]['nesting_column'] = $('#nesting_column').val();
 					$.ajax({
 						url : '/login/ajax/nested_reorder.php',
 						type : 'POST',
 						data : arrayed[i],
 						success : function(data) {
-							$('#panel').html(data);
+							//$('#panel').html(data);
 						}
 					});
 				}
@@ -44,8 +50,9 @@ $(function(){
 			$.ajax({
 				url : '/login/ajax/nested_delete.php',
 				type : 'POST',
-				data : { item_id : item_id },
+				data : { item_id : item_id, table : $('#table_name').val(), nesting_column : $('#nesting_column').val() },
 				success : function(data) {
+					$('#panel').html(data);
 					if (children.size()) {
 						//console.log('has ' + children.size() + ' children');
 						item.before(children);

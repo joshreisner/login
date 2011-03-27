@@ -12,25 +12,26 @@ echo draw_array($array);
 	right
 	left
 	table
+	nesting_column
 	
 	..describing the new position of the item that was dragged
 */
 
-if ($array['parent_id'] == 'root') $array['parent_id'] = 'NULL';
+if ($array[$array['nesting_column']] == 'root') $array[$array['nesting_column']] = 'NULL';
 
-$item = db_array('SELECT parent_id, precedence, subsequence FROM ' . $array['table'] . ' WHERE id = ' . $array['item_id']);
+$item = db_array('SELECT ' . $array['nesting_column'] . ', precedence, subsequence FROM ' . $array['table'] . ' WHERE id = ' . $array['item_id']);
 
 //maybe we need to know which direction we are moving?
 $diff = $item['precedence'] - $array['left'];
-$what = "diff: " . $diff;
+$what = 'diff: ' . $diff;
 
-if ($item['parent_id'] != $array['parent_id']) {
-	$diff = $item['parent_id'] - $array['parent_id'];
-	$what = "parent diff: " . $diff;
+if ($item[$array['nesting_column']] != $array[$array['nesting_column']]) {
+	$diff = $item[$array['nesting_column']] - $array[$array['nesting_column']];
+	$what = 'parent diff: ' . $diff;
 }
 
 //change the item that was dragged
-db_query('UPDATE ' . $array['table'] . ' SET parent_id = ' . $array['parent_id'] . ', precedence = ' . $array['left'] . ', subsequence = ' . ($array['left'] + 1) .' WHERE id = ' . $array['item_id']);
+db_query('UPDATE ' . $array['table'] . ' SET ' . $array['nesting_column'] . ' = ' . $array[$array['nesting_column']] . ', precedence = ' . $array['left'] . ', subsequence = ' . ($array['left'] + 1) .' WHERE id = ' . $array['item_id']);
 
 if($diff >= 0) {
 	//nudge everything right (except the element that was moved)

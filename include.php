@@ -362,7 +362,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	}
 	
 	if ($nested && $orderingByPrecedence) {
-		return $return .
+		return $return . draw_form_hidden('nesting_column', $nested) . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/nested.js') . 
