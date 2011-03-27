@@ -165,8 +165,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	$selects	= array(TAB . 't.id');
 	$joins = $columns = $list = $rel_fields = $nav = $classes = array();
 	$t			= new table($object['table_name']);
-	$where		= $where_str = $return = '';
+	$where		= $where_str = '';
 	$nested		= false;
+	$return		= draw_form_hidden('table_name', $object['table_name']); //need this for javascript
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -410,7 +411,7 @@ function joshlib() {
 	die('Could not find Joshlib.');
 }
 
-function nestedList($pages, $class='') {
+function nestedList($pages, $class=false, $level=1) {
 	
 	if (!count($pages)) return false;
 	
@@ -420,10 +421,11 @@ function nestedList($pages, $class='') {
 		//die(draw_array($p));
 		$classes[] = 'list_' . $p['id'];
 		$p = draw_div('item_' . $p['id'], 
-			draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)') .
-			draw_link($p['url'], $p['title']) . 
-			draw_span('col', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated']))
-		) . nestedList($p['children']);
+			draw_div_class('column published', draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)')) .
+			draw_div_class('column link', draw_link($p['url'], $p['title'])) . 
+			draw_div_class('column updated', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated'])) .
+			draw_div_class('column delete', draw_link(false, CHAR_DELETE))
+		, array('class'=>'row level_' . $level)) . nestedList($p['children'], false, ($level + 1));
 	}
 
 	return draw_list($pages, $class, 'ul', false, $classes);

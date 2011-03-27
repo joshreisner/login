@@ -123,9 +123,20 @@ form div.html table tbody		{ display:block; max-height:200px; overflow:auto; }
 .placeholder { background:#eee !important; border:0; }
 .ui-nestedSortable-error { background:#fbe3e4; color:#8a1f11; }
 ul.nested { list-style-type:none; margin:0; padding:0; display: block; width:650px; }
-ul.nested li { margin:0; padding:0; line-height:20px; }
-ul.nested li div { cursor:move; margin:-1px 0 0 0; padding:4px 0 4px; background:#fff; border:1px solid #ddd; }
-ul.nested li div span.col { display:block; float:right; margin-right:5px; }
+ul.nested li { margin:0; padding:0; line-height:16px; }
+
+ul.nested li div.row { cursor:move; margin:-1px 0 0 0; padding:4px 0 4px; background:#fff; border:1px solid #eee; overflow: auto; }
+ul.nested li div.column { float: left; }
+ul.nested li div.published { width:24px; }
+ul.nested li div.level_1 div.link { width: 485px; }
+ul.nested li div.level_2 div.link { width: 463px; }
+ul.nested li div.level_3 div.link { width: 441px; }
+ul.nested li div.level_4 div.link { width: 419px; }
+ul.nested li div.level_5 div.link { width: 397px; }
+ul.nested li div.level_6 div.link { width: 375px; }
+ul.nested li div.updated { width: 120px; text-align: right; margin-right: 5px; }
+ul.nested li div.delete { width: 10px; }
+
 ul.nested li ul { list-style-type:none; padding:0; margin-left:10px; background:url(/login/images/vline.png) repeat-y; }
 ul.nested li ul li { background:url(/login/images/node.png) no-repeat; margin:0 -12px 0 0; padding:0px 12px 0px 12px; }
 ul.nested li input[type=checkbox] { margin-right:10px; margin-left:5px; }
