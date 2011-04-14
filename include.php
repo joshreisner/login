@@ -219,7 +219,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 				f.related_object_id
 			FROM app_fields f 
 			LEFT JOIN app_objects o ON o.id = f.related_object_id
-			WHERE f.is_active = 1 AND f.type <> "checkboxes" AND f.type <> "object" AND f.object_id = ' . $object_id . ' 
+			WHERE f.is_active = 1 AND f.type NOT IN ("checkboxes", "file", "image") AND f.object_id = ' . $object_id . ' 
 			ORDER BY f.precedence');
 	foreach ($fields as &$f) {
 		if ($f['visibility'] == 'list') {
