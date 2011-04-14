@@ -29,12 +29,12 @@ $(function(){
 	//object value delete
 	$('a.delete').click(function(e) {
 		e.preventDefault();
-		var tr = $(this).closest('tr');
-		parts = tr.attr('id').split('-');
+		tr = $(this).closest('tr');
+		parts = $(this).attr('rel').split('-');
 		$.ajax({
 			url : '/login/ajax/object_value_delete.php',
 			type : 'POST',
-			data : { object_id : url_id(), id : parts[parts.length-1] },
+			data : { object_id : parts[0], id : parts[1] },
 			success : function(data) {
 				if ($('ul.nav li').size() == 5) $('ul.nav li.option3 a').html(data); //todo genericize this with classes
 				if (tr.hasClass('deleted')) {

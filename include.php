@@ -188,7 +188,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	$t			= new table($object['table_name']);
 	$where		= $where_str = '';
 	$nested		= false;
-	$return		= draw_form_hidden('table_name', $object['table_name']); //need this for javascript
+	$return		= ''; //draw_form_hidden('table_name', $object['table_name']) . draw_form_hidden('object_id', $object_id); //need these for javascript
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -375,9 +375,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 			$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
 			if (!$r['is_active']) {
 				array_argument($r, 'deleted');
-				$r['delete'] = draw_link(false, CHAR_UNDELETE, false, 'delete');
+				$r['delete'] = draw_link(false, CHAR_UNDELETE, false, array('class'=>'delete', 'rel'=>$object_id . '-' . $r['id']));
 			} else {
-				$r['delete'] = draw_link(false, CHAR_DELETE, false, 'delete');
+				$r['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete', 'rel'=>$object_id . '-' . $r['id']));
 			}
 		}
 	}
