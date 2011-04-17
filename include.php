@@ -188,7 +188,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	$t			= new table($object['table_name']);
 	$where		= $where_str = '';
 	$nested		= false;
-	$return		= ''; //draw_form_hidden('table_name', $object['table_name']) . draw_form_hidden('object_id', $object_id); //need these for javascript
+	$return		= draw_form_hidden('table_name', $object['table_name']); //need this for nested reorder ajax
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
