@@ -15,7 +15,7 @@ $(function(){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		update: function(event, ui) {
-			var id			= ui.item.attr('id').replace('list_', '');
+			var id				= ui.item.attr('id').replace('list_', '');
 			var arrayed			= $('ul.nested').nestedSortable('toArray', {startDepthCount: 0});
 			var list			= new Array();
 			var parent_id		= false;
@@ -36,7 +36,7 @@ $(function(){
 					list : list.join(',')
 				},
 				success : function(data) {
-					$('#panel').html(data);
+					//$('#panel').html(data);
 				}
 			});
 			fix_depths($('ul.nested'));
