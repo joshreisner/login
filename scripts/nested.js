@@ -15,28 +15,30 @@ $(function(){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		update: function(event, ui) {
-			var item_id = ui.item.attr('id').replace('list_', '');
-			if (item_id) {
-				console.log('item_id was ' + item_id);
-			} else {
-				console.log('sorry, item_id was not captured');
-			}
-			//console.log('item_id was ' + $(event.originalEvent.target).attr('id'));
-			var arrayed = $('ul.nested').nestedSortable('toArray', {startDepthCount: 0});
+			var id			= ui.item.attr('id').replace('list_', '');
+			var arrayed			= $('ul.nested').nestedSortable('toArray', {startDepthCount: 0});
+			var list			= new Array();
+			var parent_id		= false;
+			var table_name		= $('#table_name').val();
+			var nesting_column	= $('#nesting_column').val();
 			for (var i = 0; i < arrayed.length; i++) {
-				if (arrayed[i].item_id == item_id) {
-					arrayed[i]['table'] = $('#table_name').val();
-					arrayed[i]['nesting_column'] = $('#nesting_column').val();
-					$.ajax({
-						url : '/login/ajax/nested_reorder.php',
-						type : 'POST',
-						data : arrayed[i],
-						success : function(data) {
-							//$('#panel').html(data);
-						}
-					});
-				}
+				if (arrayed[i].item_id != 'root') list[list.length] = arrayed[i].item_id;
+				if (arrayed[i].item_id == id) parent_id = arrayed[i].parent_id;
 			}
+			$.ajax({
+				url : '/login/ajax/nested_reorder.php',
+				type : 'POST',
+				data : { 
+					id : id,
+					table_name : table_name,
+					nesting_column : nesting_column,
+					parent_id : parent_id, 
+					list : list.join(',')
+				},
+				success : function(data) {
+					$('#panel').html(data);
+				}
+			});
 			fix_depths($('ul.nested'));
 		}	
 	});
@@ -72,11 +74,7 @@ $(function(){
 			var row = $(this).find('div.row');
 			var classes = row.attr('class').split(' ');
 			for (var j = 0; j < classes.length; j++) {
-				//console.log('checking ' + classes[j]);
-				if (classes[j].substr(0, strlen) == needle) {
-					row.removeClass(classes[j]).addClass(needle + level);
-					//console.log('updating ' + row.find('div.link a').html() + ', removing ' + classes[j] + ' and adding ' + needle + level);
-				}
+				if (classes[j].substr(0, strlen) == needle) row.removeClass(classes[j]).addClass(needle + level);
 			}
 			fix_depths($(this).children('ul'), (level + 1))
 		});

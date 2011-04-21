@@ -464,16 +464,16 @@ function nestedNodeExists(&$array, $parent_id, $child) {
 	return false;
 }
 
-function nestedTreeRebuild($table, $parent_id=false, $left=1) {
+function nestedTreeRebuild($table, $nesting_column='parent_id', $parent_id=false, $left=0) {
 	//the right value of this node (in case there are no children) is + 1
 	$right = $left + 1;
 	
 	//get all children of this node   
-	$ids = db_array('SELECT id FROM ' . $table . ' WHERE parent_id ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL') . ' ORDER BY precedence ASC');
+	$ids = db_array('SELECT id FROM ' . $table . ' WHERE ' . $nesting_column . ' ' . (($parent_id) ? '= ' . $parent_id : 'IS NULL') . ' AND is_active = 1 ORDER BY precedence ASC');
 
 	//recursive execution of this function for each child of this node   
-	//$right is the current right value, which is incremented by the nestedTreeRebuild function   
-	foreach ($ids as $id) $right = nestedTreeRebuild($table, $id, $right);   
+	//$right is the current right value, which is incremented by recursive calls to this function
+	foreach ($ids as $id) $right = nestedTreeRebuild($table, $nesting_column, $id, $right);   
 	
 	//we've got the left value, and now that we've processed the children of this node we also know the right value   
 	if ($parent_id) db_query('UPDATE ' . $table . ' SET precedence = ' . $left . ', subsequence = ' . $right . ' WHERE id = ' . $parent_id);   

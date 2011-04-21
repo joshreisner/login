@@ -1,5 +1,8 @@
 <?php
 include('../include.php');
+debug();
+nestedTreeRebuild('user_pages');
+echo 'rebuilt';
 /*
 get all ancestors
 SELECT title FROM user_pages WHERE precedence < 4 AND subsequnce > 5 ORDER BY precedence ASC;

@@ -141,3 +141,7 @@ ul.nested li ul { list-style-type:none; padding:0; margin-left:10px; background:
 ul.nested li ul li { background:url(/login/images/node.png) no-repeat; margin:0 -12px 0 0; padding:0px 12px 0px 12px; }
 ul.nested li input[type=checkbox] { margin-right:10px; margin-left:5px; }
 ul.nested li ul li:last-child { background:url(/login/images/lastnode.png) no-repeat; }
+
+/*debugging nested list*/
+#panel table { width: 209px; }
+#panel table tr td:first-child { width:40px; }
