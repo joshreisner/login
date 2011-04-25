@@ -343,8 +343,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 				//an error occurred, because a parent exists but is not in the tree
 			}
 		} else {
-			if ($orderingByPrecedence) $r['draggy'] = '&nbsp;'; //'<img src="../images/move.png" alt="move" width="16" height="16" border="0"/>';
-			//$b['is_published'] = draw_form_checkbox('chk_posts_' . $b['id'], $b['is_published']);
+			if ($orderingByPrecedence) $r['draggy'] = '&nbsp;';
 			if ($object['show_published']) $r['is_published'] = draw_form_checkbox('chk_' . str_replace('_', '-', $object['table_name']) . '_' . $r['id'], $r['is_published'], false, 'ajax_publish(this);');
 			$linked = false;
 			foreach ($columns as $f) {
@@ -387,7 +386,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') . 
 			draw_javascript_src(DIRECTORY_BASE . 'scripts/nested.js') . 
-			nestedList($list, 'nested');
+			nestedList($list, $object['table_name'], 'nested');
 	} else {
 		return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
 	}
@@ -432,24 +431,24 @@ function joshlib() {
 	die('Could not find Joshlib.');
 }
 
-function nestedList($pages, $class=false, $level=1) {
+function nestedList($object_values, $table_name, $class=false, $level=1) {
 	
-	if (!count($pages)) return false;
+	if (!count($object_values)) return false;
 	
 	$classes = array();
 	
-	foreach ($pages as &$p) {
-		//die(draw_array($p));
-		$classes[] = 'list_' . $p['id'];
-		$p = draw_div('item_' . $p['id'], 
-			draw_div_class('column published', draw_form_checkbox('chk_web-pages_' . $p['id'], $p['is_published'], false, 'ajax_publish(this)')) .
-			draw_div_class('column link', draw_link($p['url'], $p['title'])) . 
-			draw_div_class('column updated', draw_span('light', $p['updated_user']) . ' ' . format_date($p['updated'])) .
+	foreach ($object_values as &$o) {
+		//die(draw_array($o));
+		$classes[] = 'list_' . $o['id'];
+		$o = draw_div('item_' . $o['id'], 
+			draw_div_class('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
+			draw_div_class('column link', draw_link($o['url'], $o['title'])) . 
+			draw_div_class('column updated', draw_span('light', $o['updated_user']) . ' ' . format_date($o['updated'])) .
 			draw_div_class('column delete', draw_link(false, CHAR_DELETE))
-		, array('class'=>'row level_' . $level)) . nestedList($p['children'], false, ($level + 1));
+		, array('class'=>'row level_' . $level)) . nestedList($o['children'], $table_name, false, ($level + 1));
 	}
 
-	return draw_list($pages, $class, 'ul', false, $classes);
+	return draw_list($object_values, $class, 'ul', false, $classes);
 }
 
 function nestedNodeExists(&$array, $parent_id, $child) {
