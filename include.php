@@ -147,10 +147,7 @@ function drawFirst($title='CMS') {
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
 		draw_title($title) . 
-		lib_get('jquery') . 
-		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
-		draw_javascript_src() . 
-		draw_css_src(DIRECTORY_BASE . 'styles/screen/global.css') .
+		draw_css_src(DIRECTORY_BASE . 'styles/stylesheet.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
@@ -170,7 +167,12 @@ function drawFirst($title='CMS') {
 }
 
 function drawLast() {
-	$return = '</div>' . draw_google_analytics('UA-21096000-1') . '</body></html>';
+	$return = '</div>' . 
+		lib_get('jquery') . 
+		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
+		draw_javascript_src() . 
+		draw_google_analytics('UA-21096000-1') . 
+	'</body></html>';
 	return $return;
 }
 
