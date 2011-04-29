@@ -14,4 +14,4 @@ foreach ($ids as $id) db_query('UPDATE ' . $array['table_name'] . ' SET preceden
 
 nestedTreeRebuild($array['table_name']);
 
-echo 'done!';
+echo 'done!' . $array['parent_id'];
