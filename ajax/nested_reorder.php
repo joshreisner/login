@@ -5,7 +5,7 @@ $array = array_ajax();
 echo draw_array($array);
 
 //update with new parent
-db_query('UPDATE ' . $array['table_name'] . ' SET ' . $array['nesting_column'] . ' = ' . $array['parent_id'] . ' WHERE id = ' . $array['id']);
+db_query('UPDATE ' . $array['table_name'] . ' SET ' . $array['nesting_column'] . ' = ' . (($array['parent_id'] == 'root') ? 'NULL' : $array['parent_id']) . ' WHERE id = ' . $array['id']);
 
 //set precedences
 $ids = array_separated($array['list']);
