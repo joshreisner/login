@@ -20,7 +20,7 @@ $(function(){
 	});
 	
 	//show sql button on object page
-	$('a[href=#sql]').click(function(e){
+	$('li.sql a').click(function(e){
 		e.preventDefault();
 		$(this).html(($('#sql').is(':visible') ? 'Show' : 'Hide') + ' SQL');
 		$('#sql').slideToggle();

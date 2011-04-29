@@ -57,6 +57,13 @@ if ($posting) {
 	}
 	
 	url_change(DIRECTORY_BASE . 'object/?id=' . $object_id);
+} elseif (url_action('expunge')) {
+	//wipe out all object values while maintaining structure
+	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']);
+	db_query('DELETE FROM ' . $table);
+	db_query('ALTER TABLE ' . $table . ' AUTO_INCREMENT = 1');
+	db_query('DELETE FROM ' . $table . '_to_words');
+	url_drop('action');
 } elseif (url_action('resize')) {
 	//resize all images in object according to new field rules
 	//todo move this to field edit?
@@ -117,9 +124,17 @@ if (url_id()) {
 	if (db_grab('SELECT COUNT(*) FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)')) {
 		$images = draw_p('You can also ' . draw_link(url_action_add('resize'), 'resize all images') . '.');
 	}
+
+	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']);
+	if ($values = db_grab('SELECT COUNT(*) FROM ' . $table)) {
+		$values = draw_p('Or you can ' . draw_link(url_action_add('expunge'), 'expunge') . ' the ' . format_quantitize($values, 'value', false) . ' in this object.');
+	} else {
+		$values = '';
+	}
+	
 	echo draw_div('panel', 
 		draw_p('You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.') . 
-		$images . 
+		$images . $values . 
 		draw_p('You can also ' . draw_link(false, 'duplicate this object', false, array('class'=>'object_duplicate')) . ' and all of its values.')
 	);
 }

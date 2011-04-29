@@ -301,31 +301,31 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	//set up nav
 	if (admin()) {
 		if (!$from_type) {
-			$nav[DIRECTORY_BASE . 'edit/?id=' . $_GET['id']] = 'Object Settings';
+			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $_GET['id'], 'Object Settings');
 			$classes[] = 'settings';
-			$nav[DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id']] = 'Fields';
+			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id'], 'Fields');
 			$classes[] = 'fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
-				$nav[url_action_add('hide_deleted')] = 'Hide ' . format_quantity($deleted) . ' Deleted';
+				$nav[] = draw_link(url_action_add('hide_deleted'), 'Hide ' . format_quantity($deleted) . ' Deleted');
 			} else {
-				$nav[url_action_add('show_deleted')] = 'Show ' . format_quantity($deleted) . ' Deleted';
+				$nav[] = draw_link(url_action_add('show_deleted'), 'Show ' . format_quantity($deleted) . ' Deleted');
 			}
+			$classes[] = 'deleted';
 		}
-		$classes[] = 'deleted';
-		$nav['#sql'] = 'Show SQL';
+		$nav[] = draw_link(false, 'Show SQL');
 		$classes[] = 'sql';
 		$return .= draw_container('textarea', $sql, array('id'=>'sql', 'style'=>'display:none;')); //todo disambiguate
 	}
 	if ($from_type && $from_id) {
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
-		$nav[DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id] = 'Add New';
+		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id, 'Add New');
 	} else {
-		$nav[DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id] = 'Add New';
+		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id, 'Add New');
 	}
 	$classes[] = 'new';
-	$return = draw_nav($nav) . $return; //todo pass $classes to draw_nav
+	$return = draw_list($nav, 'nav', 'ul', false, $classes) . $return; //todo pass $classes to draw_nav
 		
 	$t->set_column('updated', 'r', 'Updated', 120);
 	$t->set_column('delete', 'delete', '&nbsp;', 20);
