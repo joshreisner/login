@@ -15,7 +15,7 @@ $(function(){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		update: function(event, ui) {
-			var id				= ui.item.attr('id').replace('list_', '');
+			var id				= ui.item.attr('data-id');
 			var arrayed			= $('ul.nested').nestedSortable('toArray', {startDepthCount: 0});
 			var list			= new Array();
 			var parent_id		= false;

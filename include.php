@@ -169,6 +169,8 @@ function drawFirst($title='CMS') {
 function drawLast() {
 	$return = '</div>' . 
 		lib_get('jquery') . 
+		draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
+		draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') .
 		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
 		draw_javascript_src() . 
 		draw_google_analytics('UA-21096000-1') . 
@@ -384,11 +386,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	}
 	
 	if ($nested && $orderingByPrecedence) {
-		return $return . draw_form_hidden('nesting_column', $nested) . 
-			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
-			draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') . 
-			draw_javascript_src(DIRECTORY_BASE . 'scripts/nested.js') . 
-			nestedList($list, $object['table_name'], 'nested');
+		return $return . draw_form_hidden('nesting_column', $nested) . nestedList($list, $object['table_name'], 'nested');
 	} else {
 		return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
 	}
@@ -441,7 +439,7 @@ function nestedList($object_values, $table_name, $class=false, $level=1) {
 	
 	foreach ($object_values as &$o) {
 		//die(draw_array($o));
-		$classes[] = 'list_' . $o['id'];
+		$classes[] = array('data-id'=>$o['id']);
 		$o = draw_div('item_' . $o['id'], 
 			draw_div_class('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
 			draw_div_class('column link', draw_link($o['url'], $o['title'])) . 
