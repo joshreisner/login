@@ -62,7 +62,7 @@ if ($posting) {
 	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']);
 	db_query('DELETE FROM ' . $table);
 	db_query('ALTER TABLE ' . $table . ' AUTO_INCREMENT = 1');
-	db_query('DELETE FROM ' . $table . '_to_words');
+	if (db_table_exists($table . '_to_words')) db_query('DELETE FROM ' . $table . '_to_words');
 	url_drop('action');
 } elseif (url_action('resize')) {
 	//resize all images in object according to new field rules
