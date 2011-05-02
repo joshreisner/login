@@ -121,6 +121,20 @@ $(function(){
 		}
 	});
 	
+	//clear images from object/edit forms
+	$('a.clear_img').click(function(e){
+		e.preventDefault();
+		var title = $(this).attr('data-title');
+		var table = $(this).attr('data-table');
+		var column = $(this).attr('data-column');
+		var id = $(this).attr('data-id');
+		if (confirm("Are you sure you want to clear the " + title.toLowerCase() + " field?  It will happen right away (before saving).")) {
+			ajax_set(table, column, id);
+			$('div.field.' + column + ' img.preview').slideUp();
+			$('div.field.' + column + ' a.clear_img').fadeOut();
+		}
+	});
+	
 	//adjust the css on the rows because the indentation has likely changed
 	function fix_depths(ul, level) {
 		if (!level) level = 1;
@@ -136,12 +150,3 @@ $(function(){
 		});
 	}
 });
-
-function clearImg(table, column, id, title) {
-	if (confirm("Are you sure you want to clear the " + title.toLowerCase() + " field?  It will be done immediately.")) {
-		ajax_set(table, column, id);
-		$('div.field.' + column + ' img.preview').slideUp();
-		$('div.field.' + column + ' a.clear_img').slideUp();
-	}
-	return false;
-}

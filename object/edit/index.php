@@ -192,7 +192,13 @@ while ($r = db_fetch($result)) {
 				$r['type'] = 'file';
 				//dont' think this is ready
 				if (url_id() && db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
-					$label .= '<br/>' . draw_link('javascript:clearImg(\'' . $r['table_name'] . '\', \'' . $r['field_name'] . '\', \'' . $_GET['id'] . '\', \'' . $r['title'] . '\');', 'Clear Image', false, 'clear_img');
+					$label .= '<br/>' . draw_link(false, 'Clear Image', false, array(
+						'class'=>'clear_img', 
+						'data-table'=>$r['table_name'],
+						'data-column'=>$r['field_name'],
+						'data-id'=>$_GET['id'],
+						'data-title'=>$r['title']
+					));
 				}
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
