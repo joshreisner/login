@@ -19,6 +19,20 @@ $(function(){
 		if (title) location.href = './?' + $.param({ id: url_query('id'), action:'duplicate', title:title });
 	});
 	
+	//update tinymce file and image references
+	$('a.tinymce_update').click(function(e){
+		if (old_server = prompt('What was the HTTP_HOST of the old server?')) {
+			$.ajax({
+				url : '/login/ajax/tinymce_update.php',
+				type : 'POST',
+				data : { old_server : old_server },
+				success : function(data) {
+					alert(data);
+				}
+			});
+		}
+	});
+	
 	//show sql button on object page
 	$('li.sql a').click(function(e){
 		e.preventDefault();

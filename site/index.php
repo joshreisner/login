@@ -13,7 +13,10 @@ echo drawFirst('Site Settings');
 $t = new form('app', 1, 'Edit Site Settings');
 echo $t->draw();
 
-echo draw_div('panel', 'The banner image will be resized to 920px x 105px.');
+echo draw_div('panel', 
+	draw_p('The banner image will be resized to 920px x 105px.') . 
+	draw_p('If you have just migrated servers, you may wish to <a class="tinymce_update">update the TinyMCE file and image references</a>.')
+);
 
 echo drawLast();
 ?>
