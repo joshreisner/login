@@ -261,7 +261,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 		
 					//also figure out which column to order the group by and put it before the regular order by
 					$rel_order = db_grab('SELECT o.table_name, o.order_by, o.direction FROM app_objects o JOIN app_fields f ON f.related_object_id = o.id WHERE f.id = ' . $f['id']);
+					if (empty($rel_order['order_by'])) $rel_order['order_by'] = 'created_date'; //might be blank, go with default
 					$object['order_by'] = $rel_order['table_name'] . '.' . $rel_order['order_by'] . ' ' . $rel_order['direction'] . ', ' . $object['order_by'];
+					//die('hi');
 				} else {
 					//filter down to show just this group, because we're on the group's object page
 					$joins[] = 'JOIN ' . $f['related_table'] . ' ON ' . $f['related_table'] . '.id = t.' . $f['field_name'];
