@@ -223,7 +223,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 				f.related_object_id
 			FROM app_fields f 
 			LEFT JOIN app_objects o ON o.id = f.related_object_id
-			WHERE f.is_active = 1 AND f.type NOT IN ("checkboxes", "file", "image") AND f.object_id = ' . $object_id . ' 
+			WHERE f.is_active = 1 AND f.type NOT IN ("checkboxes", "file") AND f.object_id = ' . $object_id . ' 
 			ORDER BY f.precedence');
 	foreach ($fields as &$f) {
 		if ($f['visibility'] == 'list') {
@@ -239,11 +239,12 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 			}
 		}
 		
-		$selects[] = TAB . 't.' . $f['field_name'];
+		if ($f['type'] != 'image') $selects[] = TAB . 't.' . $f['field_name'];
+		
 		if ($f['type'] == 'select') {
 			
 			//need transpose field for select groupings and columns
-			$rel_fields[$f['id']] = db_grab('SELECT f1.field_name FROM app_fields f1 JOIN app_fields f2 ON f1.object_id = f2.related_object_id WHERE f2.id = ' . $f['id'] . ' AND f1.visibility = "list" AND f1.is_active = 1 ORDER BY f1.precedence');
+			$rel_fields[$f['id']] = db_grab('SELECT f1.field_name FROM app_fields f1 JOIN app_fields f2 ON f1.object_id = f2.related_object_id WHERE f2.id = ' . $f['id'] . ' AND f1.visibility = "list" AND f1.type NOT IN ("textarea", "int", "image", "image-alt") AND f1.is_active = 1 ORDER BY f1.precedence');
 			
 			//handle select groupings
 			if ($f['id'] == $object['group_by_field']) {
@@ -369,7 +370,10 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 				} elseif ($f['type'] == 'textarea') {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} elseif ($f['type'] == 'text') {
+					//$r[$f['field_name']] = 'text';
 					//$r[$f['field_name']] = format_string($r[$f['field_name']], 50);
+				} else {
+					$r[$f['field_name']] = 'unhandled type';
 				}
 				if (!$linked) {
 					if (empty($r[$f['field_name']])) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
