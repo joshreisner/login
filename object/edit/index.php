@@ -192,7 +192,7 @@ while ($r = db_fetch($result)) {
 				$r['type'] = 'file';
 				//dont' think this is ready
 				if (url_id() && db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
-					$label .= '<br/>' . draw_link(false, 'Clear Image', false, array(
+					if (!$r['required']) $label .= '<br/>' . draw_link(false, 'Clear Image', false, array(
 						'class'=>'clear_img', 
 						'data-table'=>$r['table_name'],
 						'data-column'=>$r['field_name'],
