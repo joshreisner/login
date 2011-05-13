@@ -19,34 +19,41 @@ $tables = array_diff(
 //and drop them
 foreach ($tables as $t) {
 	db_table_drop($t);
-	echo 'dropped table ' . $t . '<br/>';
+	echo 'dropped table ' . $t . BR;
 }
 
 //find out which columns we don't need and drop them
 foreach ($user_tables as $t) {
-	$columns = array_diff(
-			db_columns($t, true, false),
+	if ($columns = db_columns($t, true, false)) {
+		$columns = array_diff(
+			$columns,
 			db_array('SELECT f.field_name FROM app_fields f JOIN app_objects o ON f.object_id = o.id WHERE o.table_name = "' . $t . '" AND f.type <> "checkboxes"')
 		);
-	foreach ($columns as $c) {
-		db_column_drop($t, $c);
-		echo 'dropped column ' . $c . ' from table ' . $t . '<br/>';
+		foreach ($columns as $c) {
+			db_column_drop($t, $c);
+			echo 'dropped column ' . $c . ' from table ' . $t . BR;
+		}
 	}
 }
 
 //see if we can rename any tables
 $objects = db_query('SELECT title, table_name FROM app_objects');
 while ($o = db_fetch($objects)) {
-	$target = format_text_code('user_' . $o['title']);
-	if (($o['table_name'] != $target) && !db_table_exists($target)) {
-		db_table_rename($o['table_name'], $target);
-		echo 'renamed ' . $o['table_name'] . ' to ' . $target; . '<br/>';
+	if (!db_table_exists($o['table_name'])) {
+		//table has been lost, kill record
+		db_query('DELETE FROM app_objects WHERE table_name = "' . $o['table_name'] . '"');
+	} else {
+		$target = format_text_code('user_' . $o['title']);
+		if (($o['table_name'] != $target) && !db_table_exists($target)) {
+			db_table_rename($o['table_name'], $target);
+			echo 'renamed ' . $o['table_name'] . ' to ' . $target . BR;
+		}
 	}
 }
+
+echo 'finished cleanup';
 
 //see if we can rename any columns
 //todo alter table spacetime change wind_direction_id direction_id tinyint(3) unsigned;
 
-
 echo drawLast();
-?>

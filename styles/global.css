@@ -6,8 +6,8 @@ body { text-align:center; }
 #banner { height:105px; overflow:hidden; }
 #logo { margin-bottom:20px; }
 
-#panel { position:absolute; top:0px; right:0px; width:209px; min-height:200px; margin-top:100px; border-left:1px dashed #ccc; padding:0px 20px; color:#888; line-height:20px; }
-#panel textarea { color:#888; line-height:20px; border:0; padding:10px; margin:-10px; background-color:#f4f4f4; }
+#panel { position:absolute; top:0px; right:0px; width:209px; min-height:200px; margin-top:100px; border:1px dashed #fff; border-left-color: #ccc; padding:10px 20px; color:#aaa; line-height:20px; }
+#panel:focus { background-color:#f7f7f7; outline: none; color:#444; border-color: #aaa; }
 
 .c { text-align:center; }
 .r { text-align:right; }
@@ -36,6 +36,7 @@ hr { border-width:1px 0px 0px 0px; border-style:dashed; border-color:#ccc; width
 /* table */
 table				{ width:650px; }
 table td, table th	{ padding:4px; border-bottom:1px solid #eee; vertical-align:top; min-height:20px; }
+table tr.last td	{ border-bottom: 0; }
 th					{ text-align:left; font-weight:normal; color:#aaa; }
 table tr.admin td		{ background-color:#ffe9e9; }
 table tr.deleted td, table tr.deleted td a		{ color:#bbb; text-decoration: line-through; font-style: italic; }

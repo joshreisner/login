@@ -37,7 +37,7 @@ foreach ($objects as &$o) {
 		$o['object'] = draw_container('span', $o['object'], array('class'=>'g'));
 	}
 	if (empty($o['updated_user'])) $o['updated_user'] = $o['created_user'];
-	$o['updated'] = format_date($o['updated']);
+	if (!empty($o['updated'])) $o['updated'] = format_date($o['updated']);
 }
 echo $t->draw($objects, 'No objects have been added yet!');
 

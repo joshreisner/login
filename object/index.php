@@ -35,4 +35,3 @@ echo draw_javascript_ready('
 ');
 
 echo drawLast();
-?>
