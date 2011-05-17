@@ -72,7 +72,7 @@ function dbCheck() {
 	if (!db_schema_check($schema)) {
 		
 		//log in the current user	
-		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "josh@joshreisner.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
+		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "josh@bureaublank.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
 		$_SESSION['name']			= 'Josh';
 		$_SESSION['full_name']		= 'Josh Reisner';
 		$_SESSION['email']			= 'josh@joshreisner.com';
