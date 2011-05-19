@@ -8,6 +8,9 @@ $object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, 
 //security
 if (!$object['permission'] && !admin()) url_change('../../');
 
+//languages
+$languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
+
 /* if (url_action('delete')) {
 	//handle an object delete
 	db_delete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
@@ -102,7 +105,8 @@ echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . ' &
 
 $f = new form($object['table_name'], @$_GET['id'], $button);
 
-if ($editing && $object['web_page']) echo draw_div('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
+if ($editing && $object['web_page']) echo draw_div_class('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
+if ($languages) echo draw_div_class('web_page_msg', draw_link(false, 'Show Translations', false, 'show_translations'));
 
 $order = array();
 $result = db_query('SELECT 
@@ -214,6 +218,14 @@ while ($r = db_fetch($result)) {
 			}
 			
 			$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+
+			if ($languages && in_array($r['type'], $_josh['translatable_field_types'])) {
+				foreach ($languages as $key=>$lang) {
+					$additional = '';
+					$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class . ' translation', 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+					$order[] = $r['field_name'] . '_' . $key;
+				}
+			}
 		}
 	}
 }
@@ -246,7 +258,7 @@ if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app
 }
 
 //help panel on right side, potentially editable
-echo draw_div('panel', str_ireplace("\n", '<br/>', $object['form_help']), false, (admin() ? 'app_objects.form_help.' . $_GET['object_id'] : false));
+echo draw_div('panel', str_ireplace("\n", BR, $object['form_help']), false, (admin() ? 'app_objects.form_help.' . $_GET['object_id'] : false));
 
 echo drawLast();
 ?>

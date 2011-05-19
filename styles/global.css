@@ -65,7 +65,7 @@ table tr.dragclass td {
 table td input.checkbox { margin-top:6px; }
 span.light { color:#ccc; font-size:12px; }
 #sql { width:610px; height:100px; padding:19px; border:1px dashed #ccc; background-color:#ffe; margin:20px 0px 20px 0px; font-family:Consolata, Droid Sans Mono, monospace; font-size:13px; }
-#web_page_msg { width:632px; padding:10px; border:1px dashed #ccc; background-color:#ffe; margin:20px 0px 20px 0px; font-size:13px; }
+div.web_page_msg { width:632px; padding:10px; border:1px dashed #ccc; background-color:#ffe; margin:20px 0px 20px 0px; font-size:13px; }
 table tr td div.empty { font-style:italic; text-transform:lowercase; opacity:.75; display:inline; }
 
 /* login */
@@ -91,24 +91,26 @@ textarea.tinymce				{ width:537px; height:300px; margin-bottom:7px; }
 #page form fieldset				{ border:none; padding:0px; width:800px; }
 #page form legend				{ display:none; }
 
-form div.field					{ min-height:25px; overflow:auto; margin-bottom:5px; /* border:1px solid red; */ }
-form div.field					{ line-height:23px; }
+form div.field					{ min-height:25px; overflow:auto; padding-bottom:5px; line-height:23px; width: 660px; }
+form div.field.translation		{ background-color: #eee; display: none; }
 form div.file img.preview		{ float:left; clear:left; margin:0 0 10px 110px; }
 
 form div.checkbox				{ min-height:0px; vertical-align:middle; }
 form div.checkbox label			{ min-height:0px; }
 
-form div.checkboxes				{ margin-bottom: 20px; }
 form label						{ min-height:25px; line-height:17px; padding-top:3px; width:110px; display:block; float:left; clear:left; }
 form label span.additional 		{ display:block; margin:4px 10px 0px 0px; }
 form div.img img				{ display:block; margin:10px 10px 10px 110px; }
-form ul							{ margin-left:110px; margin:0px; padding:0px; float:left; list-style-type:none; width:570px; }
+
+form div.checkboxes				{ margin-bottom: 10px; }
+form ul							{ margin:0px; padding:0px; float:left; list-style-type:none; }
 form ul li						{ width:164px; margin:2px 2px 6px 16px; float:left; font-size:11px; }
+form div.checkboxes	ul			{ line-height:10px; margin-top:5px; float: left; width: 550px; }
+form div.checkboxes ul input	{ margin-left:-16px; }
+
 form input.submit				{ margin:10px 0px 0px 110px; }
 #page input.big					{ font-size:20px; width:500px; }
 #page input.medium, $page form div.field_1 input.text	{ font-size:16px; width:400px; }
-form div.checkboxes input		{ margin-left:-16px; }
-form div.checkboxes	ul			{ line-height:10px; margin-top:5px; }
 form span.option_name			{ cursor:pointer; padding:1px; margin-left:2px; }
 #page form span.option_name:hover		{  background-color:#f0f0f0;  }
 form span.additional			{ color:#999; font-size:11px; line-height:10px; margin-left:7px; }

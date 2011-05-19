@@ -6,6 +6,11 @@ $(function(){
 		}
 	}
 	
+	//show translations
+	$('a.show_translations').click(function(e){
+		$('div.translation').slideDown();
+	});
+	
 	//lorem ipsum for rich textareas
 	$('a.lorem_ipsum').click(function(e){
 		e.preventDefault();
