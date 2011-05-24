@@ -107,7 +107,7 @@ function drawFirst($title='CMS') {
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
 		draw_title($title) . 
-		draw_css_src(DIRECTORY_BASE . 'styles/global.css') .
+		draw_css_src(DIRECTORY_BASE . 'css/global.css') .
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
@@ -129,9 +129,9 @@ function drawFirst($title='CMS') {
 function drawLast() {
 	$return = '</div>' . 
 		lib_get('jquery') . 
-		draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery-ui-1.8.9.custom.min.js') . 
-		draw_javascript_src(DIRECTORY_BASE . 'scripts/jquery.ui.nestedSortable.js') .
-		draw_javascript_src(DIRECTORY_BASE . 'scripts/global.js') . 
+		draw_javascript_src(DIRECTORY_BASE . 'js/jquery-ui-1.8.9.custom.min.js') . 
+		draw_javascript_src(DIRECTORY_BASE . 'js/jquery.ui.nestedSortable.js') .
+		draw_javascript_src(DIRECTORY_BASE . 'js/global.js') . 
 		draw_javascript_src() . 
 		draw_google_analytics('UA-21096000-1') . 
 	'</body></html>';
