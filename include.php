@@ -9,7 +9,7 @@ if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
-	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
+	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'is_translated'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
 	'app_languages'=>array('title'=>'varchar', 'code'=>'varchar', 'checked'=>'tinyint', 'committed'=>'tinyint'),
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar'),
 	'app_objects_links'=>array('object_id'=>'int', 'linked_id'=>'int'),
@@ -23,6 +23,9 @@ if (url_action('show_deleted,hide_deleted') && admin()) {
 	$_SESSION['show_deleted'] = url_action('show_deleted');
 	url_drop('action');
 }
+
+//languages
+$languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
 
 //sekurity
 if (!user()) {

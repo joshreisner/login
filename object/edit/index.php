@@ -8,15 +8,8 @@ $object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, 
 //security
 if (!$object['permission'] && !admin()) url_change('../../');
 
-//languages
-$languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
-
-/* if (url_action('delete')) {
-	//handle an object delete
-	db_delete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
-	url_change('./?id=' . $_GET['id'] . '&object_id=' . $_GET['object_id']);
-} else*/ if (url_action('undelete')) {
-	//handle an object delete
+if (url_action('undelete')) {
+	//handle an object delete -- todo ajax
 	db_undelete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
 	url_change('./?id=' . $_GET['id'] . '&object_id=' . $_GET['object_id']);
 } elseif ($posting) {
@@ -64,7 +57,6 @@ $languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE
 	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
 		nestedTreeRebuild($object['table_name']);
 	}
-	
 	
 	//objects -- deprecated?
 	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "object" AND o.id = ' . $_GET['object_id']);
@@ -120,6 +112,7 @@ $result = db_query('SELECT
 				f.additional, 
 				f.visibility,
 				f.is_active,
+				f.is_translated,
 				o.table_name
 			FROM app_fields f
 			JOIN app_objects o ON f.object_id = o.id
@@ -220,10 +213,14 @@ while ($r = db_fetch($result)) {
 			$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
 
 			if ($languages && in_array($r['type'], $_josh['translatable_field_types'])) {
-				foreach ($languages as $key=>$lang) {
-					$additional = '';
-					$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class . ' translation', 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
-					$order[] = $r['field_name'] . '_' . $key;
+				if ($r['is_translated']) {
+					foreach ($languages as $key=>$lang) {
+						$additional = '';
+						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class . ' translation', 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+						$order[] = $r['field_name'] . '_' . $key;
+					}
+				} else {
+					$f->unset_fields($r['field_name'] . '_' . $key);
 				}
 			}
 		}

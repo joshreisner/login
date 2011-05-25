@@ -10,7 +10,7 @@ if (url_action('delete')) {
 
 echo drawFirst('Users');
 
-echo draw_nav(array('edit/'=>'add new user'));
+echo draw_nav(array('edit/'=>'Add New User'));
 
 $result = db_table('SELECT 
 	u.id, 
@@ -33,11 +33,11 @@ foreach($result as &$r) {
 	$r['class'] = $r['is_admin'] ? 'admin' : false;
 	$r['name'] = draw_link('edit/?id=' . $r['id'], $r['lastname'] . ', ' . $r['firstname']);
 	$r['updated'] = format_date($r['updated']);
-	$r['delete'] = draw_link(url_query_add(array('action'=>'delete', 'id'=>$r['id']), false), 'X');
+	$r['delete'] = draw_link(url_query_add(array('action'=>'delete', 'id'=>$r['id']), false), CHAR_DELETE);
 }
 echo $t->draw($result, 'No users have been added yet!');
 
-echo draw_div('panel', 'These users have access to this content management website.');
+echo draw_div('panel', 'These users have access to the CMS.  Shaded users are admins.');
 
 echo drawLast();
 ?>

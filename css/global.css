@@ -37,8 +37,9 @@ hr { border-width:1px 0px 0px 0px; border-style:dashed; border-color:#ccc; width
 table				{ width:650px; }
 table td, table th	{ padding:4px; border-bottom:1px solid #eee; vertical-align:top; min-height:20px; }
 table tr.last td	{ border-bottom: 0; }
+table tr.admin.last td	{ border-bottom:1px solid #eee; }
 th					{ text-align:left; font-weight:normal; color:#aaa; }
-table tr.admin td		{ background-color:#ffe9e9; }
+table tr.admin td		{ background-color:#ffe; }
 table tr.deleted td, table tr.deleted td a		{ color:#bbb; text-decoration: line-through; font-style: italic; }
 
 table td.delete, table th.delete		{ width:20px; min-width:20px; text-align:center; }

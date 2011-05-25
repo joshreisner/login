@@ -39,4 +39,3 @@ echo draw_div('panel',
 );
 
 echo drawLast();
-?>
