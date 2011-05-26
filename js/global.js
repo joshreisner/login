@@ -8,7 +8,39 @@ $(function(){
 	
 	//show translations
 	$('a.show_translations').click(function(e){
-		$('div.translation').slideDown();
+		if ($('div.translation:visible').size()) {
+			$(this).html('Show Translations');
+			$('div.translation').slideUp();
+		} else {
+			$(this).html('Hide Translations');
+			$('div.translation').slideDown();
+		}
+	});
+	
+	$('a.translate').click(function(e){
+		$('div.translation input').each(function(){
+			if (!$(this).val().length) {
+				var field = $(this)
+				var fname = field.attr('name');
+				var lang = fname.substr(-2);
+				var src = $('div input[name=' + fname.substr(0, fname.length - 3) + ']').val();
+				if (src.length) {
+					$.ajax({  
+					    url: 'https://ajax.googleapis.com/ajax/services/language/translate',  
+					    dataType: 'jsonp',
+					    data: { q: src,  // text to translate
+					            v: '1.0',
+					            langpair: 'en|' + lang },   // '|es' for auto-detect
+					    success: function(result) {
+					        field.val(result.responseData.translatedText);
+					    },  
+					    error: function(XMLHttpRequest, errorMsg, errorThrown) {
+					        console.log(errorMsg);
+					    }  
+					});
+				}
+			}
+		});
 	});
 	
 	//lorem ipsum for rich textareas

@@ -28,10 +28,11 @@ echo drawObjectList($_GET['id']);
 //help panel on right side, potentially editable
 echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin() ? 'app_objects.list_help.' . $_GET['id'] : false));
 
+echo drawLast();
+
 echo draw_javascript_ready('
 	$(document).keypress(function(e) {
 		if (e.which == 97) location.href = $("li.new a").attr("href");
 	});
 ');
 
-echo drawLast();

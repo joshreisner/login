@@ -13,7 +13,8 @@ if (url_action('undelete')) {
 	db_undelete(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['delete_object']), $_GET['delete_id']);
 	url_change('./?id=' . $_GET['id'] . '&object_id=' . $_GET['object_id']);
 } elseif ($posting) {
-	//add a new one
+
+	//handle uploads
 	if ($uploading) {
 		//fetch any image or file fields, because analytical fields are possible here
 		$result = db_query('SELECT id, type, field_name, width, height FROM app_fields WHERE is_active = 1 AND (type = "image" OR type = "file") AND object_id = ' . $_GET['object_id']);
@@ -44,21 +45,28 @@ if (url_action('undelete')) {
 		}
 	}
 	
+	//postprocess latlon
+	$latlons = db_table('SELECT f2.field_name source, f.field_name target FROM app_fields f JOIN app_fields f2 ON f.related_field_id = f2.id WHERE f.type = "latlon" AND f.object_id = ' . $_GET['object_id']);
+	foreach ($latlons as $l) {
+		if (!empty($_POST[$l['source']]) && $coordinates = geocode($_POST[$l['source']])) $_POST[$l['target']] = $coordinates[0] . ',' . $coordinates[1];
+	}
+	
+	//postprocess urls
 	$fields = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "url" AND object_id = ' . $_GET['object_id']);
 	foreach ($fields as $f) if ($_POST[$f['field_name']] == 'http://') $_POST[$f['field_name']] = '';
 	
 	$id = db_save($object['table_name']);
 	
-	//checkboxes
+	//handle checkboxes
 	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "checkboxes" AND o.id = ' . $_GET['object_id']);
 	foreach ($fields as $f) db_checkboxes($f['field_name'], $f['field_name'], substr($f['table_name'], 5) . '_id', substr($f['rel_table'], 5) . '_id', $id);
 	
-	//tree?  rebuild
+	//if tree, rebuild it
 	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
 		nestedTreeRebuild($object['table_name']);
 	}
 	
-	//objects -- deprecated?
+	/*objects -- deprecated
 	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "object" AND o.id = ' . $_GET['object_id']);
 	foreach ($fields as $f) {
 		$chbxes = array_post_checkboxes($f['field_name']);
@@ -82,7 +90,7 @@ if (url_action('undelete')) {
 			)');
 			$precedence++;
 		}
-	}
+	}*/
 	
 	url_change_post('../?id=' . $_GET['object_id']);
 } elseif ($editing) {
@@ -98,7 +106,12 @@ echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . ' &
 $f = new form($object['table_name'], @$_GET['id'], $button);
 
 if ($editing && $object['web_page']) echo draw_div_class('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
-if ($languages) echo draw_div_class('web_page_msg', draw_link(false, 'Show Translations', false, 'show_translations'));
+if ($languages && db_grab('SELECT COUNT(*) FROM app_fields WHERE is_translated = 1 AND is_active = 1 AND object_id = ' . $_GET['object_id'])) {
+	echo draw_list(array(
+		draw_link(false, 'Show Translations', false, 'show_translations'),
+		draw_link(false, 'Translate Empty Fields', false, 'translate')
+	), 'nav');
+}
 
 $order = array();
 $result = db_query('SELECT 
@@ -212,15 +225,16 @@ while ($r = db_fetch($result)) {
 			
 			$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
 
-			if ($languages && in_array($r['type'], $_josh['translatable_field_types'])) {
-				if ($r['is_translated']) {
-					foreach ($languages as $key=>$lang) {
+			if ($languages) {
+				$class = ($class) ? $class . ' translation' : 'translation';
+				foreach ($languages as $key=>$lang) {
+					if ($r['is_translated']) {
 						$additional = '';
-						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class . ' translation', 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class, 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
 						$order[] = $r['field_name'] . '_' . $key;
+					} else {
+						$f->unset_fields($r['field_name'] . '_' . $key);
 					}
-				} else {
-					$f->unset_fields($r['field_name'] . '_' . $key);
 				}
 			}
 		}

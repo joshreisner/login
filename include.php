@@ -10,7 +10,7 @@ if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
 	'app_fields'=>array('object_id'=>'int', 'type'=>'varchar', 'title'=>'varchar', 'field_name'=>'varchar', 'visibility'=>'varchar', 'required'=>'tinyint', 'is_translated'=>'tinyint', 'related_field_id'=>'int', 'related_object_id'=>'int', 'width'=>'int', 'height'=>'int', 'additional'=>'text'),
-	'app_languages'=>array('title'=>'varchar', 'code'=>'varchar', 'checked'=>'tinyint', 'committed'=>'tinyint'),
+	'app_languages'=>array('title'=>'varchar', 'code'=>'varchar', 'checked'=>'tinyint'),
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar'),
 	'app_objects_links'=>array('object_id'=>'int', 'linked_id'=>'int'),
 	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'is_admin'=>'tinyint'),
