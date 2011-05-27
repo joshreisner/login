@@ -13,7 +13,7 @@ $schema = array(
 	'app_languages'=>array('title'=>'varchar', 'code'=>'varchar', 'checked'=>'tinyint'),
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar'),
 	'app_objects_links'=>array('object_id'=>'int', 'linked_id'=>'int'),
-	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'is_admin'=>'tinyint'),
+	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'is_admin'=>'tinyint', 'last_login'=>'datetime'),
 	'app_users_to_objects'=>array('user_id'=>'int', 'object_id'=>'int')	
 );
 
@@ -42,6 +42,7 @@ if (!user()) {
 			$_SESSION['isLoggedIn']	= true;
 			cookie('last_email', strToLower($_POST['email']));
 			if (!empty($_POST['remember_me'])) cookie('secret_key', $r['secret_key']);
+			db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
 		}
 		url_change();
 	} elseif (!empty($_COOKIE['secret_key']) && $r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE secret_key = "' . $_COOKIE['secret_key'] . '" AND is_active = 1')) {
@@ -52,6 +53,7 @@ if (!user()) {
 		$_SESSION['email']		= $r['email'];
 		$_SESSION['is_admin']	= $r['is_admin'];
 		$_SESSION['isLoggedIn']	= true;
+		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);		
 	} else {
 		//login form
 		echo drawFirst();
@@ -76,10 +78,10 @@ function dbCheck() {
 	if (!db_schema_check($schema)) {
 		
 		//log in the current user	
-		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "josh@bureaublank.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
+		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active, last_login ) VALUES ( "Josh", "Reisner", "josh@bureaublank.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1, NOW() )');
 		$_SESSION['name']			= 'Josh';
 		$_SESSION['full_name']		= 'Josh Reisner';
-		$_SESSION['email']			= 'josh@joshreisner.com';
+		$_SESSION['email']			= 'josh@bureaublank.com';
 		$_SESSION['is_admin']		= true;
 		$_SESSION['isLoggedIn']		= true;
 		$_SESSION['show_deleted']	= false;

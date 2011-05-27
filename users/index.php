@@ -18,7 +18,7 @@ $result = db_table('SELECT
 	u.lastname, 
 	u.email, 
 	u.is_admin,
-	' . db_updated() . '
+	u.last_login
 FROM app_users u
 WHERE u.is_active = 1
 ORDER BY u.lastname, u.firstname, u.id');
@@ -26,13 +26,13 @@ ORDER BY u.lastname, u.firstname, u.id');
 $t = new table;
 $t->set_column('name');
 $t->set_column('email');
-$t->set_column('updated', 'r');
+$t->set_column('last_login', 'r');
 $t->set_column('delete', 'c', '&nbsp;', 20);
 
 foreach($result as &$r) {
 	$r['class'] = $r['is_admin'] ? 'admin' : false;
 	$r['name'] = draw_link('edit/?id=' . $r['id'], $r['lastname'] . ', ' . $r['firstname']);
-	$r['updated'] = format_date($r['updated']);
+	$r['last_login'] = format_date($r['last_login'], '', false, true, true);
 	$r['delete'] = draw_link(url_query_add(array('action'=>'delete', 'id'=>$r['id']), false), CHAR_DELETE);
 }
 echo $t->draw($result, 'No users have been added yet!');
