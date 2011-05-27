@@ -183,7 +183,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 				f.visibility,
 				o.table_name related_table,
 				o.title object_title,
-				f.related_object_id
+				f.related_object_id,
+				f.width
 			FROM app_fields f 
 			LEFT JOIN app_objects o ON o.id = f.related_object_id
 			WHERE f.is_active = 1 AND f.type NOT IN ("checkboxes", "file") AND f.object_id = ' . $object_id . ' 
@@ -327,7 +328,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 					$r[$f['field_name']] = file_icon($r[$f['field_name']]);
 				} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {
 					$img = file_dynamic($object['table_name'], $f['field_name'], $r['id'], 'jpg', $r['updated']);
-					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, 60);
+					$width = ($f['width'] < 60) ? $f['width'] : 60;
+					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $width);
 				} elseif ($f['type'] == 'select') {
 					$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
 				} elseif ($f['type'] == 'textarea') {
