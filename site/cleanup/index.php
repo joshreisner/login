@@ -40,6 +40,7 @@ foreach ($user_tables as $t) {
 			$good_cols
 		);
 		foreach ($columns as $c) {
+			if ($c == 'subsequence') continue; //todo program better system field support, maybe in db_columns
 			if (!$test) db_column_drop($t, $c);
 			$activity[] = 'dropped column ' . $c . ' from table ' . $t;
 		}
@@ -62,9 +63,15 @@ while ($o = db_fetch($objects)) {
 	}
 }
 
-//see if we can rename any columns
-//todo alter table spacetime change wind_direction_id direction_id tinyint(3) unsigned;
+//todo see if we can rename any columns
+//with syntax eg ALTER TABLE spacetime CHANGE wind_direction_id_1 direction_id TINYINT(3) UNSIGNED;
 
-echo 'The following operations were completed' . draw_list($activity);
+if (!count($activity)) {
+	echo 'No cleanup operations required';
+} elseif ($test) {
+	echo 'The following operations would have been performed: ' . draw_list($activity);
+} else {
+	echo 'The following operations were completed: ' . draw_list($activity);
+}
 
 echo drawLast();
