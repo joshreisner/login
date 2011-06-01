@@ -22,7 +22,7 @@ echo $t->draw();
 echo draw_div('panel', 
 	draw_p('The banner image will be resized to 920px x 105px.') . 
 	draw_p('If you have just migrated servers, you may wish to <a class="tinymce_update">update the TinyMCE file and image references</a>.') .
-	draw_p('Be careful with the languages, man.')
+	draw_p('You can also <a href="cleanup/">clean up</a> deleted or unused columns (irreversibly).')
 );
 
 echo drawLast();
