@@ -3,7 +3,7 @@ include('../../include.php');
 
 echo drawFirst(draw_link('../', 'Site Settings') . ' &gt; Cleanup');
 
-$test = false;
+$test = (isset($_GET['test']));
 $activity = array();
 
 if (!$test) db_query('DELETE FROM app_objects WHERE is_active <> 1');
