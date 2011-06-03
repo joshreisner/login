@@ -3,21 +3,16 @@ include('../../../include.php');
 
 if ($posting) {
 	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['object_id']);
-	$datatype  = $_POST['type'];
 	if (!$editing) {
-		$field = $_POST['title'];
-		if ($_POST['type'] == 'select') {
-			$field .= '_id';
-			$datatype = 'int';
-		} elseif (($_POST['type'] == 'checkboxes') || ($_POST['type'] == 'object')) {
+		if ($_POST['type'] == 'checkboxes') {
 			//if it's checkboxes, create a new linking table
 			$rel_table = substr(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_POST['related_object_id']), 5);
 			$_POST['field_name'] = getNewObjectName(format_text_code($table . '_to_' . $rel_table));
 			db_table_create($_POST['field_name'], array($rel_table . '_id'=>'int', substr($table, 5) . '_id'=>'int'));
 		} else {
 			//add field to table
-			$_POST['field_name'] = getNewObjectName($table, $field);
-			db_column_add($table, $_POST['field_name'], $datatype);
+			$_POST['field_name'] = getNewObjectName($table, $_POST['title'] . (($_POST['type'] == 'select') ? '_id' : ''));
+			db_column_add($table, $_POST['field_name'], $_POST['type']);
 		}
 	}
 	
