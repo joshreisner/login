@@ -45,7 +45,7 @@ if (!user()) {
 			db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
 		}
 		url_change();
-	} elseif (!empty($_COOKIE['secret_key']) && $r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE secret_key = "' . $_COOKIE['secret_key'] . '" AND is_active = 1')) {
+	} elseif (cookie_get('secret_key') && $r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE secret_key = "' . $_COOKIE['secret_key'] . '" AND is_active = 1')) {
 		$_SESSION['user_id']	= $r['id'];
 		$_SESSION['show_deleted'] = false;
 		$_SESSION['name']		= $r['firstname'];
@@ -70,7 +70,11 @@ if (!user()) {
 	$_SESSION['user_id']	= false;
 	$_SESSION['isLoggedIn']	= false;
 	cookie('secret_key');
-	url_drop('action');
+	if (isset($_GET['return_to'])) {
+		url_change($_GET['return_to']);
+	} else {
+		url_change(DIRECTORY_BASE);
+	}
 }
 
 function dbCheck() {
