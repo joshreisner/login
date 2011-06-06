@@ -62,7 +62,7 @@ if (url_action('undelete')) {
 	foreach ($fields as $f) db_checkboxes($f['field_name'], $f['field_name'], substr($f['table_name'], 5) . '_id', substr($f['rel_table'], 5) . '_id', $id);
 	
 	//if tree, rebuild it
-	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
+	if (db_grab('SELECT COUNT(*) FROM app_fields f WHERE is_active = 1 AND object_id = ' . $_GET['object_id'] . ' AND related_object_id = ' . $_GET['object_id'])) {
 		nestedTreeRebuild($object['table_name']);
 	}
 	
