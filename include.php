@@ -334,8 +334,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 					$r[$f['field_name']] = file_icon($r[$f['field_name']]);
 				} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {
 					$img = file_dynamic($object['table_name'], $f['field_name'], $r['id'], 'jpg', $r['updated']);
-					$width = ($f['width'] < 60) ? $f['width'] : 60;
-					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $width);
+					$max = (!empty($f['width']) && ($f['width'] < 60)) ? $f['width'] : 60;
+					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $max);
 				} elseif ($f['type'] == 'select') {
 					$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
 				} elseif ($f['type'] == 'textarea') {
