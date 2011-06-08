@@ -98,9 +98,6 @@ form div.field					{ min-height:25px; overflow:auto; padding-bottom:5px; line-he
 form div.field.translation		{ background-color: #eee; display: none; }
 form div.file img.preview		{ float:left; clear:left; margin:0 0 10px 110px; }
 
-form div.checkbox				{ min-height:0px; vertical-align:middle; }
-form div.checkbox label			{ min-height:0px; }
-
 form label						{ min-height:25px; line-height:17px; padding-top:3px; width:110px; display:block; float:left; clear:left; }
 form label span.additional 		{ display:block; margin:4px 10px 0px 0px; }
 form div.img img				{ display:block; margin:10px 10px 10px 110px; }
@@ -109,13 +106,14 @@ form div.checkboxes				{ margin-bottom: 10px; }
 form ul							{ margin:0px; padding:0px; float:left; list-style-type:none; }
 form ul li						{ width:164px; margin:2px 2px 6px 16px; float:left; font-size:11px; }
 form div.checkboxes	ul			{ line-height:10px; margin-top:5px; float: left; width: 550px; }
+form div.checkboxes ul label	{ float:none; min-height: 0; padding: 0; margin: 0 0 0 3px; line-height: 12px; display: inline; }
+form div.checkboxes ul label:hover	{ background-color:#f0f0f0; cursor: pointer; }
 form div.checkboxes ul input	{ margin-left:-16px; }
 
 form input.submit				{ margin:10px 0px 0px 110px; }
 #page input.big					{ font-size:20px; width:500px; }
 #page input.medium, $page form div.field_1 input.text	{ font-size:16px; width:400px; }
 form span.option_name			{ cursor:pointer; padding:1px; margin-left:2px; }
-#page form span.option_name:hover		{  background-color:#f0f0f0;  }
 form span.additional			{ color:#999; font-size:11px; line-height:10px; margin-left:7px; }
 
 /* div object */
@@ -124,6 +122,10 @@ form div.html table thead		{ display:block; }
 form div.html table thead th	{ width:400px; }
 form div.html table tbody td	{ width:400px; }
 form div.html table tbody		{ display:block; max-height:200px; overflow:auto; }
+
+input.error						{ border-color:#f6546b; background-color:#ffadb9; }
+label.error						{ display: none !important; }
+
 
 /* nested list */
 .placeholder { background:#eee !important; border:0; }
