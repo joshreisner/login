@@ -41,7 +41,7 @@ if (!user()) {
 			$_SESSION['is_admin']	= $r['is_admin'];
 			$_SESSION['isLoggedIn']	= true;
 			cookie('last_email', strToLower($_POST['email']));
-			if (!empty($_POST['remember_me'])) cookie('secret_key', $r['secret_key']);
+			/*if (!empty($_POST['remember_me']))*/ cookie('secret_key', $r['secret_key']);
 			db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
 		}
 		url_change();
@@ -58,9 +58,9 @@ if (!user()) {
 		//login form
 		echo drawFirst();
 		$f = new form('login', false, 'Log In');
-		$f->set_field(array('type'=>'text', 'name'=>'email', 'value'=>@$_COOKIE['last_email']));
-		$f->set_field(array('type'=>'password', 'name'=>'password'));
-		$f->set_field(array('type'=>'checkbox', 'name'=>'remember_me', 'default'=>true));
+		$f->set_field(array('type'=>'email', 'name'=>'email', 'value'=>@$_COOKIE['last_email'], 'required'=>true));
+		$f->set_field(array('type'=>'password', 'name'=>'password', 'required'=>true));
+		//$f->set_field(array('type'=>'checkbox', 'name'=>'remember_me', 'default'=>true));
 		echo $f->draw();
 		echo drawLast();
 		exit;
