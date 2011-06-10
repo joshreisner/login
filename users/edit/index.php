@@ -14,7 +14,7 @@ if ($posting) {
 	$action = 'Add New User';
 }
 
-echo drawFirst(draw_link('../', 'Users') . ' &gt; ' . $action);
+echo drawFirst(draw_link('../', 'Users') . CHAR_SEPARATOR . $action);
 
 $user = new form('app_users', @$_GET['id']);
 $user->unset_fields('secret_key,last_login');

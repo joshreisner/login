@@ -4,8 +4,8 @@ include('../include.php');
 if (!admin()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
-	if ($uploading) $_POST['banner_image'] = format_image_resize(file_get_uploaded('banner_image'), false, 95);
-	db_save('app', db_grab('SELECT COUNT(*) FROM app'));
+	if ($uploading) $_POST['banner_image'] = format_image_resize(file_get_uploaded('banner_image'), false, 105);
+	db_save('app', 1);
 
 	//process changes to languages
 	$languages_checked = array_checkboxes('languages');

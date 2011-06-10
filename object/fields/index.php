@@ -14,7 +14,7 @@ if (url_action('delete')) {
 }
 
 
-echo drawFirst(draw_link('../?id=' . $_GET['id'], $object['title']) . ' &gt; Fields');
+echo drawFirst(draw_link('../?id=' . $_GET['id'], $object['title']) . CHAR_SEPARATOR . 'Fields');
 
 echo draw_nav(array('edit/?object_id=' . $_GET['id']=>'Add Field'));
 

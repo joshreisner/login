@@ -5,6 +5,7 @@ extract(joshlib());
 //define vars
 if (!defined('CHAR_DELETE')) define('CHAR_DELETE', '&times;');
 if (!defined('CHAR_UNDELETE')) define('CHAR_UNDELETE', '&curren;');
+if (!defined('CHAR_SEPARATOR')) define('CHAR_SEPARATOR', ' &raquo; ');
 if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
 
 $schema = array(
@@ -125,7 +126,7 @@ function drawFirst($title='CMS') {
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= '<h1>CMS</h1>';
 		} else {
-			$return .= '<h1>' . draw_link(DIRECTORY_BASE, 'CMS') . ' &gt; ';
+			$return .= '<h1>' . draw_link(DIRECTORY_BASE, 'CMS') . CHAR_SEPARATOR;
 			$return .= $title . '</h1>';
 		}
 	} else {

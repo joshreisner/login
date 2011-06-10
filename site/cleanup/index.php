@@ -1,7 +1,7 @@
 <?php
 include('../../include.php');
 
-echo drawFirst(draw_link('../', 'Site Settings') . ' &gt; Cleanup');
+echo drawFirst(draw_link('../', 'Site Settings') . CHAR_SEPARATOR . 'Cleanup');
 
 $test = (isset($_GET['test']));
 $activity = array();

@@ -101,7 +101,7 @@ if (url_action('undelete')) {
 	$button = 'Add New';
 }
 
-echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . ' &gt; ' . $action);
+echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . CHAR_SEPARATOR . $action);
 
 $f = new form($object['table_name'], @$_GET['id'], $button);
 

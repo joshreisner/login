@@ -25,7 +25,7 @@ if ($posting) {
 
 $r = db_grab('SELECT title, table_name FROM app_objects WHERE id = ' . $_GET['object_id']);
 
-echo drawFirst(draw_link('../../?id=' . $_GET['object_id'], $r['title']) . ' &gt; ' . draw_link('../?id=' . $_GET['object_id'], 'Fields') . ' &gt; Edit Field');
+echo drawFirst(draw_link('../../?id=' . $_GET['object_id'], $r['title']) . CHAR_SEPARATOR . draw_link('../?id=' . $_GET['object_id'], 'Fields') . CHAR_SEPARATOR . 'Edit Field');
 
 $f = new form('app_fields', @$_GET['id']);
 $f->set_field(array('name'=>'type', 'type'=>'select', 'options'=>$_josh['field_types'], 'default'=>'text', 'required'=>true, 'allow_changes'=>!$editing));
