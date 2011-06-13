@@ -48,7 +48,6 @@ if (!user()) {
 		echo drawLast();
 		exit;
 	}
-	exit;
 } elseif (url_action('logout')) {
 	//logging out
 	logout();
