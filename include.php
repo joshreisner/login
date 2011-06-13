@@ -3,10 +3,11 @@ session_start();
 extract(joshlib());
 
 //define vars
-if (!defined('CHAR_DELETE')) define('CHAR_DELETE', '&times;');
-if (!defined('CHAR_UNDELETE')) define('CHAR_UNDELETE', '&curren;');
-if (!defined('CHAR_SEPARATOR')) define('CHAR_SEPARATOR', ' &raquo; ');
-if (!defined('DIRECTORY_BASE')) define('DIRECTORY_BASE', '/login/');
+if (!defined('CHAR_DELETE'))	define('CHAR_DELETE',		'&times;');
+if (!defined('CHAR_UNDELETE'))	define('CHAR_UNDELETE',		'&curren;');
+if (!defined('CHAR_SEPARATOR'))	define('CHAR_SEPARATOR',	' &raquo; ');
+if (!defined('DIRECTORY_BASE'))	define('DIRECTORY_BASE',	'/login/');
+if (!defined('EMAIL_DEFAULT'))	define('EMAIL_DEFAULT',		'josh@bureaublank.com');
 
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
@@ -32,29 +33,10 @@ $languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE
 if (!user()) {
 	if ($posting) {
 		//logging in
-		if ($r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE email = "' . $_POST['email'] . '" AND password = "' . $_POST['password'] . '" AND is_active = 1')) {
-			//good login, set session and cookies
-			$_SESSION['user_id']	= $r['id'];
-			$_SESSION['show_deleted'] = false;
-			$_SESSION['name']		= $r['firstname'];
-			$_SESSION['full_name']	= $r['firstname'] . ' ' . $r['lastname'];
-			$_SESSION['email']		= $r['email'];
-			$_SESSION['is_admin']	= $r['is_admin'];
-			$_SESSION['isLoggedIn']	= true;
-			cookie('last_email', strToLower($_POST['email']));
-			/*if (!empty($_POST['remember_me']))*/ cookie('secret_key', $r['secret_key']);
-			db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
-		}
+		login($_POST['email'], $_POST['password']);
 		url_change();
-	} elseif (cookie_get('secret_key') && $r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE secret_key = "' . $_COOKIE['secret_key'] . '" AND is_active = 1')) {
-		$_SESSION['user_id']	= $r['id'];
-		$_SESSION['show_deleted'] = false;
-		$_SESSION['name']		= $r['firstname'];
-		$_SESSION['full_name']	= $r['firstname'] . ' ' . $r['lastname'];
-		$_SESSION['email']		= $r['email'];
-		$_SESSION['is_admin']	= $r['is_admin'];
-		$_SESSION['isLoggedIn']	= true;
-		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);		
+	} elseif (cookie_get('secret_key')) {
+		login(false, false, false, $_COOKIE['secret_key']);
 	} else {
 		//login form
 		echo drawFirst();
@@ -81,26 +63,22 @@ if (!user()) {
 function dbCheck() {
 	global $schema;
 	if (!db_schema_check($schema)) {
+		if (!login(EMAIL_DEFAULT)) {
+			//create record
+			$id = db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "' . EMAIL_DEFAULT . '", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
+			login(false, false, $id);
+		}
 		
-		//log in the current user	
-		$_SESSION['user_id']		= db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active, last_login ) VALUES ( "Josh", "Reisner", "josh@bureaublank.com", "dude", ' . db_key() . ', 1, 1, NOW(), 1, NOW() )');
-		$_SESSION['name']			= 'Josh';
-		$_SESSION['full_name']		= 'Josh Reisner';
-		$_SESSION['email']			= 'josh@bureaublank.com';
-		$_SESSION['is_admin']		= true;
-		$_SESSION['isLoggedIn']		= true;
-		$_SESSION['show_deleted']	= false;
-		cookie('last_email', 'josh@joshreisner.com');
-		cookie('secret_key', db_grab('SELECT secret_key FROM app_users WHERE id = 1'));
+		if (db_table_exists('app') && !db_grab('SELECT COUNT(*) FROM app')) db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))));
 		
-		db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))));
-		
-		db_save('app_languages', false, array('code'=>'fr', 'title'=>'Français'));
-		db_save('app_languages', false, array('code'=>'it', 'title'=>'Italiano'));
-		db_save('app_languages', false, array('code'=>'es', 'title'=>'Español'));
-		db_save('app_languages', false, array('code'=>'pt', 'title'=>'Português'));
-		db_save('app_languages', false, array('code'=>'ru', 'title'=>'Русский'));
-		db_save('app_languages', false, array('code'=>'uk', 'title'=>'Українська'));
+		if (db_table_exists('app_languages') && !db_grab('SELECT COUNT(*) FROM app_languages'))  {
+			db_save('app_languages', false, array('code'=>'fr', 'title'=>'Français'));
+			db_save('app_languages', false, array('code'=>'it', 'title'=>'Italiano'));
+			db_save('app_languages', false, array('code'=>'es', 'title'=>'Español'));
+			db_save('app_languages', false, array('code'=>'pt', 'title'=>'Português'));
+			db_save('app_languages', false, array('code'=>'ru', 'title'=>'Русский'));
+			db_save('app_languages', false, array('code'=>'uk', 'title'=>'Українська'));
+		}
 		
 		url_change(DIRECTORY_BASE);
 	}
@@ -407,6 +385,37 @@ function joshlib() {
 	$count = substr_count($_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'], '/');
 	for ($i = 0; $i < $count; $i++) if (@include(str_repeat('../', $i) . 'joshlib/index.php')) return $_josh;
 	die('Could not find Joshlib.');
+}
+
+function login($email=false, $password=false, $id=false, $secret_key=false) {
+	if ($secret_key) {
+		//logging in via cookie
+		$where = 'secret_key = "' . $secret_key . '"';
+	} elseif ($id) {
+		//logging in after just creating database
+		$where = 'id = ' . $id;
+	} elseif ($password) {
+		//logging in via form
+		$where = 'email = "' . $email . '" AND password = "' . $password . '"';
+	} else {
+		//logging in via database tweak
+		$where = 'email = "' . $email . '"';
+	}
+	if ($r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE ' . $where . ' AND is_active = 1')) {
+		//good login, set session and cookies
+		$_SESSION['user_id']		= $r['id'];
+		$_SESSION['show_deleted']	= false;
+		$_SESSION['name']			= $r['firstname'];
+		$_SESSION['full_name']		= $r['firstname'] . ' ' . $r['lastname'];
+		$_SESSION['email']			= $r['email'];
+		$_SESSION['is_admin']		= $r['is_admin'];
+		$_SESSION['isLoggedIn']		= true;
+		cookie('last_email', strToLower($r['email']));
+		cookie('secret_key', $r['secret_key']);
+		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
+		return true;
+	}
+	return false;
 }
 
 function nestedList($object_values, $table_name, $class=false, $level=1) {
