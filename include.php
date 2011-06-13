@@ -48,16 +48,10 @@ if (!user()) {
 		echo drawLast();
 		exit;
 	}
+	exit;
 } elseif (url_action('logout')) {
 	//logging out
-	$_SESSION['user_id']	= false;
-	$_SESSION['isLoggedIn']	= false;
-	cookie('secret_key');
-	if (isset($_GET['return_to'])) {
-		url_change($_GET['return_to']);
-	} else {
-		url_change(DIRECTORY_BASE);
-	}
+	logout();
 }
 
 function dbCheck() {
@@ -415,7 +409,14 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
 		return true;
 	}
-	return false;
+	logout();
+}
+
+function logout() {
+	$_SESSION['user_id']	= false;
+	$_SESSION['isLoggedIn']	= false;
+	cookie('secret_key');
+	url_change(((isset($_GET['return_to'])) ? $_GET['return_to'] : DIRECTORY_BASE));
 }
 
 function nestedList($object_values, $table_name, $class=false, $level=1) {
