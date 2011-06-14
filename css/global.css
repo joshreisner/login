@@ -42,7 +42,7 @@ table tr.last td	{ border-bottom: 0; }
 table tr.admin.last td	{ border-bottom:1px solid #eee; }
 th					{ text-align:left; font-weight:normal; color:#aaa; }
 table tr.admin td		{ background-color:#ffe; }
-table tr.deleted td, table tr.deleted td a		{ color:#bbb; text-decoration: line-through; font-style: italic; }
+.deleted, .deleted a		{ color:#ccc; text-decoration: line-through; }
 
 table td.delete, table th.delete		{ width:20px; min-width:20px; text-align:center; }
 table td.is_published {  }

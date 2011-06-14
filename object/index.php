@@ -31,8 +31,12 @@ echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false,
 echo drawLast();
 
 echo draw_javascript_ready('
+	var contenteditable_focused = false;
+	$("div[contenteditable=true]").focus(function(){ contenteditable_focused = true; });
+	$("div[contenteditable=true]").blur(function(){ contenteditable_focused = false; });
+
 	$(document).keypress(function(e) {
-		if (e.which == 97) location.href = $("li.new a").attr("href");
+		if (!contenteditable_focused && (e.which == 97)) location.href = $("li.new a").attr("href");
 	});
 ');
 

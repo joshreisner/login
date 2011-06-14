@@ -119,7 +119,7 @@ function drawLast() {
 	return $return;
 }
 
-function drawObjectList($object_id, $from_type=false, $from_id=false) {
+function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax=false) {
 	
 	//get content
 	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
@@ -128,12 +128,17 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	if (!$object['permission'] && !admin()) return false;
 
 	//define variables
-	$selects	= array(TAB . 't.id');
+	$selects = array(TAB . 't.id');
 	$joins = $columns = $list = $rel_fields = $nav = $classes = array();
-	$t			= new table($object['table_name']);
-	$where		= $where_str = '';
-	$nested		= false;
-	$return		= draw_form_hidden('table_name', $object['table_name']); //need this for nested reorder ajax
+	$t = new table($object['table_name']);
+	$where = $where_str = '';
+	$nested = false;
+	
+	//start output with hidden fields for ajax
+	$return	=	draw_form_hidden('table_name', $object['table_name']) . 
+				draw_form_hidden('from_type', $from_type) . 
+				draw_form_hidden('from_id', $from_id) .
+				draw_form_hidden('object_id', $object_id); 
 	
 	//handle draggy or default sort
 	if ($object['order_by'] == 'precedence') {
@@ -246,9 +251,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 	//set up nav
 	if (admin()) {
 		if (!$from_type) {
-			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $_GET['id'], 'Object Settings');
+			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, 'Object Settings');
 			$classes[] = 'settings';
-			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $_GET['id'], 'Fields');
+			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $object_id, 'Fields');
 			$classes[] = 'fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
@@ -257,7 +262,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 			} else {
 				$nav[] = draw_link(url_action_add('show_deleted'), 'Show ' . format_quantity($deleted) . ' Deleted');
 			}
-			$classes[] = 'deleted';
+			$classes[] = 'toggle_deleted';
 		}
 		$nav[] = draw_link(false, 'Show SQL');
 		$classes[] = 'sql';
@@ -327,18 +332,24 @@ function drawObjectList($object_id, $from_type=false, $from_id=false) {
 			$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);
 			if (!$r['is_active']) {
 				array_argument($r, 'deleted');
-				$r['delete'] = draw_link(false, CHAR_UNDELETE, false, array('class'=>'delete', 'rel'=>$object_id . '-' . $r['id']));
+				$r['delete'] = draw_link(false, CHAR_UNDELETE, false, array('class'=>'delete',  'data-id'=>$r['id']));
 			} else {
-				$r['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete', 'rel'=>$object_id . '-' . $r['id']));
+				$r['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete',  'data-id'=>$r['id']));
 			}
 		}
 	}
 	
+	//draw table or list
 	if ($nested && $orderingByPrecedence) {
-		return $return . draw_form_hidden('nesting_column', $nested) . nestedList($list, $object['table_name'], 'nested');
+		$return .= draw_form_hidden('nesting_column', $nested) . nestedList($list, $object['table_name'], 'nested');
 	} else {
-		return $return . $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+		$return .= $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
 	}
+	
+	//wrap non-ajax output in a div (whose contents can be replaced via ajax)
+	if (!$from_ajax) $return = draw_div_class('object_list', $return);
+	
+	return $return;
 }
 
 function getNewObjectName($table, $field=false) {
@@ -426,13 +437,22 @@ function nestedList($object_values, $table_name, $class=false, $level=1) {
 	
 	foreach ($object_values as &$o) {
 		//die(draw_array($o));
-		$classes[] = array('data-id'=>$o['id']);
+		$classes[] = array('data-id'=>$o['id'], 'class'=>($o['is_active'] ? '' : 'deleted'));
+		
+		if (!$o['is_active']) {
+			//$classes[] = 'deleted';
+			$o['delete'] = draw_link(false, CHAR_UNDELETE, false, array('class'=>'delete', 'data-id'=>$o['id']));
+		} else {
+			$o['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete', 'data-id'=>$o['id']));
+		}
+
 		$o = draw_div('item_' . $o['id'], 
 			draw_div_class('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
 			draw_div_class('column link', draw_link($o['url'], $o['title'])) . 
 			draw_div_class('column updated', draw_span('light', $o['updated_user']) . ' ' . format_date($o['updated'])) .
-			draw_div_class('column delete', draw_link(false, CHAR_DELETE))
+			draw_div_class('column delete', $o['delete'])
 		, array('class'=>'row level_' . $level)) . nestedList($o['children'], $table_name, false, ($level + 1));
+		
 	}
 
 	return draw_list($object_values, $class, 'ul', false, $classes);
