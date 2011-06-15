@@ -56,7 +56,9 @@ if (!user()) {
 function dbCheck() {
 	global $schema;
 	if (!db_schema_check($schema)) {
-		if (!login(EMAIL_DEFAULT)) {
+		if (db_grab('SELECT COUNT(*) FROM app_users WHERE email = "' . EMAIL_DEFAULT . '" AND is_active = 1')) {
+			login(EMAIL_DEFAULT);
+		} else {
 			//create record
 			$id = db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "' . EMAIL_DEFAULT . '", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
 			login(false, false, $id);
