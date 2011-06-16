@@ -260,9 +260,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
-				$nav[] = draw_link(url_action_add('hide_deleted'), 'Hide ' . format_quantity($deleted) . ' Deleted');
+				$nav[] = draw_link(url_action_add('hide_deleted'), 'Hide ' . format_title(format_quantity($deleted)) . ' Deleted');
 			} else {
-				$nav[] = draw_link(url_action_add('show_deleted'), 'Show ' . format_quantity($deleted) . ' Deleted');
+				$nav[] = draw_link(url_action_add('show_deleted'), 'Show ' . format_title(format_quantity($deleted)) . ' Deleted');
 			}
 			$classes[] = 'toggle_deleted';
 		}

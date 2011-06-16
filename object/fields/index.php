@@ -24,8 +24,10 @@ $result = db_table('SELECT
 	f.field_name, 
 	f.type, 
 	f.is_translated,
-	' . db_updated('f') . '
+	' . db_updated('f') . ',
+	o.table_name
 FROM app_fields f
+JOIN app_objects o ON f.object_id = o.id
 WHERE f.is_active = 1 AND f.object_id = ' . $_GET['id'] . '
 ORDER BY f.precedence');
 
@@ -33,7 +35,7 @@ $t = new table('app_fields');
 $t->set_column('draggy', 'c', '&nbsp;', 20);
 $t->set_column('name');
 $t->set_column('type');
-$t->set_column('field_name');
+$t->set_column('field_name', 'l', 'Database Field');
 $t->set_column('updated', 'r');
 $t->set_column('delete', 'c', '&nbsp;', 20);
 
@@ -41,6 +43,7 @@ foreach($result as &$r) {
 	$r['class'] = ($r['is_translated']) ? 'admin' : '';
 	$r['draggy']	= '&nbsp;';
 	$r['name']		= draw_link('edit/?id=' . $r['id'] . '&object_id=' . $_GET['id'], $r['title']);
+	$r['field_name']	= $r['table_name'] . '.' . $r['field_name'];
 	$r['updated']	= format_date($r['updated']);
 	$r['type']		= $_josh['field_types'][$r['type']];
 	$r['delete']	= draw_link(url_query_add(array('action'=>'delete', 'delete_id'=>$r['id']), false), CHAR_DELETE);

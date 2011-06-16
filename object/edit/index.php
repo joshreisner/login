@@ -220,7 +220,7 @@ while ($r = db_fetch($result)) {
 				//add lorem ipsum generator to tinymce
 				if (admin()) {
 					echo lib_get('lorem_ipsum');
-					$label .= '<br/>' . draw_link('#', 'Lorem Ipsum', false, array('class'=>'lorem_ipsum'));
+					$label .= draw_link('#', 'Lorem Ipsum', false, array('class'=>'lorem_ipsum'));
 				}
 			}
 			
@@ -230,8 +230,7 @@ while ($r = db_fetch($result)) {
 				$class = ($class) ? $class . ' translation' : 'translation';
 				foreach ($languages as $key=>$lang) {
 					if ($r['is_translated']) {
-						$additional = '';
-						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class, 'label'=>$label . ' (' . $lang . ')', 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class, 'label'=>$label . draw_span('translation', $lang), 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
 						$order[] = $r['field_name'] . '_' . $key;
 					} else {
 						$f->unset_fields($r['field_name'] . '_' . $key);
@@ -250,13 +249,13 @@ if ($editing) {
 	$instance = array('created_user'=>user(), 'is_published'=>true);
 }
 
+if ($object['show_published']) $f->set_field(array('name'=>'is_published', 'type'=>'checkbox', 'value'=>$instance['is_published']));
+
 //allow setting created / updated
 if (admin()) {
 	$f->set_field(array('name'=>'created_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>$instance['created_user']));
 	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user()));
 }
-
-if ($object['show_published']) $f->set_field(array('name'=>'is_published', 'type'=>'checkbox', 'value'=>$instance['is_published']));
 
 $f->set_order(implode(',', $order));
 echo $f->draw();

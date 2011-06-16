@@ -29,6 +29,7 @@ echo drawFirst(draw_link('../../?id=' . $_GET['object_id'], $r['title']) . CHAR_
 
 $f = new form('app_fields', @$_GET['id']);
 $f->set_field(array('name'=>'type', 'type'=>'select', 'options'=>$_josh['field_types'], 'default'=>'text', 'required'=>true, 'allow_changes'=>!$editing));
+$f->set_field(array('name'=>'title', 'type'=>'text', 'required'=>true));
 $f->set_field(array('name'=>'object_id', 'type'=>'hidden', 'value'=>$_GET['object_id']));
 $f->set_field(array('name'=>'visibility', 'type'=>'select', 'options'=>$visibilty_levels, 'default'=>'normal', 'required'=>true));
 $f->set_field(array('name'=>'additional', 'label'=>'Additional Instructions', 'type'=>'textarea'));
