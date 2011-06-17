@@ -18,7 +18,7 @@ if ($posting) {
 	
 	//check to make sure columns for translations exist
 	if ($languages && isset($_POST['is_translated'])) foreach ($languages as $code=>$language) db_column_add($table, $_POST['field_name'] . '_' . $code, $_POST['type']);
-	$id = db_save('app_fields');
+	$id = db_save('app_fields', @$_GET['id'], 'post', false);
 	
 	url_change('../?id=' . $_GET['object_id']);
 }

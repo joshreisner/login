@@ -5,7 +5,7 @@ if (!admin()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if ($uploading) $_POST['banner_image'] = format_image_resize(file_get_uploaded('banner_image'), false, 105);
-	db_save('app', 1);
+	db_save('app', 1, 'post', false);
 
 	//process changes to languages
 	$languages_checked = array_checkboxes('languages');

@@ -64,15 +64,15 @@ function dbCheck() {
 			login(false, false, $id);
 		}
 		
-		if (db_table_exists('app') && !db_grab('SELECT COUNT(*) FROM app')) db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))));
+		if (db_table_exists('app') && !db_grab('SELECT COUNT(*) FROM app')) db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))), false);
 		
 		if (db_table_exists('app_languages') && !db_grab('SELECT COUNT(*) FROM app_languages'))  {
-			db_save('app_languages', false, array('code'=>'fr', 'title'=>'Français'));
-			db_save('app_languages', false, array('code'=>'it', 'title'=>'Italiano'));
-			db_save('app_languages', false, array('code'=>'es', 'title'=>'Español'));
-			db_save('app_languages', false, array('code'=>'pt', 'title'=>'Português'));
-			db_save('app_languages', false, array('code'=>'ru', 'title'=>'Русский'));
-			db_save('app_languages', false, array('code'=>'uk', 'title'=>'Українська'));
+			db_save('app_languages', false, array('code'=>'fr', 'title'=>'Français'), false);
+			db_save('app_languages', false, array('code'=>'it', 'title'=>'Italiano'), false);
+			db_save('app_languages', false, array('code'=>'es', 'title'=>'Español'), false);
+			db_save('app_languages', false, array('code'=>'pt', 'title'=>'Português'), false);
+			db_save('app_languages', false, array('code'=>'ru', 'title'=>'Русский'), false);
+			db_save('app_languages', false, array('code'=>'uk', 'title'=>'Українська'), false);
 		}
 		
 		url_change(DIRECTORY_BASE);

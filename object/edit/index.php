@@ -66,32 +66,6 @@ if (url_action('undelete')) {
 		nestedTreeRebuild($object['table_name']);
 	}
 	
-	/*objects -- deprecated
-	$fields = db_table('SELECT f.field_name, o.table_name, o2.table_name rel_table FROM app_fields f JOIN app_objects o ON o.id = f.object_id JOIN app_objects o2 ON o2.id = f.related_object_id WHERE f.is_active = 1 AND f.type = "object" AND o.id = ' . $_GET['object_id']);
-	foreach ($fields as $f) {
-		$chbxes = array_post_checkboxes($f['field_name']);
-		$precedence = 1;
-		db_query('DELETE FROM ' . $f['field_name'] . ' WHERE ' . substr($f['table_name'], 5) . '_id = ' . $id);
-		foreach ($chbxes as $c) {
-			db_query('INSERT INTO ' . $f['field_name'] . ' (
-				' . substr($f['table_name'], 5) . '_id,
-				' . substr($f['rel_table'], 5) . '_id,
-				precedence,
-				created_user,
-				created_date,
-				is_active
-			) VALUES (
-				' . $id . ',
-				' . $c . ',
-				' . $precedence . ',
-				' . user() . ',
-				NOW(),
-				1
-			)');
-			$precedence++;
-		}
-	}*/
-	
 	url_change_post('../?id=' . $_GET['object_id']);
 } elseif ($editing) {
 	$action = 'Edit';
@@ -121,6 +95,7 @@ $result = db_query('SELECT
 				f.type, 
 				f.required, 
 				f.width,
+				f.height,
 				f.related_object_id, 
 				f.additional, 
 				f.visibility,
@@ -203,7 +178,7 @@ while ($r = db_fetch($result)) {
 				$r['type'] = 'file';
 				//dont' think this is ready
 				if (url_id() && db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
-					if (!$r['required']) $label .= '<br/>' . draw_link(false, 'Clear Image', false, array(
+					if (!$r['required']) $label .= draw_link(false, 'Clear Image', false, array(
 						'class'=>'clear_img', 
 						'data-table'=>$r['table_name'],
 						'data-column'=>$r['field_name'],
@@ -211,6 +186,12 @@ while ($r = db_fetch($result)) {
 						'data-title'=>$r['title']
 					));
 				}
+
+				if (admin() && !empty($r['width']) && !empty($r['height'])) $label .= draw_link(false, 'Placekitten', false, array(
+					'class'=>'placekitten',
+					'data-width'=>$r['width'],
+					'data-height'=>$r['height']
+				));
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
 				$maxlength = $r['width'];

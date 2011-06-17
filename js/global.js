@@ -43,12 +43,6 @@ $(function(){
 		});
 	});
 	
-	//lorem ipsum for rich textareas
-	$('a.lorem_ipsum').click(function(e){
-		e.preventDefault();
-		$(this).closest('div.field').find('textarea').tinymce().setContent(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));
-	});
-	
 	//duplicate object button on settings page
 	$('a.object_duplicate').click(function(e){
 		e.preventDefault();
@@ -68,6 +62,28 @@ $(function(){
 				}
 			});
 		}
+	});
+	
+	//lorem ipsum for rich textareas
+	$('a.lorem_ipsum').click(function(e){
+		e.preventDefault();
+		$(this).closest('div.field').find('textarea').tinymce().setContent(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));
+	});
+	
+	//placekitten for images
+	$('a.placekitten').click(function(e){
+		e.preventDefault();
+		location.href = '/login/ajax/placekitten.php?width=' + $(this).attr('data-width') + '&height=' + $(this).attr('data-height');
+/*
+		$.ajax({
+			url : '/login/ajax/placekitten.php',
+			type : 'POST',
+			data : { width:$(this).attr('data-width'), height:$(this).attr('data-height') },
+			success : function(data) { 
+				alert(data);
+			}
+		});
+*/
 	});
 	
 	//clear images from object/edit forms
