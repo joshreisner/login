@@ -3,11 +3,14 @@ session_start();
 extract(joshlib());
 
 //define vars
-if (!defined('CHAR_DELETE'))	define('CHAR_DELETE',		'&times;');
-if (!defined('CHAR_UNDELETE'))	define('CHAR_UNDELETE',		'&curren;');
-if (!defined('CHAR_SEPARATOR'))	define('CHAR_SEPARATOR',	' &raquo; ');
-if (!defined('DIRECTORY_BASE'))	define('DIRECTORY_BASE',	'/login/');
-if (!defined('EMAIL_DEFAULT'))	define('EMAIL_DEFAULT',		'josh@bureaublank.com');
+if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
+if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
+if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'&nbsp;&raquo;&nbsp;');
+if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
+if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@bureaublank.com');
+if (!defined('SESSION_USER_ID'))	define('SESSION_USER_ID',	'cms_user_id');
+if (!defined('SESSION_ADMIN'))		define('SESSION_ADMIN',		'cms_is_admin');
+if (!defined('SESSION_USER_NAME'))	define('SESSION_USER_NAME',	'cms_name');
 
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
@@ -21,7 +24,7 @@ $schema = array(
 
 $visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
-if (url_action('show_deleted,hide_deleted') && admin()) {
+if (url_action('show_deleted,hide_deleted') && admin(SESSION_ADMIN)) {
 	$_SESSION['show_deleted'] = url_action('show_deleted');
 	url_drop('action');
 }
@@ -30,7 +33,7 @@ if (url_action('show_deleted,hide_deleted') && admin()) {
 $languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
 
 //sekurity
-if (!user()) {
+if (!user(false, SESSION_USER_ID)) {
 	if ($posting) {
 		//logging in
 		login($_POST['email'], $_POST['password']);
@@ -94,7 +97,7 @@ function drawFirst($title='CMS') {
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
-	if (user()) {
+	if (user(false, SESSION_USER_ID)) {
 		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= '<h1>CMS</h1>';
@@ -124,10 +127,10 @@ function drawLast() {
 function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax=false) {
 	
 	//get content
-	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
+	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
 	
 	//security
-	if (!$object['permission'] && !admin()) return false;
+	if (!$object['permission'] && !admin(SESSION_ADMIN)) return false;
 
 	//define variables
 	$selects = array(TAB . 't.id');
@@ -251,7 +254,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	//die(draw_container('pre', $sql));
 	
 	//set up nav
-	if (admin()) {
+	if (admin(SESSION_ADMIN)) {
 		if (!$from_type) {
 			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, 'Object Settings');
 			$classes[] = 'settings';
@@ -409,12 +412,12 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 	}
 	if ($r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE ' . $where . ' AND is_active = 1')) {
 		//good login, set session and cookies
-		$_SESSION['user_id']		= $r['id'];
+		$_SESSION[SESSION_USER_ID]		= $r['id'];
 		$_SESSION['show_deleted']	= false;
-		$_SESSION['name']			= $r['firstname'];
+		$_SESSION[SESSION_USER_NAME]	= $r['firstname'];
 		$_SESSION['full_name']		= $r['firstname'] . ' ' . $r['lastname'];
 		$_SESSION['email']			= $r['email'];
-		$_SESSION['is_admin']		= $r['is_admin'];
+		$_SESSION[SESSION_ADMIN]	= $r['is_admin'];
 		$_SESSION['isLoggedIn']		= true;
 		cookie('last_email', strToLower($r['email']));
 		cookie('secret_key', $r['secret_key']);

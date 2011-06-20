@@ -2,7 +2,7 @@
 //add a new object to the CMS or edit its settings
 include('../include.php');
 
-if (!admin()) url_change(DIRECTORY_BASE);
+if (!admin(SESSION_ADMIN)) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if (!$editing) {
@@ -36,11 +36,11 @@ if ($posting) {
 	//duplicate an object and all its meta and values
 	//todo fix app_objects precedence
 	$table_name = getNewObjectName('user ' . $_GET['title']);
-	$object_id = db_query('INSERT INTO app_objects ( title, table_name, order_by, direction, group_by_field, list_help, form_help, show_published, web_page, created_date, created_user, is_active ) SELECT "' . $_GET['title'] . '", "' . $table_name . '", order_by, direction, group_by_field, list_help, form_help, show_published, web_page, ' . db_date() . ', ' . user() . ', 1 FROM app_objects WHERE id = ' . $_GET['id']);
+	$object_id = db_query('INSERT INTO app_objects ( title, table_name, order_by, direction, group_by_field, list_help, form_help, show_published, web_page, created_date, created_user, is_active ) SELECT "' . $_GET['title'] . '", "' . $table_name . '", order_by, direction, group_by_field, list_help, form_help, show_published, web_page, ' . db_date() . ', ' . user(false, SESSION_USER_ID) . ', 1 FROM app_objects WHERE id = ' . $_GET['id']);
 	db_table_duplicate(db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']), $table_name);
 	//going to skip copying permissions
 	db_query('INSERT INTO app_objects_links ( object_id, linked_id ) SELECT ' . $object_id . ', linked_id FROM app_objects_links WHERE object_id = ' . $_GET['id']);
-	db_query('INSERT INTO app_fields ( object_id, type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, created_date, created_user, is_active ) SELECT ' . $object_id . ', type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, ' . db_date() . ', ' . user() . ', 1 FROM app_fields WHERE object_id = ' . $_GET['id']);
+	db_query('INSERT INTO app_fields ( object_id, type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, created_date, created_user, is_active ) SELECT ' . $object_id . ', type, title, field_name, visibility, required, related_field_id, related_object_id, width, height, additional, ' . db_date() . ', ' . user(false, SESSION_USER_ID) . ', 1 FROM app_fields WHERE object_id = ' . $_GET['id']);
 	
 	//fix app_objects.group_by_field
 	if ($field_name = db_grab('SELECT f.field_name FROM app_fields f JOIN app_objects o ON f.id = o.group_by_field WHERE o.id = ' . $object_id)) {
@@ -75,7 +75,7 @@ if ($posting) {
 		foreach ($cols as $c) {
 			if ($r[$c['field_name']]) $updates[] = $c['field_name'] . ' = ' . format_binary(format_image_resize($r[$c['field_name']], $c['width'], $c['height']));
 		}
-		if (count($updates)) db_query('UPDATE ' . $table . ' SET ' . implode(', ', $updates) . ', updated_date = NOW(), updated_user = ' . user() . ' WHERE id = ' . $r['id']);
+		if (count($updates)) db_query('UPDATE ' . $table . ' SET ' . implode(', ', $updates) . ', updated_date = NOW(), updated_user = ' . user(false, SESSION_USER_ID) . ' WHERE id = ' . $r['id']);
 	}
 	url_drop('action');
 } elseif (url_action('template_news')) {
@@ -176,7 +176,7 @@ if (url_id()) {
 }
 
 //permissions
-if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND is_admin <> 1 AND id <> ' . user())) {
+if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND is_admin <> 1 AND id <> ' . user(false, SESSION_USER_ID))) {
 	$sql = 'SELECT u.id, CONCAT(u.firstname, " ", u.lastname) title, ' . (url_id() ? '(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = u.id AND u2o.object_id = ' . $_GET['id'] . ')' : 1) . ' checked FROM app_users u WHERE u.is_active = 1 and u.is_admin <> 1 ORDER BY title';
 	$f->set_field(array('name'=>'permissions', 'type'=>'checkboxes', 'sql'=>$sql));
 }

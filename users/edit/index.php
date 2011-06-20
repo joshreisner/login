@@ -1,7 +1,7 @@
 <?php
 include('../../include.php');
 
-if (!admin()) url_change(DIRECTORY_BASE);
+if (!admin(SESSION_ADMIN)) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if ($uploading) $_POST['photo'] = format_image_resize(file_get_uploaded('photo'), 52, 52);

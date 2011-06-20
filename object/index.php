@@ -14,10 +14,10 @@ if (url_action('delete')) {
 url_query_require('../');
 
 //get object info
-$object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['id']);
+$object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['id']);
 
 //security
-if (!$object['permission'] && !admin()) url_change('../');
+if (!$object['permission'] && !admin(SESSION_ADMIN)) url_change('../');
 
 //draw the header
 echo drawFirst($object['title']);
@@ -26,7 +26,7 @@ echo drawFirst($object['title']);
 echo drawObjectList($_GET['id']);
 
 //help panel on right side, potentially editable
-echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin() ? 'app_objects.list_help.' . $_GET['id'] : false));
+echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
 
 echo drawLast();
 
