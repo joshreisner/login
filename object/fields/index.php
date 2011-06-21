@@ -2,7 +2,7 @@
 include('../../include.php');
 
 //sekurit
-if (!$_SESSION['is_admin']) url_change('../');
+if (!admin(SESSION_ADMIN)) url_change('../');
 url_query_require();
 
 $object = db_grab('SELECT title, table_name FROM app_objects WHERE id = ' . $_GET['id']);

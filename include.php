@@ -181,13 +181,13 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		if ($f['visibility'] == 'list') {
 			$columns[] = $f;
 			if (($f['type'] == 'date') || ($f['type'] == 'datetime')) {
-				$t->set_column($f['field_name'], 'r', $f['title']);
+				$t->set_column($f['field_name'], 'r ' . $f['type'], $f['title']);
 			} elseif ($f['type'] == 'file-type') {
-				$t->set_column($f['field_name'],'l', '&nbsp;');
+				$t->set_column($f['field_name'],'l ' . $f['type'], '&nbsp;');
 			} elseif (($f['type'] == 'image') && ($f['type'] == 'image-alt')) {
-				$t->set_column($f['field_name'],'l', $f['title']);
+				$t->set_column($f['field_name'],'l ' . $f['type'], $f['title']);
 			} else {
-				$t->set_column($f['field_name'], 'l', $f['title']);
+				$t->set_column($f['field_name'], 'l ' . $f['type'], $f['title']);
 			}
 		}
 		

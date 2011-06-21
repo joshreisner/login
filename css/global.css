@@ -36,19 +36,20 @@ h2 { font-weight:normal; padding-left:3px; font-size:17px; margin-top:10px; }
 hr { border-width:1px 0px 0px 0px; border-style:dashed; border-color:#ccc; width:200px; margin:30px 0px 20px 0px; padding:0px; }
 
 /* table */
-table				{ width:650px; }
-table td, table th	{ padding:4px; border-bottom:1px solid #eee; vertical-align:top; min-height:20px; }
-table tr.last td	{ border-bottom: 0; }
+table					{ width:650px; }
+table td, table th		{ padding:4px; border-bottom:1px solid #eee; vertical-align:top; min-height:20px; }
+table tr.last td		{ border-bottom: 0; }
 table tr.admin.last td	{ border-bottom:1px solid #eee; }
-th					{ text-align:left; font-weight:normal; color:#aaa; }
+th						{ text-align:left; font-weight:normal; color:#aaa; }
 table tr.admin td		{ background-color:#ffe; }
-.deleted, .deleted a		{ color:#ccc; text-decoration: line-through; }
+.deleted, .deleted a	{ color:#ccc; text-decoration: line-through; }
 
-table td.delete, table th.delete		{ width:20px; min-width:20px; text-align:center; }
-table td.is_published {  }
-table td.icon, table th.icon			{ width:20px; min-width:20px; text-align:center; }
-table td.checkbox, table th.checkbox	{ width:20px; min-width:20px; text-align:center; padding:0px; }
-table td.draggy							{ cursor:move; width:20px; min-width:20px; text-align:center; padding:0px; background:#fff url(/login/images/move.png) no-repeat 4px 4px; }
+table td.file-type, table th.file-type			{ width:16px; text-align:center; padding: 5px 3px 1px 3px; }
+table td.delete, table th.delete				{ text-align:center; }
+table td.is_published, table th.is_published	{ width:20px; text-align:center; }
+table td.checkbox, table th.checkbox			{ width:20px; text-align:center; padding-top: 2px; }
+table td.draggy									{ width:20px; padding:0px; cursor:move; background:#fff url(/login/images/move.png) no-repeat 4px 5px; }
+
 table tr.group td						{ height:40px; vertical-align:bottom; text-transform:uppercase; font-weight:bold; font-size:11px;	 }
 table tr.depth-1 td a					{ margin-left:16px; }
 table tr.depth-2 td a					{ margin-left:32px; }
