@@ -3,7 +3,7 @@ include('../../include.php');
 
 url_query_require('../', 'object_id');
 
-$object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, o.web_page, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['object_id']);
+$object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, o.web_page, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['object_id']);
 
 //security
 if (!$object['permission'] && !admin(SESSION_ADMIN)) url_change('../../');
@@ -132,7 +132,7 @@ while ($r = db_fetch($result)) {
 						o.direction,
 						o.group_by_field,
 						(SELECT f.field_name FROM app_fields f WHERE f.is_active = 1 AND f.object_id = o.id AND f.type NOT IN ("file", "image") ORDER BY f.precedence LIMIT 1) field_name,
-						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . '  AND u2o.object_id = o.id) permission
+						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 					FROM app_objects o
 					WHERE o.id = ' . $r['related_object_id']);
 				if ($_GET['object_id'] == $rel_object['id']) {
@@ -164,7 +164,7 @@ while ($r = db_fetch($result)) {
 					o.title, 
 					o.table_name, 
 					(SELECT f.field_name FROM app_fields f WHERE f.object_id = o.id AND f.is_active = 1 AND f.type <> "image" ORDER BY f.precedence LIMIT 1) field_name,
-					(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . '  AND u2o.object_id = o.id) permission
+					(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 				FROM app_objects o
 				WHERE o.id = ' . $r['related_object_id']);
 			if ($rel_object['permission'] || admin(SESSION_ADMIN)) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
@@ -227,7 +227,7 @@ if ($editing) {
 	$instance = db_grab('SELECT created_user, is_published FROM ' . $object['table_name']  . ' WHERE id = ' . $_GET['id']);
 } else {
 	//otherwise set defaults
-	$instance = array('created_user'=>user(false, SESSION_USER_ID), 'is_published'=>true);
+	$instance = array('created_user'=>user(), 'is_published'=>true);
 }
 
 if ($object['show_published']) $f->set_field(array('name'=>'is_published', 'type'=>'checkbox', 'value'=>$instance['is_published']));
@@ -235,7 +235,7 @@ if ($object['show_published']) $f->set_field(array('name'=>'is_published', 'type
 //allow setting created / updated
 if (admin(SESSION_ADMIN)) {
 	$f->set_field(array('name'=>'created_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>$instance['created_user']));
-	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user(false, SESSION_USER_ID)));
+	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user()));
 }
 
 $f->set_order(implode(',', $order));

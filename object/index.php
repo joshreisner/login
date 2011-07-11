@@ -14,7 +14,7 @@ if (url_action('delete')) {
 url_query_require('../');
 
 //get object info
-$object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['id']);
+$object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['id']);
 
 //security
 if (!$object['permission'] && !admin(SESSION_ADMIN)) url_change('../');

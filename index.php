@@ -8,7 +8,7 @@ $objects = db_table('SELECT
 	o.title object, 
 	o.updated_date,
 	o.table_name,
-	(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.object_id = o.id AND u2o.user_id = ' . user(false, SESSION_USER_ID) . ') permission
+	(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.object_id = o.id AND u2o.user_id = ' . user() . ') permission
 FROM app_objects o
 WHERE o.is_active = 1
 ORDER BY o.title');

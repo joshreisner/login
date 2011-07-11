@@ -33,7 +33,7 @@ if (url_action('show_deleted,hide_deleted') && admin(SESSION_ADMIN)) {
 $languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
 
 //sekurity
-if (!user(false, SESSION_USER_ID)) {
+if (!user()) {
 	if ($posting) {
 		//logging in
 		login($_POST['email'], $_POST['password']);
@@ -97,7 +97,7 @@ function drawFirst($title='CMS') {
 		draw_css('a { color:#' . $app['link_color'] . '}')
 	);
 	
-	if (user(false, SESSION_USER_ID)) {
+	if (user()) {
 		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= '<h1>CMS</h1>';
@@ -127,7 +127,7 @@ function drawLast() {
 function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax=false) {
 	
 	//get content
-	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user(false, SESSION_USER_ID) . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
+	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
 	
 	//security
 	if (!$object['permission'] && !admin(SESSION_ADMIN)) return false;
@@ -428,7 +428,7 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 }
 
 function logout() {
-	$_SESSION['user_id']	= false;
+	$_SESSION[SESSION_USER_ID]	= false;
 	$_SESSION['isLoggedIn']	= false;
 	cookie('secret_key');
 	url_change(((isset($_GET['return_to'])) ? $_GET['return_to'] : DIRECTORY_BASE));
