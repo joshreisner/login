@@ -1,7 +1,4 @@
 <?php
-session_start();
-extract(joshlib());
-
 //define vars
 if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
 if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
@@ -11,6 +8,8 @@ if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@bureaublank.com')
 if (!defined('SESSION_USER_ID'))	define('SESSION_USER_ID',	'cms_user_id');
 if (!defined('SESSION_ADMIN'))		define('SESSION_ADMIN',		'cms_is_admin');
 if (!defined('SESSION_USER_NAME'))	define('SESSION_USER_NAME',	'cms_name');
+
+extract(joshlib());
 
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
