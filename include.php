@@ -1,5 +1,5 @@
 <?php
-//define vars
+//define settings
 if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
 if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
 if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'&nbsp;&raquo;&nbsp;');
