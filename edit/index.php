@@ -167,7 +167,7 @@ if (url_id()) {
 	if ($options = db_table('SELECT id, title FROM app_fields WHERE type = "select" AND is_active = 1 AND object_id = ' . $_GET['id'])) {
 		$f->set_field(array('name'=>'group_by_field', 'label'=>'Group By', 'type'=>'select', 'options'=>$options));
 	} else {
-		$f->unset_field('group_by_field');
+		$f->unset_fields('group_by_field');
 	}
 	if ($options = db_table('SELECT o.id, o.title, (SELECT COUNT(*) FROM app_objects_links l WHERE l.object_id = ' . $_GET['id'] . ' AND l.linked_id = o.id) checked FROM app_objects o JOIN app_fields f ON o.id = f.object_id WHERE f.related_object_id = ' . $_GET['id'])) {
 		$f->set_field(array('name'=>'object_links', 'type'=>'checkboxes', 'label'=>'Linked Objects', 'linking_table'=>'app_objects_links', 'options_table'=>'app_objects', 'option_id'=>'object_id', 'option_title'=>'title', 'options'=>$options));
