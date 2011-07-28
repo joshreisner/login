@@ -64,6 +64,10 @@ if ($posting) {
 	db_query('ALTER TABLE ' . $table . ' AUTO_INCREMENT = 1');
 	if (db_table_exists($table . '_to_words')) db_query('DELETE FROM ' . $table . '_to_words');
 	url_drop('action');
+} elseif (url_action('indexes')) {
+	//refresh search indexes
+	db_words_refresh($table);
+	url_drop('action');
 } elseif (url_action('resize')) {
 	//resize all images in object according to new field rules
 	//todo move this to field edit?
@@ -190,7 +194,7 @@ echo $f->draw();
 if (url_id()) {
 	$images = false;
 	if (db_grab('SELECT COUNT(*) FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)')) {
-		$images = draw_p('You can also ' . draw_link(url_action_add('resize'), 'resize all images') . '.');
+		$images = draw_p('You can also ' . draw_link(url_action_add('resize'), 'resize') . ' all images.');
 	}
 
 	$table = db_grab('SELECT table_name FROM app_objects WHERE id = ' . $_GET['id']);
@@ -201,9 +205,10 @@ if (url_id()) {
 	}
 	
 	echo draw_div('panel', 
-		draw_p('You can drop this object and all its associated fields and values by ' . draw_link(url_action_add('delete'), 'clicking here') . '.') . 
+		draw_p('You can ' . draw_link(url_action_add('delete'), 'drop') . ' this object and all its associated fields and values.') . 
 		$images . $values . 
-		draw_p('You can also ' . draw_link(false, 'duplicate this object', false, array('class'=>'object_duplicate')) . ' and all of its values.')
+		draw_p('You can also ' . draw_link(false, 'duplicate', false, array('class'=>'object_duplicate')) . ' this object and all of its values.') .
+		draw_p('You can also ' . draw_link(url_action_add('indexes'), 'refresh') . ' the search indexes for all this object\'s values.')
 	);
 } else {
 	//add new object
