@@ -139,20 +139,18 @@ while ($r = db_fetch($result)) {
 				$options = array();
 				if ($_GET['object_id'] == $rel_object['id']) {
 					//nested object select
-					$sql = 'SELECT id, ' . $rel_object['field_name'] . ', subsequence FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
+					$sql = 'SELECT id, ' . $rel_object['field_name'] . ', ROUND((subsequence - precedence - 1) / 2) children, 0 depth FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
-					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
-					$sql = db_table($sql);
-					$last = 0;
-					$depth = 1;
-					foreach ($sql as &$o) {
-						if ($o['subsequence'] < $last) {
-							$depth++;
-						} elseif ($o['subsequence'] - $last != 2) {
-							$depth--;
+					$sql = db_table($sql . ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction']);
+					$count = count($sql);
+					for ($i = 0; $i < $count; $i++) {
+						if ($sql[$i]['children']) {
+							for ($j = 0; $j < $count; $j++) {
+								if ($j > $i && $j <= $i + $sql[$i]['children']) $sql[$j]['depth']++;
+							}
 						}
-						$last = $o['subsequence'];
-						if (!url_id() || (url_id() != $o['id'])) $options[$o['id']] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $depth) . $o['title']; //can't be its own parent
+						//echo $sql[$i]['depth'] . ' ' . $sql[$i]['title'] . BR;
+						if (!url_id() || (url_id() != $sql[$i]['id'])) $options[$sql[$i]['id']] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $sql[$i]['depth']) . $sql[$i]['title']; //can't be its own parent
 					}
 				} elseif ($rel_object['group_by_field']) {
 					//this needs to be a grouped select
