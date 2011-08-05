@@ -45,7 +45,7 @@ if (!user()) {
 		$f = new form('login', false, 'Log In');
 		$f->set_field(array('type'=>'email', 'name'=>'email', 'value'=>@$_COOKIE['last_email'], 'required'=>true));
 		$f->set_field(array('type'=>'password', 'name'=>'password', 'required'=>true));
-		//$f->set_field(array('type'=>'checkbox', 'name'=>'remember_me', 'default'=>true));
+		$f->set_focus(@$_COOKIE['last_email'] ? 'password' : 'email');
 		echo $f->draw();
 		echo drawLast();
 		exit;
@@ -99,10 +99,9 @@ function drawFirst($title='CMS') {
 	if (user()) {
 		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
 		if (empty($_josh['request']['subfolder'])) {
-			$return .= '<h1>CMS</h1>';
+			$return .= draw_h1('CMS');
 		} else {
-			$return .= '<h1>' . draw_link(DIRECTORY_BASE, 'CMS') . CHAR_SEPARATOR;
-			$return .= $title . '</h1>';
+			$return .= draw_h1(draw_link(DIRECTORY_BASE, 'CMS') . CHAR_SEPARATOR . $title);
 		}
 	} else {
 		$return .= '<body class="login">';

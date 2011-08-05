@@ -106,6 +106,7 @@ $result = db_query('SELECT
 			JOIN app_objects o ON f.object_id = o.id
 			WHERE o.id = ' . $_GET['object_id'] . '
 			ORDER BY f.precedence');
+			
 while ($r = db_fetch($result)) {
 	if (!$r['is_active'] || ($r['visibility'] == 'hidden')) {
 		//need to specify this because the column is still present in the db after it's deleted
@@ -135,12 +136,24 @@ while ($r = db_fetch($result)) {
 						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 					FROM app_objects o
 					WHERE o.id = ' . $r['related_object_id']);
+				$options = array();
 				if ($_GET['object_id'] == $rel_object['id']) {
-					//nested object
-					$sql = 'SELECT id, ' . $rel_object['field_name'] . ' FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
-					if (url_id()) $sql .= ' AND id <> ' . url_id();
+					//nested object select
+					$sql = 'SELECT id, ' . $rel_object['field_name'] . ', subsequence FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
 					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
+					$sql = db_table($sql);
+					$last = 0;
+					$depth = 1;
+					foreach ($sql as &$o) {
+						if ($o['subsequence'] < $last) {
+							$depth++;
+						} elseif ($o['subsequence'] - $last != 2) {
+							$depth--;
+						}
+						$last = $o['subsequence'];
+						if (!url_id() || (url_id() != $o['id'])) $options[$o['id']] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $depth) . $o['title']; //can't be its own parent
+					}
 				} elseif ($rel_object['group_by_field']) {
 					//this needs to be a grouped select
 					$group = db_grab('SELECT o.order_by, o.direction, o.table_name, f.field_name field_name_from, (SELECT f2.field_name FROM app_fields f2 WHERE f2.object_id = o.id AND f2.visibility = "list" ORDER BY f2.precedence LIMIT 1) field_name_to FROM app_fields f JOIN app_objects o ON f.related_object_id = o.id WHERE f.id = ' . $rel_object['group_by_field']);
@@ -156,7 +169,7 @@ while ($r = db_fetch($result)) {
 				}
 				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || admin(SESSION_ADMIN))) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 
-				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql));
+				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options));
 			}
 		} elseif ($r['type'] == 'checkboxes') {
 			$rel_object = db_grab('SELECT 
