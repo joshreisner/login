@@ -249,6 +249,7 @@ if (admin(SESSION_ADMIN)) {
 	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user()));
 }
 
+$f->unset_fields('subsequence');
 $f->set_order(implode(',', $order));
 echo $f->draw();
 
