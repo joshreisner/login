@@ -19,13 +19,15 @@ if (url_action('undelete')) {
 		//fetch any image or file fields, because analytical fields are possible here
 		$result = db_query('SELECT id, type, field_name, width, height FROM app_fields WHERE is_active = 1 AND (type = "image" OR type = "file") AND object_id = ' . $_GET['object_id']);
 		while ($r = db_fetch($result)) {
-			$type = file_type($_FILES[$r['field_name']]['name']);
-			if ($file = file_get_uploaded($r['field_name'])) {
+			if (file_exists($_FILES[$r['field_name']]['tmp_name'])) {
 				//get any file_types (can be for images or files)
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-type" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = file_ext($_FILES[$r['field_name']]['name']);
-				
+
+				$type = file_type($_FILES[$r['field_name']]['name']);
 				if ($r['type'] == 'image') {
+					$file = format_image($_FILES[$r['field_name']]['tmp_name'], $type);
+					
 					//get any related images first
 					$related = db_query('SELECT field_name, width, height FROM app_fields WHERE is_active = 1 AND type = "image-alt" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 					while ($e = db_fetch($related)) $_POST[$e['field_name']] = format_image_resize($file, $e['width'], $e['height']);
@@ -33,6 +35,8 @@ if (url_action('undelete')) {
 					//then resize if you should
 					$_POST[$r['field_name']] = ($r['width'] || $r['height'])  ? format_image_resize($file, $r['width'], $r['height']) : $file;
 				} elseif ($r['type'] == 'file') {
+					$file = file_get_contents($_FILES[$r['field_name']]['tmp_name']);
+					
 					//get any related images--in this case, these would be thumbnails.  also be sure that it's a PDF that was uploaded
 					if ($type == 'pdf') {
 						$related = db_query('SELECT field_name, width, height FROM app_fields WHERE is_active = 1 AND type = "image-alt" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
@@ -249,7 +253,6 @@ if (admin(SESSION_ADMIN)) {
 	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user()));
 }
 
-$f->unset_fields('subsequence');
 $f->set_order(implode(',', $order));
 echo $f->draw();
 
