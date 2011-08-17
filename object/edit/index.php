@@ -188,12 +188,12 @@ while ($r = db_fetch($result)) {
 			$label = $r['title'];
 			$maxlength = false;
 			
-			if ($r['type'] == 'image') {
-				$preview = true;
+			if (($r['type'] == 'image') || ($r['type'] == 'file')) {
+				if ($r['type'] == 'image') $preview = true;
 				$r['type'] = 'file';
 				//dont' think this is ready
 				if (url_id() && db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
-					if (!$r['required']) $label .= draw_link(false, 'Clear Image', false, array(
+					if (!$r['required']) $label .= draw_link(false, 'Clear', false, array(
 						'class'=>'clear_img', 
 						'data-table'=>$r['table_name'],
 						'data-column'=>$r['field_name'],
