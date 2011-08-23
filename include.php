@@ -154,6 +154,9 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	}
 	$object['order_by'] = 't.' . $object['order_by'];
 	
+	//todo: figure out way to implement this
+	//$f['order_by'] = 'TRIM(LEADING \'The \' FROM ' . $object['order_by'] . ')';
+	
 	//add publish checkbox
 	if ($object['show_published']) {
 		$t->set_column('is_published', 'checkbox', '&nbsp;');
@@ -231,7 +234,6 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 				//add table prefix to the transpose
 				$rel_fields[$f['id']] = $f['related_table'] . '_' . $rel_fields[$f['id']];
 			}
-			
 		}
 	}
 	$joins[] = 'LEFT JOIN app_users u1 ON t.created_user = u1.id'; //might be user-less (might have been generated from a web page for ex)
