@@ -151,7 +151,7 @@ if ($posting) {
 } elseif ($editing) {
 	$title = db_grab('SELECT title FROM app_objects WHERE id = ' . $_GET['id']);
 	$action = 'Edit Settings';
-	echo drawFirst(draw_link('../object/?id=' . $_GET['id'], $title) . ' &gt; ' . $action);
+	echo drawFirst(draw_link('../object/?id=' . $_GET['id'], $title) . CHAR_SEPARATOR . $action);
 } else { //adding
 	$action = 'Add New Object';
 	echo drawFirst($action);
