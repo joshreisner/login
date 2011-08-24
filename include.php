@@ -3,6 +3,7 @@
 if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
 if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
 if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'&nbsp;&raquo;&nbsp;');
+if (!defined('COOKIE_KEY'))			define('COOKIE_KEY',		'cms_key');
 if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
 if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@bureaublank.com');
 if (!defined('SESSION_USER_ID'))	define('SESSION_USER_ID',	'cms_user_id');
@@ -37,9 +38,10 @@ if (!user()) {
 		//logging in
 		login($_POST['email'], $_POST['password']);
 		url_change();
-	} elseif (cookie_get('secret_key')) {
-		login(false, false, false, $_COOKIE['secret_key']);
-	} else {
+	} elseif (!empty($_COOKIE[COOKIE_KEY])) {
+		die('helloooo');
+		login(false, false, false, $_COOKIE[COOKIE_KEY]);
+	} elseif (!url_action('logout')) {
 		//login form
 		echo drawFirst();
 		$f = new form('login', false, 'Log In');
@@ -50,7 +52,9 @@ if (!user()) {
 		echo drawLast();
 		exit;
 	}
-} elseif (url_action('logout')) {
+}
+
+if (url_action('logout')) {
 	//logging out
 	logout();
 }
@@ -420,7 +424,7 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 		$_SESSION[SESSION_ADMIN]	= $r['is_admin'];
 		$_SESSION['isLoggedIn']		= true;
 		cookie('last_email', strToLower($r['email']));
-		cookie('secret_key', $r['secret_key']);
+		cookie(COOKIE_KEY, $r['secret_key']);
 		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);
 		return true;
 	}
@@ -428,9 +432,10 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 }
 
 function logout() {
+	cookie(COOKIE_KEY);
 	$_SESSION[SESSION_USER_ID]	= false;
 	$_SESSION['isLoggedIn']	= false;
-	cookie('secret_key');
+	//die(draw_array($_SESSION));
 	url_change(((isset($_GET['return_to'])) ? $_GET['return_to'] : DIRECTORY_BASE));
 }
 
