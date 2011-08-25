@@ -39,7 +39,6 @@ if (!user()) {
 		login($_POST['email'], $_POST['password']);
 		url_change();
 	} elseif (!empty($_COOKIE[COOKIE_KEY])) {
-		die('helloooo');
 		login(false, false, false, $_COOKIE[COOKIE_KEY]);
 	} elseif (!url_action('logout')) {
 		//login form
