@@ -220,7 +220,6 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$rel_order = db_grab('SELECT o.table_name, o.order_by, o.direction FROM app_objects o JOIN app_fields f ON f.related_object_id = o.id WHERE f.id = ' . $f['id']);
 					if (empty($rel_order['order_by'])) $rel_order['order_by'] = 'created_date'; //might be blank, go with default
 					$object['order_by'] = $rel_order['table_name'] . '.' . $rel_order['order_by'] . ' ' . $rel_order['direction'] . ', ' . $object['order_by'];
-					//die('hi');
 				} else {
 					//filter down to show just this group, because we're on the group's object page
 					$joins[] = 'JOIN ' . $f['related_table'] . ' ON ' . $f['related_table'] . '.id = t.' . $f['field_name'];
@@ -252,9 +251,6 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	if (!$_SESSION['show_deleted']) $where = 't.is_active = 1' . (empty($where) ? '' : ' AND ') . $where;
 	if (!empty($where)) $where = 'WHERE ' . $where;
 	$sql = implode(NEWLINE, array('SELECT', implode(',' . NEWLINE, $selects), 'FROM ' . $object['table_name'] . ' t', implode(NEWLINE, $joins), $where, 'ORDER BY ' . $object['order_by']));
-
-	//testing
-	//die(draw_container('pre', $sql));
 	
 	//set up nav
 	if (admin(SESSION_ADMIN)) {
@@ -434,7 +430,6 @@ function logout() {
 	cookie(COOKIE_KEY);
 	$_SESSION[SESSION_USER_ID]	= false;
 	$_SESSION['isLoggedIn']	= false;
-	//die(draw_array($_SESSION));
 	url_change(((isset($_GET['return_to'])) ? $_GET['return_to'] : DIRECTORY_BASE));
 }
 
@@ -445,7 +440,6 @@ function nestedList($object_values, $table_name, $class=false, $level=1) {
 	$classes = array();
 	
 	foreach ($object_values as &$o) {
-		//die(draw_array($o));
 		$classes[] = array('data-id'=>$o['id'], 'class'=>($o['is_active'] ? '' : 'deleted'));
 		
 		if (!$o['is_active']) {
