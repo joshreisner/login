@@ -191,22 +191,37 @@ while ($r = db_fetch($result)) {
 			if (($r['type'] == 'image') || ($r['type'] == 'file')) {
 				if ($r['type'] == 'image') $preview = true;
 				$r['type'] = 'file';
-				//dont' think this is ready
-				if (url_id() && db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
-					if (!$r['required']) $label .= draw_link(false, 'Clear', false, array(
-						'class'=>'clear_img', 
-						'data-table'=>$r['table_name'],
-						'data-column'=>$r['field_name'],
-						'data-id'=>$_GET['id'],
-						'data-title'=>$r['title']
-					));
-				}
 
-				if (admin(SESSION_ADMIN) && !empty($r['width']) && !empty($r['height'])) $label .= draw_link(false, 'Placekitten', false, array(
-					'class'=>'placekitten',
-					'data-width'=>$r['width'],
-					'data-height'=>$r['height']
-				));
+				if (url_id()) {
+					if (db_grab('SELECT CASE WHEN ' . $r['field_name'] . ' IS NULL THEN 0 ELSE 1 END FROM ' . $r['table_name'] . ' WHERE id = ' . $_GET['id'])) {
+						//has a value
+						if (!$r['required']) {
+							//show clear link
+							$label .= draw_link(false, 'Clear', false, array(
+								'class'=>'clear_img', 
+								'data-table'=>$r['table_name'],
+								'data-column'=>$r['field_name'],
+								'data-id'=>$_GET['id'],
+								'data-title'=>$r['title']));
+						} else {
+							//values already in database, don't require the field in javascript
+							$r['required'] = false;
+						}
+					}
+				}
+				
+				if (!empty($r['width']) && !empty($r['height'])) {
+					$additional = 'Will be resized to ' . $r['width'] . 'px wide &times; ' . $r['height'] . 'px tall.';
+					if (admin(SESSION_ADMIN)) $label .= draw_link(false, 'Placekitten', false, array(
+						'class'=>'placekitten',
+						'data-width'=>$r['width'],
+						'data-height'=>$r['height']
+					));
+				} elseif (!empty($r['width'])) {
+					$additional = 'Will be resized to ' . $r['width'] . 'px wide.';
+				} elseif (!empty($r['height'])) {
+					$additional = 'Will be resized to ' . $r['height'] . 'px tall.';
+				}
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
 				$maxlength = $r['width'];
