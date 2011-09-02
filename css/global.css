@@ -50,6 +50,7 @@ table td.delete, table th.delete				{ text-align:center; }
 table td.is_published, table th.is_published	{ width:20px; text-align:center; }
 table td.checkbox, table th.checkbox			{ width:20px; text-align:center; padding-top: 2px; }
 table td.draggy									{ width:20px; padding:0px; cursor:move; background:#fff url(/login/images/move.png) no-repeat 4px 5px; }
+table td.image									{ width:60px; }
 
 table tr.group td						{ height:40px; vertical-align:bottom; text-transform:uppercase; font-weight:bold; font-size:11px;	 }
 table tr.depth-1 td a					{ margin-left:16px; }
