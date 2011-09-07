@@ -30,6 +30,8 @@ ul.nav { list-style:none; margin:0px 0px 10px 0px; padding:0px; overflow:auto; }
 ul.nav li { float:left; }
 ul.nav li a { background-color:#eee; color:#333; border:1px solid #999; padding:3px 6px 3px 6px; display:block; margin-right:4px; text-decoration:none; }
 ul.nav li a:hover { background-color:#f9f9f9; cursor:pointer; }
+ul.nav li.download a { padding-left: 18px; position: relative; }
+ul.nav li.download a img { position: absolute; top: 2px; left: 1px; }
 
 h1 { font-weight:normal; padding-left:3px; font-size:19px; margin-bottom:22px; }
 h2 { font-weight:normal; padding-left:3px; font-size:17px; margin-top:10px; }

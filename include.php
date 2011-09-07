@@ -56,6 +56,29 @@ if (!user()) {
 if (url_action('logout')) {
 	//logging out
 	logout();
+} elseif (url_action('download') && url_id()) {
+	$object = db_grab('SELECT id, title, table_name, show_published, order_by, direction FROM app_objects WHERE is_active = 1 AND id = ' . $_GET['id']);
+	$fields = db_table('SELECT type, field_name, related_object_id FROM app_fields WHERE object_id = ' . $object['id'] . ' AND is_active = 1 AND type NOT IN ("image", "image-alt", "file", "checkboxes") ORDER BY precedence');
+	
+	//build sql select statement
+	$object['order_by'] .= ($object['direction'] == 'DESC') ? ' DESC' : ' ASC';
+	if ($object['show_published']) {
+		$select = array($object['table_name'] . '.' . 'is_published');
+		$object['show_published'] = ' AND ' . $object['table_name'] . '.' . 'is_published = 1';
+	}
+	foreach ($fields as $f) {
+		$select[] = $object['table_name'] . '.' . $f['field_name'];
+	}
+	$select[] = $object['table_name'] . '.' . 'created_date';
+	$select[] = $object['table_name'] . '.' . 'updated_date';
+
+	$sql = 'SELECT ' . implode(',', $select) . ' FROM ' . $object['table_name'] . ' WHERE is_active = 1 ' . $object['show_published'] . ' ORDER BY ' . $object['order_by'];
+	//die($sql);
+	
+	
+	$result = db_table($sql);
+	
+	file_download(file_array($result), $object['title'], 'xls');
 }
 
 function dbCheck() {
@@ -270,6 +293,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		}
 		$nav[] = draw_link(false, 'Show SQL');
 		$classes[] = 'sql';
+		$nav[] = draw_link(url_query_add(array('action'=>'download', 'id'=>$object_id), false), file_icon('xls') . 'Download');
+		$classes[] = 'download';
 		$return .= draw_container('textarea', $sql, array('id'=>'sql', 'style'=>'display:none;')); //todo disambiguate
 	}
 	if ($from_type && $from_id) {
