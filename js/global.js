@@ -1,7 +1,7 @@
 $(function(){
 	function log($msg) {
 		try {
-			console.log($msg);
+			//console.log($msg);
 		} catch(e) {
 		}
 	}
@@ -35,7 +35,7 @@ $(function(){
 					        field.val(result.responseData.translatedText);
 					    },  
 					    error: function(XMLHttpRequest, errorMsg, errorThrown) {
-					        console.log(errorMsg);
+					        //console.log(errorMsg);
 					    }  
 					});
 				}
