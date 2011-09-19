@@ -1,11 +1,10 @@
 $(document).ready(function(){
 	
-	function log($msg)
-	{
+	function log($msg) {
 		try {
 			console.log($msg);
+		} catch(e) {
 		}
-		catch(e) { }
 	}
 	
 	$('ul.sortable').nestedSortable({
@@ -45,7 +44,7 @@ $(document).ready(function(){
 	});
 	
 	$('#serialize').click(function(){
-		console.log($('ul.sortable').nestedSortable('serialize'));
+		//console.log($('ul.sortable').nestedSortable('serialize'));
 	});
 
 	$('#toHierarchy').click(function(e){
