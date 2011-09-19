@@ -1,7 +1,7 @@
 $(function(){
 	function log($msg) {
 		try {
-			//console.log($msg);
+			console.log($msg);
 		} catch(e) {
 		}
 	}
