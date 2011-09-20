@@ -17,12 +17,20 @@ $(function(){
 		}
 	});
 	
+	function printObject(o) {
+	  var out = '';
+	  for (var p in o) {
+	    out += p + ': ' + o[p] + '\n';
+	  }
+	  return out;
+	}
+
 	$('a.translate').click(function(e){
 		$('div.translation input').each(function(){
 			if (!$(this).val().length) {
 				var field = $(this)
 				var fname = field.attr('name');
-				var lang = fname.substr(-2);
+				var lang = fname.substr(fname.length - 2);
 				var src = $('div input[name=' + fname.substr(0, fname.length - 3) + ']').val();
 				if (src.length) {
 					$.ajax({  
@@ -32,7 +40,8 @@ $(function(){
 					            v: '1.0',
 					            langpair: 'en|' + lang },   // '|es' for auto-detect
 					    success: function(result) {
-					        field.val(result.responseData.translatedText);
+					    	//alert(printObject(result));
+					    	if (result.responseData) field.val(result.responseData.translatedText);
 					    },  
 					    error: function(XMLHttpRequest, errorMsg, errorThrown) {
 					        //console.log(errorMsg);
@@ -41,6 +50,7 @@ $(function(){
 				}
 			}
 		});
+		//alert("finished");
 	});
 	
 	//duplicate object button on settings page
