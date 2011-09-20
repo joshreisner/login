@@ -241,7 +241,8 @@ while ($r = db_fetch($result)) {
 				$class = ($class) ? $class . ' translation' : 'translation';
 				foreach ($languages as $key=>$lang) {
 					if ($r['is_translated']) {
-						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class, 'label'=>$label . draw_span('translation', $lang), 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+						//todo make required again, show alert that hidden fields are required
+						$f->set_field(array('name'=>$r['field_name'] . '_' . $key, 'type'=>$r['type'], 'class'=>$class, 'label'=>$label . draw_span('translation', $lang), 'required'=>false, 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
 						$order[] = $r['field_name'] . '_' . $key;
 					} else {
 						$f->unset_fields($r['field_name'] . '_' . $key);
