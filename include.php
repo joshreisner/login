@@ -355,7 +355,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} elseif (($f['type'] == 'text') || ($f['type'] == 'email')) {
 					//$r[$f['field_name']] = 'text';
-					//$r[$f['field_name']] = format_string($r[$f['field_name']], 50);
+					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} else {
 					$r[$f['field_name']] = 'unhandled type';
 				}
