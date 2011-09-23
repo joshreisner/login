@@ -216,7 +216,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 			$columns[] = $f;
 			if (($f['type'] == 'date') || ($f['type'] == 'datetime')) {
 				$t->set_column($f['field_name'], 'r ' . $f['type'], $f['title']);
-			} elseif ($f['type'] == 'file-type') {
+			} elseif (($f['type'] == 'file-type') || ($f['type'] == 'file-type')) {
 				$t->set_column($f['field_name'],'l ' . $f['type'], '&nbsp;');
 			} elseif (($f['type'] == 'image') && ($f['type'] == 'image-alt')) {
 				$t->set_column($f['field_name'],'l ' . $f['type'], $f['title']);
@@ -343,6 +343,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = format_date($r[$f['field_name']]);
 				} elseif ($f['type'] == 'datetime') {
 					$r[$f['field_name']] = format_date_time($r[$f['field_name']]);
+				} elseif ($f['type'] == 'file-size') {
+					$r[$f['field_name']] = format_size($r[$f['field_name']]);
 				} elseif ($f['type'] == 'file-type') {
 					$r[$f['field_name']] = file_icon($r[$f['field_name']]);
 				} elseif (($f['type'] == 'image') || ($f['type'] == 'image-alt')) {

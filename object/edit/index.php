@@ -24,6 +24,10 @@ if (url_action('undelete')) {
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-type" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = file_ext($_FILES[$r['field_name']]['name']);
 
+				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-size" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
+				while ($e = db_fetch($related)) $_POST[$e['field_name']] = @filesize($_FILES[$r['field_name']]['tmp_name']);
+				
+
 				$type = file_type($_FILES[$r['field_name']]['name']);
 				if ($r['type'] == 'image') {
 					$file = format_image($_FILES[$r['field_name']]['tmp_name'], $type);
