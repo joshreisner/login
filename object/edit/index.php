@@ -140,12 +140,14 @@ while ($r = db_fetch($result)) {
 						o.order_by, 
 						o.direction,
 						o.group_by_field,
+						(SELECT f.object_id FROM app_fields f WHERE f.id = o.group_by_field) group_object_id,
 						(SELECT f.field_name FROM app_fields f WHERE f.is_active = 1 AND f.object_id = o.id AND f.type NOT IN ("file", "image") ORDER BY f.precedence LIMIT 1) field_name,
 						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 					FROM app_objects o
 					WHERE o.id = ' . $r['related_object_id']);
 				$options = array();
-				if ($_GET['object_id'] == $rel_object['id']) {
+
+				if ($rel_object['group_object_id'] == $rel_object['id']) {
 					//nested object select
 					$sql = 'SELECT id, ' . $rel_object['field_name'] . ', ROUND((subsequence - precedence - 1) / 2) children, 0 depth FROM ' . $rel_object['table_name'] . ' WHERE is_active = 1';
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
