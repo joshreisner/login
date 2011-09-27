@@ -362,7 +362,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = 'unhandled type';
 				}
 				if (!$linked) {
-					if (empty($r[$f['field_name']])) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
+					if (empty($r[$f['field_name']]) && ($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
 					$r[$f['field_name']] = draw_link($link, $r[$f['field_name']]);
 					if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
 				}
