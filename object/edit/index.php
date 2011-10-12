@@ -61,7 +61,7 @@ if (url_action('undelete')) {
 	
 	//postprocess urls
 	$fields = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "url" AND object_id = ' . $_GET['object_id']);
-	foreach ($fields as $f) if ($_POST[$f['field_name']] == 'http://') $_POST[$f['field_name']] = '';
+	foreach ($fields as $f) if (isset($_POST[$f['field_name']]) && ($_POST[$f['field_name']] == 'http://')) $_POST[$f['field_name']] = '';
 	
 	$id = db_save($object['table_name']);
 	
