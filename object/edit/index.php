@@ -26,7 +26,6 @@ if (url_action('undelete')) {
 
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-size" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = @filesize($_FILES[$r['field_name']]['tmp_name']);
-				
 
 				$type = file_type($_FILES[$r['field_name']]['name']);
 				if ($r['type'] == 'image') {
@@ -291,4 +290,3 @@ if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app
 echo draw_div('panel', str_ireplace("\n", BR, $object['form_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));
 
 echo drawLast();
-?>
