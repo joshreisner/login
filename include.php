@@ -353,7 +353,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = draw_img_thumbnail($img, DIRECTORY_BASE . 'object/edit/?id=' . $r['id'] . '&object_id=' . $object_id, $max);
 				} elseif ($f['type'] == 'select') {
 					$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
-				} elseif ($f['type'] == 'textarea') {
+				} elseif (($f['type'] == 'textarea') || ($f['type'] == 'textarea-plain')) {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} elseif (($f['type'] == 'text') || ($f['type'] == 'email')) {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
