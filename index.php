@@ -8,10 +8,11 @@ $objects = db_table('SELECT
 	o.title object, 
 	o.updated_date,
 	o.table_name,
-	(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.object_id = o.id AND u2o.user_id = ' . user() . ') permission
+	(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.object_id = o.id AND u2o.user_id = ' . user() . ') permission,
+	o.list_grouping
 FROM app_objects o
 WHERE o.is_active = 1
-ORDER BY o.title');
+ORDER BY o.list_grouping, o.title');
 
 if (admin(SESSION_ADMIN)) echo draw_nav(array('site/'=>'Site Settings', 'users/'=>'Users', 'edit/'=>'Add New Object'));
 
@@ -31,6 +32,7 @@ foreach ($objects as &$o) {
 		WHERE a.is_active = 1
 		ORDER BY a.updated_date DESC, a.created_date DESC')) $object = array('updated'=>false, 'created_user'=>false, 'updated_user'=>false, 'count_active'=>0);
 	$o = array_merge($o, $object);
+	$o['group'] = $o['list_grouping'];
 	if (admin(SESSION_ADMIN) || $o['permission']) {
 		$o['object'] = draw_link('object/?id=' . $o['id'], $o['object']);
 	} else {
