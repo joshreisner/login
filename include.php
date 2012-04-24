@@ -240,10 +240,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$selects[] = TAB . 't.precedence';
 					$selects[] = TAB . 't.' . $f['field_name'];
 				} elseif ($f['related_object_id'] != $from_type) {
-					//skip this if it's the from_type
-					//figure out which column to group by and label it group
-					$more = db_columns($f['related_table'], true);
-					foreach ($more as $m) $selects[] = TAB . $f['related_table'] . '.' . $m['name'] . ' ' . (($m['name'] == $rel_fields[$f['id']]) ? '"group"' : $f['related_table'] . '_' . $m['name']);
+					//figure out which column to group by and label it group.  skip this if it's the from_type
+					$selects[] = TAB . $f['related_table'] . '.' . $rel_fields[$f['id']] . ' "group"';
 					$joins[] = 'LEFT JOIN ' . $f['related_table'] . ' ON ' . $f['related_table'] . '.id = t.' . $f['field_name'];
 		
 					//also figure out which column to order the group by and put it before the regular order by
@@ -257,7 +255,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$where_str = ' to this ' . strToLower(format_singular($f['object_title']));
 				}
 
-				$rel_fields[$f['id']] = 'group';			
+				$rel_fields[$f['id']] = 'group';
 			} else {
 				$more = db_columns($f['related_table'], true);
 				foreach ($more as $m) $selects[] = TAB . $f['related_table'] . '.' . $m['name'] . ' ' . $f['related_table'] . '_' . $m['name'];
@@ -281,6 +279,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	if (!$_SESSION['show_deleted']) $where = 't.is_active = 1' . (empty($where) ? '' : ' AND ') . $where;
 	if (!empty($where)) $where = 'WHERE ' . $where;
 	$sql = implode(NEWLINE, array('SELECT', implode(',' . NEWLINE, $selects), 'FROM ' . $object['table_name'] . ' t', implode(NEWLINE, $joins), $where, 'ORDER BY ' . $object['order_by']));
+	
+	//die('<hr>' . nl2br($sql));
 	
 	//set up nav
 	if (admin(SESSION_ADMIN)) {
