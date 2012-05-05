@@ -177,7 +177,7 @@ while ($r = db_fetch($result)) {
 				}
 				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || admin(SESSION_ADMIN))) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 
-				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options));
+				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options, 'options_table'=>@$rel_object['table_name']));
 			}
 		} elseif ($r['type'] == 'checkboxes') {
 			$rel_object = db_grab('SELECT 
