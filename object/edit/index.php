@@ -215,7 +215,7 @@ while ($r = db_fetch($result)) {
 						}
 					}
 				}
-				
+								
 				if (!empty($r['width']) && !empty($r['height'])) {
 					$additional = 'Will be resized to ' . $r['width'] . 'px wide &times; ' . $r['height'] . 'px tall.';
 					if (admin(SESSION_ADMIN)) $label .= draw_link(false, 'Placekitten', false, array(
@@ -231,6 +231,11 @@ while ($r = db_fetch($result)) {
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
 				$maxlength = $r['width'];
+			} elseif ($r['type'] == 'url-local') {
+				//shortcut link, grab value
+				if (url_id()) {
+					$additional = draw_link(db_grab('SELECT ' . $r['field_name'] . ' FROM ' . $r['table_name'] . ' WHERE id = ' . url_id()), 'View Page');
+				}
 			} elseif ($r['type'] == 'textarea') {
 				$class = 'tinymce'; //tinymce is the official wysiwyg of the cms
 				$maxlength = $r['width'];
