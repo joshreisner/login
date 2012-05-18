@@ -482,12 +482,12 @@ function nestedList($object_values, $table_name, $class=false, $level=1) {
 			$o['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete', 'data-id'=>$o['id']));
 		}
 
-		$o = draw_div('#item_' . $o['id'], 
+		$o = draw_div(array('id'=>'#item_' . $o['id'], 'class'=>'row level_' . $level), 
 			draw_div('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
 			draw_div('column link', draw_link($o['url'], $o['title'])) . 
 			draw_div('column updated', draw_span('light', $o['updated_user']) . ' ' . format_date($o['updated'])) .
 			draw_div('column delete', $o['delete'])
-		, array('class'=>'row level_' . $level)) . nestedList($o['children'], $table_name, false, ($level + 1));
+		) . nestedList($o['children'], $table_name, false, ($level + 1));
 		
 	}
 
