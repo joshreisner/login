@@ -204,7 +204,7 @@ if (url_id()) {
 		$values = '';
 	}
 	
-	echo draw_div('panel', 
+	echo draw_div('#panel', 
 		draw_p('You can ' . draw_link(url_action_add('delete'), 'drop') . ' this object and all its associated fields and values.') . 
 		$images . $values . 
 		draw_p('You can also ' . draw_link(false, 'duplicate', false, array('class'=>'object_duplicate')) . ' this object and all of its values.') .
@@ -212,7 +212,7 @@ if (url_id()) {
 	);
 } else {
 	//add new object
-	echo draw_div('panel', 
+	echo draw_div('#panel', 
 		draw_p('You can also choose an object template from the list below:' . draw_nav(array(
 			url_action_add('template_news')=>'News',
 			url_action_add('template_pages')=>'Pages',

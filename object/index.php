@@ -26,7 +26,7 @@ echo drawFirst($object['title']);
 echo drawObjectList($_GET['id']);
 
 //help panel on right side, potentially editable
-echo draw_div('panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
+echo draw_div('#panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
 
 echo drawLast();
 

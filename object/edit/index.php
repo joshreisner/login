@@ -86,7 +86,7 @@ echo drawFirst(draw_link('../?id=' . $_GET['object_id'], $object['title']) . CHA
 
 $f = new form($object['table_name'], @$_GET['id'], $button);
 
-if ($editing && $object['web_page']) echo draw_div_class('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
+if ($editing && $object['web_page']) echo draw_div('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
 if ($languages && db_grab('SELECT COUNT(*) FROM app_fields WHERE is_translated = 1 AND is_active = 1 AND object_id = ' . $_GET['object_id'])) {
 	echo draw_list(array(
 		draw_link(false, 'Show Translations', false, 'show_translations'),
@@ -292,6 +292,6 @@ if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app
 }
 
 //help panel on right side, potentially editable
-echo draw_div('panel', str_ireplace("\n", BR, $object['form_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));
+echo draw_div('#panel', str_ireplace("\n", BR, $object['form_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));
 
 echo drawLast();

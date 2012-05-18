@@ -130,7 +130,7 @@ function drawFirst($title='CMS') {
 	);
 	
 	if (user()) {
-		$return .= '<body><div id="page">' . draw_div('banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
+		$return .= '<body><div id="page">' . draw_div('#banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= draw_h1('Objects');
 		} else {
@@ -361,7 +361,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = 'unhandled type';
 				}
 				if (!$linked) {
-					if (empty($r[$f['field_name']]) && ($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $r[$f['field_name']] = draw_div_class('empty', 'No ' . $f['title'] . ' entered');
+					if (empty($r[$f['field_name']]) && ($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $r[$f['field_name']] = draw_div('empty', 'No ' . $f['title'] . ' entered');
 					$r[$f['field_name']] = draw_link($link, $r[$f['field_name']]);
 					if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
 				}
@@ -384,7 +384,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	}
 	
 	//wrap non-ajax output in a div (whose contents can be replaced via ajax)
-	if (!$from_ajax) $return = draw_div_class('object_list', $return);
+	if (!$from_ajax) $return = draw_div('object_list', $return);
 	
 	return $return;
 }
@@ -482,11 +482,11 @@ function nestedList($object_values, $table_name, $class=false, $level=1) {
 			$o['delete'] = draw_link(false, CHAR_DELETE, false, array('class'=>'delete', 'data-id'=>$o['id']));
 		}
 
-		$o = draw_div('item_' . $o['id'], 
-			draw_div_class('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
-			draw_div_class('column link', draw_link($o['url'], $o['title'])) . 
-			draw_div_class('column updated', draw_span('light', $o['updated_user']) . ' ' . format_date($o['updated'])) .
-			draw_div_class('column delete', $o['delete'])
+		$o = draw_div('#item_' . $o['id'], 
+			draw_div('column published', draw_form_checkbox('chk_' . str_replace('_', '-', $table_name) . '_' . $o['id'], $o['is_published'], false, 'ajax_publish(this)')) .
+			draw_div('column link', draw_link($o['url'], $o['title'])) . 
+			draw_div('column updated', draw_span('light', $o['updated_user']) . ' ' . format_date($o['updated'])) .
+			draw_div('column delete', $o['delete'])
 		, array('class'=>'row level_' . $level)) . nestedList($o['children'], $table_name, false, ($level + 1));
 		
 	}
