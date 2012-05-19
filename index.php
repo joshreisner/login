@@ -43,6 +43,6 @@ foreach ($objects as &$o) {
 }
 echo $t->draw($objects, 'No objects have been added yet!');
 
-echo draw_div('#panel', draw_p('This is the main directory of website &#8216;objects.&#8217;  Those that are linked you have permission to edit.') . draw_p('You\'re logged in as ' . draw_strong($_SESSION[SESSION_USER_NAME]) . '.' . BR . 'Click ' . draw_link(url_action_add('logout'), 'here') . ' to log out.'));
+$panel = draw_p('This is the main directory of website &#8216;objects.&#8217;  Those that are linked you have permission to edit.') . draw_p('You\'re logged in as ' . draw_strong($_SESSION[SESSION_USER_NAME]) . '.' . BR . 'Click ' . draw_link(url_action_add('logout'), 'here') . ' to log out.');
 
-echo drawLast();
+echo drawLast($panel);

@@ -37,6 +37,4 @@ foreach($result as &$r) {
 }
 echo $t->draw($result, 'No users have been added yet!');
 
-echo draw_div('#panel', 'These users have access to the CMS.  Shaded users are admins.');
-
-echo drawLast();
+echo drawLast('These users have access to the CMS.  Shaded users are admins.');

@@ -2,7 +2,7 @@
 //define settings
 if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
 if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
-if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'&nbsp;&raquo;&nbsp;');
+if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'<span class="separator">&gt;</span>');
 if (!defined('COOKIE_KEY'))			define('COOKIE_KEY',		'cms_key');
 if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
 if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@bureaublank.com');
@@ -11,6 +11,8 @@ if (!defined('SESSION_ADMIN'))		define('SESSION_ADMIN',		'cms_is_admin');
 if (!defined('SESSION_USER_NAME'))	define('SESSION_USER_NAME',	'cms_name');
 
 extract(joshlib());
+
+session_start();
 
 $schema = array(
 	'app'=>array('link_color'=>'varchar', 'banner_image'=>'mediumblob'),
@@ -24,7 +26,7 @@ $schema = array(
 
 $visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
-if (url_action('show_deleted,hide_deleted') && admin(SESSION_ADMIN)) {
+if (url_action('show_deleted, hide_deleted') && admin(SESSION_ADMIN)) {
 	$_SESSION['show_deleted'] = url_action('show_deleted');
 	url_drop('action');
 }
@@ -125,12 +127,21 @@ function drawFirst($title='CMS') {
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
 		draw_title($title) . 
+		'<meta name="viewport" content="width=device-width, initial-scale=1.0">' . 
+		lib_get('bootstrap') . 
 		draw_css_src(DIRECTORY_BASE . 'css/global.css') .
-		draw_css('a { color:#' . $app['link_color'] . '}')
+		draw_css('a { color: #' . $app['link_color'] . '} a:hover { color: #' . $app['link_color'] . '}') /* custom link color */
 	);
 	
 	if (user()) {
-		$return .= '<body><div id="page">' . draw_div('#banner', draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE));
+		$return .= '<body>
+			<div class="container">
+				<div class="row">
+					<div class="span12 banner">' . draw_img(file_dynamic('app', 'banner_image', 1, 'jpg', $app['updated']), DIRECTORY_BASE) . '</div>
+				</div>
+				<div class="row">
+					<div class="span9 page">';
+
 		if (empty($_josh['request']['subfolder'])) {
 			$return .= draw_h1('Objects');
 		} else {
@@ -143,14 +154,14 @@ function drawFirst($title='CMS') {
 	return $return;
 }
 
-function drawLast() {
-	$return = '</div>' . 
-		lib_get('jquery') . 
+function drawLast($panel='', $contenteditable=false) {
+	$return = '';
+	if (user()) $return .= '</div>' . draw_div('span3 panel', draw_div('inner', $panel, $contenteditable)) . '</div>';
+	$return .= '</div>' . 
 		draw_javascript_src(DIRECTORY_BASE . 'js/jquery-ui-1.8.9.custom.min.js') . 
 		draw_javascript_src(DIRECTORY_BASE . 'js/jquery.ui.nestedSortable.js') .
 		draw_javascript_src(DIRECTORY_BASE . 'js/global.js') . 
 		draw_javascript_src() . 
-		draw_google_analytics('UA-21096000-1') . 
 	'</body></html>';
 	return $return;
 }

@@ -26,9 +26,9 @@ echo drawFirst($object['title']);
 echo drawObjectList($_GET['id']);
 
 //help panel on right side, potentially editable
-echo draw_div('#panel', str_ireplace("\n", '<br/>', $object['list_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
+$panel = str_ireplace("\n", '<br/>', $object['list_help']);
 
-echo drawLast();
+echo drawLast($panel, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
 
 echo draw_javascript_ready('
 	var contenteditable_focused = false;
@@ -39,4 +39,3 @@ echo draw_javascript_ready('
 		if (!contenteditable_focused && (e.which == 97)) location.href = $("li.new a").attr("href");
 	});
 ');
-

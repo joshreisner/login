@@ -56,6 +56,4 @@ if ($languages) {
 	$help_text .= draw_p('The shaded fields are translated.');
 }
 
-echo draw_div('#panel', $help_text);
-
-echo drawLast();
+echo drawLast($help_text);

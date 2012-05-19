@@ -35,7 +35,7 @@ $(document).ready(function(){
 						type : 'POST',
 						data : arrayed[i],
 						success : function(data) {
-							$('#panel').html(data);
+							//$('#panel').html(data);
 						}
 					});
 				}

@@ -55,7 +55,4 @@ echo'
 	<pre id="toArrayOutput"></pre></p>
 ';
 
-echo draw_div('#panel');
 echo drawLast();
-
-?>

@@ -292,6 +292,6 @@ if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app
 }
 
 //help panel on right side, potentially editable
-echo draw_div('#panel', str_ireplace("\n", BR, $object['form_help']), false, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));
+$panel = str_ireplace("\n", BR, $object['form_help']);
 
-echo drawLast();
+echo drawLast($panel, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));

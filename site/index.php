@@ -27,12 +27,11 @@ $t = new form('app', 1, 'Edit Site Settings');
 $t->set_field(array('type'=>'checkboxes', 'name'=>'languages', 'sql'=>'SELECT id, title, checked FROM app_languages ORDER BY title'));
 echo $t->draw();
 
-echo draw_div('#panel', 
+$panel =
 	draw_p('The banner image will be resized to 920px x 105px.') . 
 	draw_p('If you have just migrated servers, you may wish to <a class="tinymce_update">update the TinyMCE file and image references</a>.') .
 	draw_p('You can also <a href="cleanup/">clean up</a> deleted or unused columns (irreversibly), or <a href="cleanup/?test=true">run the cleanup in test mode</a> to see what operations 
 		would be performed.') . 
-	draw_p('You can <a href="backup/">run a backup</a> on the database')
-);
+	draw_p('You can <a href="backup/">run a backup</a> on the database');
 
-echo drawLast();
+echo drawLast($panel);

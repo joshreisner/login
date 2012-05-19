@@ -24,5 +24,9 @@ if (db_grab('SELECT is_active FROM ' . $array['table_name'] . ' WHERE id = ' . $
 //rebuild tree if nested
 if ($nested) nestedTreeRebuild($array['table_name']);
 
+//there is a url_action_add in drawObjectList which will screw up the links when it's coming from ajax
+//still not fixed, todo fix this
+$_josh['request']['path'] = DIRECTORY_BASE . 'object/';
+
 //output whole new list
 echo drawObjectList($array['object_id'], $array['from_type'], $array['from_id'], true);	
