@@ -115,7 +115,7 @@ $(function(){
 		//show sql button on object page
 		$('li.sql a').click(function(e){
 			e.preventDefault();
-			$(this).html(($('#sql').is(':visible') ? 'Show' : 'Hide') + ' SQL');
+			$(this).html(($('#sql').is(':visible') ? '<i class="icon-eye-open"></i> Show' : '<i class="icon-eye-close"></i>  Hide') + ' SQL');
 			$('#sql').slideToggle();
 		});
 		

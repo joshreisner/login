@@ -10,7 +10,7 @@ if (url_action('delete')) {
 
 echo drawFirst('Users');
 
-echo draw_nav(array('edit/'=>'Add New User'));
+echo draw_nav(array('edit/'=>'<i class="icon-pencil"></i> Add New User'));
 
 $result = db_table('SELECT 
 	u.id, 

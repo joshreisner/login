@@ -16,7 +16,7 @@ if (url_action('delete')) {
 
 echo drawFirst(draw_link('../?id=' . $_GET['id'], $object['title']) . CHAR_SEPARATOR . 'Fields');
 
-echo draw_nav(array('edit/?object_id=' . $_GET['id']=>'Add Field'));
+echo draw_nav(array('edit/?object_id=' . $_GET['id']=>'<i class="icon-pencil"></i> Add Field'));
 
 $result = db_table('SELECT 
 	f.id, 

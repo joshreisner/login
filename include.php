@@ -296,22 +296,22 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	//set up nav
 	if (admin(SESSION_ADMIN)) {
 		if (!$from_type) {
-			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, 'Object Settings');
+			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, '<i class="icon-cog"></i> Object Settings');
 			$classes[] = 'settings';
-			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $object_id, 'Fields');
+			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $object_id, '<i class="icon-list"></i> Fields');
 			$classes[] = 'fields';
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
-				$nav[] = draw_link(url_action_add('hide_deleted'), 'Hide ' . format_title(format_quantity($deleted)) . ' Deleted');
+				$nav[] = draw_link(url_action_add('hide_deleted'), '<i class="icon-trash"></i> Hide ' . format_title(format_quantity($deleted)) . ' Deleted');
 			} else {
-				$nav[] = draw_link(url_action_add('show_deleted'), 'Show ' . format_title(format_quantity($deleted)) . ' Deleted');
+				$nav[] = draw_link(url_action_add('show_deleted'), '<i class="icon-trash"></i> Show ' . format_title(format_quantity($deleted)) . ' Deleted');
 			}
 			$classes[] = 'toggle_deleted';
 		}
-		$nav[] = draw_link(false, 'Show SQL');
+		$nav[] = draw_link(false, '<i class="icon-eye-open"></i> Show SQL');
 		$classes[] = 'sql';
-		$return .= draw_container('textarea', $sql, array('id'=>'sql', 'style'=>'display:none;')); //todo disambiguate
+		$return .= lib_get('prettify') . draw_container('pre', $sql, array('id'=>'sql', 'class'=>'prettyprint lang-sql pre-scrollable linenums'));
 	}
 	$nav[] = draw_link(url_query_add(array('action'=>'download', 'id'=>$object_id), false), file_icon('xls') . 'Download');
 	$classes[] = 'download';
@@ -319,7 +319,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
 		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id, 'Add New');
 	} else {
-		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id, 'Add New');
+		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id, '<i class="icon-pencil"></i> Add New');
 	}
 	$classes[] = 'new';
 	$return = draw_list($nav, 'nav', 'ul', false, $classes) . $return; //todo pass $classes to draw_nav

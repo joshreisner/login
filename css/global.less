@@ -111,7 +111,6 @@ table tr.dragclass td {
 }
 span.light { color:#ccc; font-size:12px; }
 
-#sql { width:90%; height:100px; padding:10px; border:1px dashed #ccc; background-color: @yellow; margin:20px 0px 20px 0px; font-family: Droid Sans Mono, monospace; font-size:13px; }
 div.web_page_msg { width:632px; padding:10px; border:1px dashed #ccc; background-color: @yellow; margin:20px 0px 20px 0px; font-size:13px; }
 table tr td div.empty { font-style:italic; text-transform:lowercase; opacity:.75; display:inline; }
 
@@ -153,6 +152,38 @@ body.login {
 		div.submit input { width: 140px; margin-left: 130px; }
 		label { text-align: right; margin-right: 10px; width: 120px; color: inherit; }
 	}
+}
+
+
+
+pre.prettyprint {
+	padding: 8px; background-color: @yellow; border: 1px solid #e1e1e8; display: none; max-height: 200px; 
+	
+	&.linenums {
+	  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	          box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	}
+	
+	.com { color: #93a1a1; }
+	.lit { color: #195f91; }
+	.pun, .opn, .clo { color: #93a1a1; }
+	.fun { color: #dc322f; }
+	.str, .atv { color: #D14; }
+	.kwd, .linenums .tag { color: #1e347b; }
+	.typ, .atn, .dec, .var { color: teal; }
+	.pln { color: #48484c; }
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin: 0 0 0 33px; /* IE indents via margin-left */
+} 
+ol.linenums li {
+  padding-left: 12px;
+  color: #bebec5;
+  line-height: 18px;
+  text-shadow: 0 1px 0 #fff;
 }
 
 /* form */

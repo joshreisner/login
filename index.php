@@ -14,7 +14,7 @@ FROM app_objects o
 WHERE o.is_active = 1
 ORDER BY o.list_grouping, o.title');
 
-if (admin(SESSION_ADMIN)) echo draw_nav(array('site/'=>'Site Settings', 'users/'=>'Users', 'edit/'=>'Add New Object'));
+if (admin(SESSION_ADMIN)) echo draw_nav(array('site/'=>'<i class="icon-cog"></i> Site Settings', 'users/'=>'<i class="icon-user"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
 
 $t = new table;
 $t->set_column('object', 'l', 'Object', 200);
