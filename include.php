@@ -227,7 +227,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 			$columns[] = $f;
 			if (($f['type'] == 'date') || ($f['type'] == 'datetime')) {
 				$t->set_column($f['field_name'], 'r ' . $f['type'], $f['title']);
-			} elseif (($f['type'] == 'file-type') || ($f['type'] == 'file-type')) {
+			} elseif (($f['type'] == 'color') || ($f['type'] == 'file-type')) {
 				$t->set_column($f['field_name'],'l ' . $f['type'], '&nbsp;');
 			} elseif (($f['type'] == 'image') && ($f['type'] == 'image-alt')) {
 				$t->set_column($f['field_name'],'l ' . $f['type'], $f['title']);
@@ -350,6 +350,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 			foreach ($columns as $f) {
 				if ($f['type'] == 'checkbox') {
 					$r[$f['field_name']] = format_boolean($r[$f['field_name']]);
+				} elseif ($f['type'] == 'color') {
+					$r[$f['field_name']] = draw_div(array('class'=>'color', 'style'=>'background-color:' . $r[$f['field_name']] . ';'));
 				} elseif ($f['type'] == 'date') {
 					$r[$f['field_name']] = format_date($r[$f['field_name']]);
 				} elseif ($f['type'] == 'datetime') {
@@ -374,7 +376,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 				if (!$linked) {
 					if (empty($r[$f['field_name']]) && ($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $r[$f['field_name']] = draw_div('empty', 'No ' . $f['title'] . ' entered');
 					$r[$f['field_name']] = draw_link($link, $r[$f['field_name']]);
-					if (($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
+					if (($f['type'] != 'color') && ($f['type'] != 'file-type') && ($f['type'] != 'image') && ($f['type'] != 'image-alt')) $linked = true; //just linking the image isn't enough visually
 				}
 			}
 			$r['updated'] = draw_span('light', ($r['updated_user'] ? $r['updated_user'] : $r['created_user'])) . ' ' . format_date($r['updated'], '', '%b %d, %Y', true, true);

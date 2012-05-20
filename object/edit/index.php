@@ -140,7 +140,7 @@ while ($r = db_fetch($result)) {
 						o.direction,
 						o.group_by_field,
 						(SELECT f.related_object_id FROM app_fields f WHERE f.id = o.group_by_field) group_object_id,
-						(SELECT f.field_name FROM app_fields f WHERE f.is_active = 1 AND f.object_id = o.id AND f.type NOT IN ("file", "image") ORDER BY f.precedence LIMIT 1) field_name,
+						(SELECT f.field_name FROM app_fields f WHERE f.is_active = 1 AND f.object_id = o.id AND f.type NOT IN ("color", "file", "image") ORDER BY f.precedence LIMIT 1) field_name,
 						(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 					FROM app_objects o
 					WHERE o.id = ' . $r['related_object_id']);
