@@ -176,8 +176,12 @@ while ($r = db_fetch($result)) {
 					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
 				}
 				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || admin(SESSION_ADMIN))) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
-
-				$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options, 'options_table'=>@$rel_object['table_name']));
+				
+				$array = array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options, 'options_table'=>@$rel_object['table_name']);
+				
+				if (!empty($_GET[$r['field_name']])) $array['value'] = $_GET['field_name'];
+				
+				$f->set_field($array);
 			}
 		} elseif ($r['type'] == 'checkboxes') {
 			$rel_object = db_grab('SELECT 
@@ -231,6 +235,11 @@ while ($r = db_fetch($result)) {
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
 				$maxlength = $r['width'];
+			} elseif ($r['type'] == 'url') {
+				//shortcut link, grab value
+				if (url_id()) {
+					$additional = draw_link(db_grab('SELECT ' . $r['field_name'] . ' FROM ' . $r['table_name'] . ' WHERE id = ' . url_id()), 'View URL', true);
+				}
 			} elseif ($r['type'] == 'url-local') {
 				//shortcut link, grab value
 				if (url_id()) {
@@ -246,7 +255,11 @@ while ($r = db_fetch($result)) {
 				}
 			}
 			
-			$f->set_field(array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview));
+			$array = array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview);
+			
+			if (!empty($_GET[$r['field_name']])) $array['value'] = $_GET[$r['field_name']];
+
+			$f->set_field($array);
 
 			if ($languages) {
 				$class = ($class) ? $class . ' translation' : 'translation';

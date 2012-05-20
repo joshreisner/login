@@ -181,7 +181,7 @@ $(function(){
 						list : list.join(',')
 					},
 					success : function(data) {
-						//$('#panel').html(data);
+						//$('.panel').html(data);
 					}
 				});
 				fix_depths($('ul.nested'));
