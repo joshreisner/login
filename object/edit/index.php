@@ -53,11 +53,18 @@ if (url_action('undelete')) {
 	}
 	
 	//postprocess latlon
-	$latlons = db_table('SELECT f2.field_name source, f.field_name target FROM app_fields f JOIN app_fields f2 ON f.related_field_id = f2.id WHERE f.type = "latlon" AND f.object_id = ' . $_GET['object_id']);
-	foreach ($latlons as $l) {
-		if (!empty($_POST[$l['source']]) && $coordinates = geocode($_POST[$l['source']])) $_POST[$l['target']] = $coordinates[0] . ',' . $coordinates[1];
-	}
+	$latlons = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "latlon" AND object_id = ' . $_GET['object_id']);
 	
+	foreach ($latlons as $l) {  
+	  $lat = $_POST[$l['field_name'].'_lat'];
+	  $lon = $_POST[$l['field_name'].'_lon'];
+    $zoom = $_POST[$l['field_name'].'_zoom'];
+		if ($lat && $lon && $zoom) {
+		  $_POST[$l['field_name']] = "$lat,$lon,$zoom";
+		}
+	}
+		
+    
 	//postprocess urls
 	$fields = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "url" AND object_id = ' . $_GET['object_id']);
 	foreach ($fields as $f) if (isset($_POST[$f['field_name']]) && ($_POST[$f['field_name']] == 'http://')) $_POST[$f['field_name']] = '';

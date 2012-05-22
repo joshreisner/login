@@ -368,7 +368,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = $r[$rel_fields[$f['id']]];
 				} elseif (($f['type'] == 'textarea') || ($f['type'] == 'textarea-plain')) {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
-				} elseif (($f['type'] == 'text') || ($f['type'] == 'email')) {
+				} elseif (($f['type'] == 'text') || ($f['type'] == 'email') || ($f['type'] == 'latlon')) {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} else {
 					$r[$f['field_name']] = 'unhandled type';
