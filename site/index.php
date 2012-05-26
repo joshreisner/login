@@ -28,7 +28,7 @@ $t->set_field(array('type'=>'checkboxes', 'name'=>'languages', 'sql'=>'SELECT id
 echo $t->draw();
 
 $panel =
-	draw_p('The banner image will be resized to 920px x 105px.') . 
+	draw_p('The banner image will be resized to 105px tall.  The full available width of the banner is 1170px.') . 
 	draw_p('If you have just migrated servers, you may wish to <a class="tinymce_update">update the TinyMCE file and image references</a>.') .
 	draw_p('You can also <a href="cleanup/">clean up</a> deleted or unused columns (irreversibly), or <a href="cleanup/?test=true">run the cleanup in test mode</a> to see what operations 
 		would be performed.') . 
