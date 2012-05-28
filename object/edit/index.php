@@ -56,19 +56,24 @@ if (url_action('undelete')) {
 	$latlons = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "latlon" AND object_id = ' . $_GET['object_id']);
 	
 	foreach ($latlons as $l) {  
-	  $lat = $_POST[$l['field_name'].'_lat'];
-	  $lon = $_POST[$l['field_name'].'_lon'];
-    $zoom = $_POST[$l['field_name'].'_zoom'];
-		if ($lat && $lon && $zoom) {
-		  $_POST[$l['field_name']] = "$lat,$lon,$zoom";
-		}
+		$lat = $_POST[$l['field_name'].'_lat'];
+		$lon = $_POST[$l['field_name'].'_lon'];
+		$zoom = $_POST[$l['field_name'].'_zoom'];
+		if ($lat && $lon && $zoom) $_POST[$l['field_name']] = $lat . ',' . $lon . ',' . $zoom;
 	}
-		
     
 	//postprocess urls
 	$fields = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "url" AND object_id = ' . $_GET['object_id']);
 	foreach ($fields as $f) if (isset($_POST[$f['field_name']]) && ($_POST[$f['field_name']] == 'http://')) $_POST[$f['field_name']] = '';
 	
+	//if coming from a page and changing the url, return user to the new url
+	if (!empty($_POST['return_to']) && ($local_url_field = db_grab('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "url-local" AND object_id = ' . $_GET['object_id']))) {
+		$return_to	= url_parse($_POST['return_to']);
+		$former_url	= db_grab('SELECT ' . $local_url_field . ' FROM ' . $object['table_name'] . ' WHERE id = ' . $_GET['id']);
+		if ($return_to['path'] == $former_url) $_POST['return_to'] = $_POST[$local_url_field];
+	}
+
+	//save data	
 	$id = db_save($object['table_name']);
 	
 	//handle checkboxes
