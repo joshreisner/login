@@ -191,6 +191,14 @@ if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND is_admin <> 
 $f->unset_fields('list_help,form_help');
 echo $f->draw();
 
+//create typeahead helper for list_grouping field
+if ($groupings = db_array('SELECT DISTINCT list_grouping FROM app_objects WHERE list_grouping <> "" ORDER BY list_grouping')) {
+	foreach ($groupings as &$g) $g = '"' . $g . '"';
+	echo draw_javascript_ready('
+		$("input#list_grouping").typeahead({source:[' . implode(',', $groupings) . ']});
+	');
+}
+
 if (url_id()) {
 	$images = false;
 	if (db_grab('SELECT COUNT(*) FROM app_fields WHERE object_id = ' . $_GET['id'] . ' AND (type = "image" OR type = "image-alt") AND (width IS NOT NULL OR height IS NOT NULL)')) {
