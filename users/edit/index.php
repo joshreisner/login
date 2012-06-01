@@ -1,7 +1,7 @@
 <?php
 include('../../include.php');
 
-if (!admin(SESSION_ADMIN)) url_change(DIRECTORY_BASE);
+if (!isAdmin()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if ($uploading) $_POST['photo'] = format_image_resize(file_get_uploaded('photo'), 52, 52);
@@ -20,6 +20,8 @@ $user = new form('app_users', @$_GET['id']);
 $user->unset_fields('secret_key,last_login');
 $user->set_field(array('name'=>'password', 'type'=>'text', 'required'=>true));
 $user->set_field(array('name'=>'permissions', 'type'=>'checkboxes', 'options_table'=>'app_objects', 'linking_table'=>'app_users_to_objects', 'option_id'=>'object_id', 'object_id'=>'user_id', 'value'=>@$_GET['id'], 'default'=>true));
+if (!isProgrammer()) unset($user_levels[1]);
+$user->set_field(array('name'=>'role', 'type'=>'radio', 'options'=>$user_levels, 'default'=>3));
 echo $user->draw(false, false);
 
 echo drawLast();

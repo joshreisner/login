@@ -6,7 +6,7 @@ url_query_require('../', 'object_id');
 $object = db_grab('SELECT o.title, o.table_name, o.form_help, o.show_published, o.web_page, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['object_id']);
 
 //security
-if (!$object['permission'] && !admin(SESSION_ADMIN)) url_change('../../');
+if (!$object['permission'] && !isAdmin()) url_change('../../');
 
 if (url_action('undelete')) {
 	//handle an object delete -- todo ajax
@@ -187,7 +187,7 @@ while ($r = db_fetch($result)) {
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
 					$sql .= ' ORDER BY ' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
 				}
-				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || admin(SESSION_ADMIN))) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
+				if (($_GET['object_id'] != $rel_object['id']) && ($rel_object['permission'] || isAdmin())) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 				
 				$array = array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$r['title'], 'required'=>$r['required'], 'additional'=>$additional, 'sql'=>$sql, 'options'=>$options, 'options_table'=>@$rel_object['table_name']);
 				
@@ -204,7 +204,7 @@ while ($r = db_fetch($result)) {
 					(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . '  AND u2o.object_id = o.id) permission
 				FROM app_objects o
 				WHERE o.id = ' . $r['related_object_id']);
-			if ($rel_object['permission'] || admin(SESSION_ADMIN)) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
+			if ($rel_object['permission'] || isAdmin()) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
 			$f->set_field(array('label'=>$r['title'], 'maxlength'=>24, 'additional'=>$additional, 'name'=>$r['field_name'], 'type'=>'checkboxes', 'options_table'=>$rel_object['table_name'], 'linking_table'=>$r['field_name'], 'option_id'=>substr($rel_object['table_name'], 5) . '_id', 'object_id'=>substr($object['table_name'], 5) . '_id', 'option_title'=>$rel_object['field_name'], 'value'=>@$_GET['id']));
 		} else {
 			$label = $r['title'];
@@ -234,7 +234,7 @@ while ($r = db_fetch($result)) {
 								
 				if (!empty($r['width']) && !empty($r['height'])) {
 					$additional = 'Will be resized to ' . $r['width'] . 'px wide &times; ' . $r['height'] . 'px tall.';
-					if (admin(SESSION_ADMIN)) $label .= draw_link(false, 'Placekitten', false, array(
+					if (isAdmin()) $label .= draw_link(false, 'Placekitten', false, array(
 						'class'=>'placekitten',
 						'data-width'=>$r['width'],
 						'data-height'=>$r['height']
@@ -261,7 +261,7 @@ while ($r = db_fetch($result)) {
 				$class = 'tinymce'; //tinymce is the official wysiwyg of the cms
 				$maxlength = $r['width'];
 				//add lorem ipsum generator to tinymce
-				if (admin(SESSION_ADMIN)) {
+				if (isAdmin()) {
 					echo lib_get('lorem_ipsum');
 					$label .= draw_link('#', 'Lorem Ipsum', false, array('class'=>'lorem_ipsum'));
 				}
@@ -300,7 +300,7 @@ if ($editing) {
 if ($object['show_published']) $f->set_field(array('name'=>'is_published', 'type'=>'checkbox', 'value'=>$instance['is_published']));
 
 //allow setting created / updated
-if (admin(SESSION_ADMIN)) {
+if (isAdmin()) {
 	$f->set_field(array('name'=>'created_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>$instance['created_user']));
 	if ($editing) $f->set_field(array('name'=>'updated_user', 'type'=>'select', 'sql'=>'SELECT id, CONCAT(firstname, " ", lastname) FROM app_users ORDER BY lastname, firstname', 'required'=>true, 'value'=>user()));
 }
@@ -319,4 +319,4 @@ if ($editing && $objects = db_table('SELECT o.id, o.title, o.table_name FROM app
 //help panel on right side, potentially editable
 $panel = str_ireplace("\n", BR, $object['form_help']);
 
-echo drawLast($panel, (admin(SESSION_ADMIN) ? 'app_objects.form_help.' . $_GET['object_id'] : false));
+echo drawLast($panel, (isAdmin() ? 'app_objects.form_help.' . $_GET['object_id'] : false));

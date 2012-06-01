@@ -2,7 +2,7 @@
 //add a new object to the CMS or edit its settings
 include('../include.php');
 
-if (!admin(SESSION_ADMIN)) url_change(DIRECTORY_BASE);
+if (!isProgrammer()) url_change(DIRECTORY_BASE);
 
 if ($posting) {
 	if (!$editing) {

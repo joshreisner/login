@@ -5,7 +5,7 @@ if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
 if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'<span class="separator">&gt;</span>');
 if (!defined('COOKIE_KEY'))			define('COOKIE_KEY',		'cms_key');
 if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
-if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@bureaublank.com');
+if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@joshreisner.com');
 if (!defined('SESSION_USER_ID'))	define('SESSION_USER_ID',	'cms_user_id');
 if (!defined('SESSION_ADMIN'))		define('SESSION_ADMIN',		'cms_is_admin');
 if (!defined('SESSION_USER_NAME'))	define('SESSION_USER_NAME',	'cms_name');
@@ -20,13 +20,15 @@ $schema = array(
 	'app_languages'=>array('title'=>'varchar', 'code'=>'varchar', 'checked'=>'tinyint'),
 	'app_objects'=>array('title'=>'varchar', 'table_name'=>'varchar', 'order_by'=>'varchar', 'direction'=>'varchar', 'group_by_field'=>'int', 'list_help'=>'text', 'form_help'=>'text', 'show_published'=>'tinyint', 'web_page'=>'varchar', 'list_grouping'=>'varchar'),
 	'app_objects_links'=>array('object_id'=>'int', 'linked_id'=>'int'),
-	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'is_admin'=>'tinyint', 'last_login'=>'datetime'),
+	'app_users'=>array('firstname'=>'varchar', 'lastname'=>'varchar', 'email'=>'varchar', 'password'=>'varchar', 'secret_key'=>'varchar', 'role'=>'int', 'last_login'=>'datetime'),
 	'app_users_to_objects'=>array('user_id'=>'int', 'object_id'=>'int')	
 );
 
 $visibilty_levels = array('list'=>'Show in List', 'normal'=>'Normal', 'hidden'=>'Hidden');
 
-if (url_action('show_deleted, hide_deleted') && admin(SESSION_ADMIN)) {
+$user_levels = array(1=>'Programmer', 2=>'Admin', 3=>'User');
+
+if (url_action('show_deleted, hide_deleted') && isProgrammer()) {
 	$_SESSION['show_deleted'] = url_action('show_deleted');
 	url_drop('action');
 }
@@ -53,6 +55,8 @@ if (!user()) {
 		echo drawLast();
 		exit;
 	}
+} elseif (empty($_SESSION['role'])) {
+		login(false, false, false, $_COOKIE[COOKIE_KEY]);	
 }
 
 if (url_action('logout')) {
@@ -96,9 +100,25 @@ function dbCheck() {
 		if (db_grab('SELECT COUNT(*) FROM app_users WHERE email = "' . EMAIL_DEFAULT . '" AND is_active = 1')) {
 			login(EMAIL_DEFAULT);
 		} else {
-			//create record
-			$id = db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, is_admin, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "' . EMAIL_DEFAULT . '", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
+			//create record, todo make this a form
+			$id = db_query('INSERT INTO app_users ( firstname, lastname, email, password, secret_key, role, created_user, created_date, is_active ) VALUES ( "Josh", "Reisner", "' . EMAIL_DEFAULT . '", "dude", ' . db_key() . ', 1, 1, NOW(), 1 )');
 			login(false, false, $id);
+		}
+	
+		//fix empty roles
+		if ($users = db_table('SELECT id, email, is_admin, role FROM app_users WHERE role IS NULL')) {
+			$known_programmers = array('josh@joshreisner.com', 'josh@bureaublank.com', 'deigo.o.lorenzo@gmail.com', 'diego@bureaublank.com', 'branch.michael@gmail.com', 'michael@bureaublank.com', 'john.hunter.sheridan@gmail.com', 'john@bureaublank.com', 'kristofer@bureaublank.com');
+			foreach ($users as $u) {
+				$role = 3;
+				if (in_array($u['email'], $known_programmers)) {
+					$role = 1;
+				} elseif ($u['is_admin']) {
+					$role = 2;
+				}
+				db_query('UPDATE app_users SET role = ' . $role . ' WHERE id = ' . $u['id']);
+				if ($_SESSION['email'] == $u['email']) $_SESSION['role'] = $role;
+			}
+			db_column_drop('app_users', 'is_admin');
 		}
 		
 		if (db_table_exists('app') && !db_grab('SELECT COUNT(*) FROM app')) db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))), false);
@@ -172,7 +192,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	if (!$object = db_grab('SELECT o.title, o.table_name, o.order_by, o.direction, o.show_published, o.group_by_field, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $object_id)) error_handle('This object does not exist', '', __file__, __line__);
 	
 	//security
-	if (!$object['permission'] && !admin(SESSION_ADMIN)) return false;
+	if (!$object['permission'] && !isAdmin()) return false;
 
 	//define variables
 	$selects = array(TAB . 't.id');
@@ -294,7 +314,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	//die('<hr>' . nl2br($sql));
 	
 	//set up nav
-	if (admin(SESSION_ADMIN)) {
+	if (isProgrammer()) {
 		if (!$from_type) {
 			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, '<i class="icon-cog"></i> Object Settings');
 			$classes[] = 'settings';
@@ -433,6 +453,14 @@ function getNewObjectName($table, $field=false) {
 	return getNewObjectName($table, $field);
 }
 
+function isProgrammer($user_id=false) {
+	if (!$user_id) return ($_SESSION['role'] == 1);
+}
+
+function isAdmin($user_id=false) {
+	if (!$user_id) return (($_SESSION['role'] == 1) || ($_SESSION['role'] == 2));
+}
+
 function joshlib() {
 	//look for joshlib at joshlib/index.php, ../joshlib/index.php, all the way down
 	global $_josh;
@@ -455,15 +483,15 @@ function login($email=false, $password=false, $id=false, $secret_key=false) {
 		//logging in via database tweak
 		$where = 'email = "' . $email . '"';
 	}
-	if ($r = db_grab('SELECT id, firstname, lastname, email, secret_key, is_admin FROM app_users WHERE ' . $where . ' AND is_active = 1')) {
+	if ($r = db_grab('SELECT id, firstname, lastname, email, secret_key, role FROM app_users WHERE ' . $where . ' AND is_active = 1')) {
 		//good login, set session and cookies
 		$_SESSION[SESSION_USER_ID]		= $r['id'];
 		$_SESSION['show_deleted']	= false;
 		$_SESSION[SESSION_USER_NAME]	= $r['firstname'];
 		$_SESSION['full_name']		= $r['firstname'] . ' ' . $r['lastname'];
 		$_SESSION['email']			= $r['email'];
-		$_SESSION[SESSION_ADMIN]	= $r['is_admin'];
-		$_SESSION['isLoggedIn']		= true;
+		$_SESSION['role']			= $r['role'];
+		$_SESSION['isLoggedIn']		= true; //for tinymce
 		cookie('last_email', strToLower($r['email']));
 		cookie(COOKIE_KEY, $r['secret_key']);
 		db_query('UPDATE app_users SET last_login = NOW() WHERE id = ' . $r['id']);

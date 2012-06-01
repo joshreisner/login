@@ -17,7 +17,7 @@ url_query_require('../');
 $object = db_grab('SELECT o.title, o.list_help, (SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = ' . user() . ' AND u2o.object_id = o.id) permission FROM app_objects o WHERE o.id = ' . $_GET['id']);
 
 //security
-if (!$object['permission'] && !admin(SESSION_ADMIN)) url_change('../');
+if (!$object['permission'] && !isAdmin()) url_change('../');
 
 //draw the header
 echo drawFirst($object['title']);
@@ -28,7 +28,7 @@ echo drawObjectList($_GET['id']);
 //help panel on right side, potentially editable
 $panel = str_ireplace("\n", '<br/>', $object['list_help']);
 
-echo drawLast($panel, (admin(SESSION_ADMIN) ? 'app_objects.list_help.' . $_GET['id'] : false));
+echo drawLast($panel, (isProgrammer() ? 'app_objects.list_help.' . $_GET['id'] : false));
 
 echo draw_javascript_ready('
 	var contenteditable_focused = false;

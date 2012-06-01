@@ -14,7 +14,11 @@ FROM app_objects o
 WHERE o.is_active = 1
 ORDER BY o.list_grouping, o.title');
 
-if (admin(SESSION_ADMIN)) echo draw_nav(array('site/'=>'<i class="icon-cog"></i> Site Settings', 'users/'=>'<i class="icon-user"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
+if (isProgrammer()) {
+	echo draw_nav(array('site/'=>'<i class="icon-cog"></i> Site Settings', 'users/'=>'<i class="icon-user"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
+} elseif (isAdmin()) {
+	echo draw_nav(array('users/'=>'<i class="icon-user"></i> Users'));
+}
 
 $t = new table;
 $t->set_column('object', 'l', 'Object', 200);
@@ -33,7 +37,7 @@ foreach ($objects as &$o) {
 		ORDER BY a.updated_date DESC, a.created_date DESC')) $object = array('updated'=>false, 'created_user'=>false, 'updated_user'=>false, 'count_active'=>0);
 	$o = array_merge($o, $object);
 	$o['group'] = $o['list_grouping'];
-	if (admin(SESSION_ADMIN) || $o['permission']) {
+	if (isAdmin() || $o['permission']) {
 		$o['object'] = draw_link('object/?id=' . $o['id'], $o['object']);
 	} else {
 		$o['object'] = draw_container('span', $o['object'], array('class'=>'g'));
