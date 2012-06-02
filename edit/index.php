@@ -182,8 +182,8 @@ if (url_id()) {
 }
 
 //permissions
-if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND is_admin <> 1 AND id <> ' . user())) {
-	$sql = 'SELECT u.id, CONCAT(u.firstname, " ", u.lastname) title, ' . (url_id() ? '(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = u.id AND u2o.object_id = ' . $_GET['id'] . ')' : 1) . ' checked FROM app_users u WHERE u.is_active = 1 and u.is_admin <> 1 ORDER BY title';
+if (db_grab('SELECT COUNT(*) FROM app_users WHERE is_active = 1 AND role = 3 AND id <> ' . user())) {
+	$sql = 'SELECT u.id, CONCAT(u.firstname, " ", u.lastname) title, ' . (url_id() ? '(SELECT COUNT(*) FROM app_users_to_objects u2o WHERE u2o.user_id = u.id AND u2o.object_id = ' . $_GET['id'] . ')' : 1) . ' checked FROM app_users u WHERE u.is_active = 1 and u.role = 3 ORDER BY title';
 	$f->set_field(array('name'=>'permissions', 'type'=>'checkboxes', 'sql'=>$sql));
 }
 
