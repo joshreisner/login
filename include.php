@@ -7,7 +7,6 @@ if (!defined('COOKIE_KEY'))			define('COOKIE_KEY',		'cms_key');
 if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
 if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@joshreisner.com');
 if (!defined('SESSION_USER_ID'))	define('SESSION_USER_ID',	'cms_user_id');
-//if (!defined('SESSION_ADMIN'))		define('SESSION_ADMIN',		'cms_is_admin');
 if (!defined('SESSION_USER_NAME'))	define('SESSION_USER_NAME',	'cms_name');
 
 extract(joshlib());
