@@ -1,0 +1,1 @@
+This is an open source content management system originally developed at Bureau Blank by Josh Reisner, with help from Michael Branch, Diego Lorenzo, and John Sheridan.
