@@ -15,9 +15,9 @@ WHERE o.is_active = 1
 ORDER BY o.list_grouping, o.title');
 
 if (isProgrammer()) {
-	echo draw_nav(array('site/'=>'<i class="icon-cog"></i> Site Settings', 'users/'=>'<i class="icon-user"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
+	echo draw_nav(array('site/'=>'<i class="icon-cogs"></i> Site Settings', 'users/'=>'<i class="icon-group"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
 } elseif (isAdmin()) {
-	echo draw_nav(array('users/'=>'<i class="icon-user"></i> Users'));
+	echo draw_nav(array('users/'=>'<i class="icon-users"></i> Users'));
 }
 
 $t = new table;
