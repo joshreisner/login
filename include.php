@@ -2,7 +2,7 @@
 //define settings
 if (!defined('CHAR_DELETE'))		define('CHAR_DELETE',		'&times;');
 if (!defined('CHAR_UNDELETE'))		define('CHAR_UNDELETE',		'&curren;');
-if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'<span class="separator">&gt;</span>');
+if (!defined('CHAR_SEPARATOR'))		define('CHAR_SEPARATOR',	'<span class="separator"><i class="icon-chevron-right"></i></span>');
 if (!defined('COOKIE_KEY'))			define('COOKIE_KEY',		'cms_key');
 if (!defined('DIRECTORY_BASE'))		define('DIRECTORY_BASE',	'/login/');
 if (!defined('EMAIL_DEFAULT'))		define('EMAIL_DEFAULT',		'josh@joshreisner.com');
@@ -162,9 +162,9 @@ function drawFirst($title='CMS') {
 					<div class="span9 page">';
 
 		if (empty($_josh['request']['subfolder'])) {
-			$return .= draw_h1('Objects');
+			$return .= draw_h1(draw_link('/', '<i class="icon-home"></i>') . CHAR_SEPARATOR . 'Objects');
 		} else {
-			$return .= draw_h1(draw_link(DIRECTORY_BASE, 'Objects') . CHAR_SEPARATOR . $title);
+			$return .= draw_h1(draw_link('/', '<i class="icon-home"></i>') . CHAR_SEPARATOR . draw_link(DIRECTORY_BASE, 'Objects') . CHAR_SEPARATOR . $title);
 		}
 	} else {
 		$return .= '<body class="login">';
@@ -332,7 +332,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		$classes[] = 'sql';
 		$return .= lib_get('prettify') . draw_container('pre', $sql, array('id'=>'sql', 'class'=>'prettyprint lang-sql pre-scrollable linenums'));
 	}
-	$nav[] = draw_link(url_query_add(array('action'=>'download', 'id'=>$object_id), false), file_icon('xls') . 'Download');
+	$nav[] = draw_link(url_query_add(array('action'=>'download', 'id'=>$object_id), false), '<i class="icon-download"></i> Download');
 	$classes[] = 'download';
 	if ($from_type && $from_id) {
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
@@ -363,7 +363,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 				//an error occurred, because a parent exists but is not in the tree
 			}
 		} else {
-			if ($orderingByPrecedence) $r['draggy'] = '&nbsp;';
+			if ($orderingByPrecedence) $r['draggy'] = '<i class="icon-reorder"></i>';
 			if ($object['show_published']) $r['is_published'] = draw_form_checkbox('chk_' . str_replace('_', '-', $object['table_name']) . '_' . $r['id'], $r['is_published'], false, 'ajax_publish(this);');
 			$linked = false;
 			foreach ($columns as $f) {
