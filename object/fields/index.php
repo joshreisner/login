@@ -41,7 +41,7 @@ $t->set_column('delete', 'c', '&nbsp;', 20);
 
 foreach($result as &$r) {
 	$r['class'] = ($r['is_translated']) ? 'admin' : '';
-	$r['draggy']	= '&nbsp;';
+	$r['draggy']	= '<i class="icon-reorder"></i>';
 	$r['name']		= draw_link('edit/?id=' . $r['id'] . '&object_id=' . $_GET['id'], $r['title']);
 	$r['field_name']	= $r['table_name'] . '.' . $r['field_name'];
 	$r['updated']	= format_date($r['updated']);

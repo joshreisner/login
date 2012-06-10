@@ -113,7 +113,7 @@ $(function(){
 	initObjectList();
 	function initObjectList() {
 		//show sql button on object page
-		$('li.sql a').click(function(e){
+		$('a.sql').click(function(e){
 			e.preventDefault();
 			$(this).html(($('#sql').is(':visible') ? '<i class="icon-eye-open"></i> Show' : '<i class="icon-eye-close"></i>  Hide') + ' SQL');
 			$('#sql').slideToggle();

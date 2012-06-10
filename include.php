@@ -185,6 +185,16 @@ function drawLast($panel='', $contenteditable=false) {
 	return $return;
 }
 
+function drawNav($nav) {
+	foreach ($nav as &$n) {
+		$n['url'] = (empty($n['url'])) ? false : $n['url'];
+		$n['class'] = (empty($n['class'])) ? 'btn' : 'btn ' . $n['class'];
+		if (!empty($n['icon'])) $n['title'] = '<i class="icon-' . $n['icon'] . '"></i> ' . $n['title'];
+		$n = draw_link($n['url'], $n['title'], false, $n['class']);
+	}
+	echo draw_div('btn-group nav', implode('', $nav));
+}
+
 function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax=false) {
 	
 	//get content
@@ -315,33 +325,29 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	//set up nav
 	if (isProgrammer()) {
 		if (!$from_type) {
-			$nav[] = draw_link(DIRECTORY_BASE . 'edit/?id=' . $object_id, '<i class="icon-cog"></i> Object Settings');
-			$classes[] = 'settings';
-			$nav[] = draw_link(DIRECTORY_BASE . 'object/fields/?id=' . $object_id, '<i class="icon-list"></i> Fields');
-			$classes[] = 'fields';
+			$nav[] = array('url'=>'../edit/?id=' . $object_id, 'icon'=>'cog', 'title'=>'Object Settings');
+			$nav[] = array('url'=>'fields/?id=' . $object_id, 'icon'=>'list', 'title'=>'Fields');
 		}
 		if ($deleted = db_grab($del_sql)) {
 			if ($_SESSION['show_deleted']) {
-				$nav[] = draw_link(url_action_add('hide_deleted'), '<i class="icon-trash"></i> Hide ' . format_title(format_quantity($deleted)) . ' Deleted');
+				$nav[] = array('url'=>url_action_add('hide_deleted'), 'icon'=>'trash', 'title'=>'Hide ' . format_title(format_quantity($deleted)) . ' Deleted');
 			} else {
-				$nav[] = draw_link(url_action_add('show_deleted'), '<i class="icon-trash"></i> Show ' . format_title(format_quantity($deleted)) . ' Deleted');
+				$nav[] = array('url'=>url_action_add('show_deleted'), 'icon'=>'trash', 'title'=>'Show ' . format_title(format_quantity($deleted)) . ' Deleted');
 			}
-			$classes[] = 'toggle_deleted';
 		}
-		$nav[] = draw_link(false, '<i class="icon-eye-open"></i> Show SQL');
-		$classes[] = 'sql';
-		$return .= lib_get('prettify') . draw_container('pre', $sql, array('id'=>'sql', 'class'=>'prettyprint lang-sql pre-scrollable linenums'));
+		$nav[] = array('class'=>'sql', 'icon'=>'eye-open', 'title'=>'Show SQL');
+		$return .= lib_get('prettify') . draw_javascript_src(DIRECTORY_WRITE . '/lib/google-code-prettify/lang-sql.js') . draw_container('pre', $sql, array('id'=>'sql', 'class'=>'prettyprint lang-sql pre-scrollable linenums'));
 	}
-	$nav[] = draw_link(url_query_add(array('action'=>'download', 'id'=>$object_id), false), '<i class="icon-download"></i> Download');
-	$classes[] = 'download';
+	$nav[] = array('url'=>url_query_add(array('action'=>'download', 'id'=>$object_id), false), 'icon'=>'download', 'title'=>'Download');
+
 	if ($from_type && $from_id) {
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
-		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id, 'Add New');
+		$nav[] = array('url'=>'edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id, 'icon'=>'pencil', 'title'=>'Add New');
 	} else {
-		$nav[] = draw_link(DIRECTORY_BASE . 'object/edit/?object_id=' . $object_id, '<i class="icon-pencil"></i> Add New');
+		$nav[] = array('url'=>'edit/?object_id=' . $object_id, 'icon'=>'pencil', 'title'=>'Add New');
 	}
-	$classes[] = 'new';
-	$return = draw_list($nav, 'nav', 'ul', false, $classes) . $return; //todo pass $classes to draw_nav
+
+	$return .= drawNav($nav);
 		
 	$t->set_column('updated', 'r', 'Updated', 120);
 	$t->set_column('delete', 'delete', '&nbsp;', 20);
@@ -412,7 +418,11 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 	if ($nested && $orderingByPrecedence) {
 		$return .= draw_form_hidden('nesting_column', $nested) . nestedList($list, $object['table_name'], 'nested');
 	} else {
-		$return .= $t->draw($rows, 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+		if ($table = $t->draw($rows)) {
+			$return .= $table;
+		} else {
+			echo draw_div_class('alert', 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+		}
 	}
 	
 	//wrap non-ajax output in a div (whose contents can be replaced via ajax)

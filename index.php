@@ -14,10 +14,17 @@ FROM app_objects o
 WHERE o.is_active = 1
 ORDER BY o.list_grouping, o.title');
 
+$nav = array();
 if (isProgrammer()) {
-	echo draw_nav(array('site/'=>'<i class="icon-cogs"></i> Site Settings', 'users/'=>'<i class="icon-group"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
+	$nav[] = array('url'=>'site/', 'icon'=>'cogs', 'title'=>'Site Settings');
+	$nav[] = array('url'=>'users/', 'icon'=>'group', 'title'=>'Users');
+	$nav[] = array('url'=>'edit/', 'icon'=>'pencil', 'title'=>'Add New Object');
+	//echo draw_nav(array('site/'=>'<i class="icon-cogs"></i> Site Settings', 'users/'=>'<i class="icon-group"></i> Users', 'edit/'=>'<i class="icon-pencil"></i> Add New Object'));
+	echo drawNav($nav);
 } elseif (isAdmin()) {
-	echo draw_nav(array('users/'=>'<i class="icon-users"></i> Users'));
+	$nav[] = array('url'=>'users/', 'icon'=>'group', 'title'=>'Users');
+	//echo draw_nav(array('users/'=>'<i class="icon-users"></i> Users'));
+	echo drawNav($nav);
 }
 
 $t = new table;

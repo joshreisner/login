@@ -66,10 +66,6 @@ table.table {
 			&.c { text-align:center; }
 			&.r { text-align:right; }
 			&.draggy { width:20px; text-align: center; cursor:move; color: #aaa; }
-			&.empty {
-				height:220px; background-color:#f4f4f4; text-align:center; font:italic 15px/18px Georgia; border:1px solid #ddd; vertical-align:middle; color:#888; 
-				&:hover { background-color: #f4f4f4; }
-			}
 			&.file-type { width:16px; text-align:center; padding: 5px 3px 1px 3px; }
 			&.delete { text-align:center; }
 			&.is_published { width:20px; text-align:center; }
@@ -159,10 +155,20 @@ body.login {
 }
 
 
-
+/* show sql window */
 pre.prettyprint {
 	padding: 8px; background-color: @yellow; border: 1px solid #e1e1e8; display: none; max-height: 200px; 
 	
+	ol.linenums {
+		margin: 0 0 0 33px; /* IE indents via margin-left */
+		li {
+			padding-left: 12px;
+			color: #bebec5;
+			line-height: 18px;
+			text-shadow: 0 1px 0 #fff;
+		}
+	} 
+
 	&.linenums {
 	  -webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
 	     -moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
@@ -171,24 +177,14 @@ pre.prettyprint {
 	
 	.com { color: #93a1a1; }
 	.lit { color: #195f91; }
-	.pun, .opn, .clo { color: #93a1a1; }
+	.pun, .opn, .clo { color: #999; }
 	.fun { color: #dc322f; }
 	.str, .atv { color: #D14; }
-	.kwd, .linenums .tag { color: #1e347b; }
+	.kwd, .linenums .tag { color: #0000ff; }
 	.typ, .atn, .dec, .var { color: teal; }
 	.pln { color: #48484c; }
 }
 
-/* Specify class=linenums on a pre to get line numbering */
-ol.linenums {
-  margin: 0 0 0 33px; /* IE indents via margin-left */
-} 
-ol.linenums li {
-  padding-left: 12px;
-  color: #bebec5;
-  line-height: 18px;
-  text-shadow: 0 1px 0 #fff;
-}
 
 /* form */
 input {
