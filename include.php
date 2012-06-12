@@ -344,7 +344,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		//we're going to pass this stuff so the add new page can have this field as a hidden value rather than a select
 		$nav[] = array('url'=>'../edit/?object_id=' . $object_id . '&from_type=' . $from_type . '&from_id=' . $from_id, 'icon'=>'pencil', 'title'=>'Add New');
 	} else {
-		$nav[] = array('url'=>'../edit/?object_id=' . $object_id, 'icon'=>'pencil', 'title'=>'Add New');
+		$nav[] = array('url'=>'edit/?object_id=' . $object_id, 'icon'=>'pencil', 'title'=>'Add New');
 	}
 
 	$return .= drawNav($nav);
