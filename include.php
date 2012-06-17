@@ -46,11 +46,26 @@ if (!user()) {
 	} elseif (!url_action('logout')) {
 		//login form
 		echo drawFirst();
-		$f = new form('login', false, 'Log In');
-		$f->set_field(array('type'=>'email', 'name'=>'email', 'value'=>@$_COOKIE['last_email'], 'required'=>true));
-		$f->set_field(array('type'=>'password', 'name'=>'password', 'required'=>true));
-		$f->set_focus(@$_COOKIE['last_email'] ? 'password' : 'email');
-		echo $f->draw();
+		echo '
+			<form id="login" method="post" accept-charset="UTF-8" action="' . $request['path_query'] . '">
+				<fieldset>
+					<div class="field email">
+						<label for="email">Email</label>
+						<input type="text" name="email" id="email" value="' . @$_COOKIE['last_email'] . '" class="required">
+					</div>
+					<div class="field password">
+						<label for="password">Password</label>
+							<input type="password" name="password" id="password">
+							<a href="#" class="forgot"><i class="icon-question-sign"></i></a>
+						</div>
+					</div>
+					<div class="field submit">
+						<input class="btn" type="submit" value="Log In">
+					</div>
+					<a class="github" href="https://github.com/joshreisner/bb-login"><i class="icon-github"></i></a>
+				</fieldset>
+			</form>';
+		echo draw_javascript('document.getElementById("' . (empty($_COOKIE['last_email']) ? 'email' : 'password') . '").focus();');
 		echo drawLast();
 		exit;
 	}
