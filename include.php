@@ -160,7 +160,7 @@ function drawFirst($title=false) {
 	if (empty($app['updated'])) $app['updated'] = 0;
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
-		draw_title(str_replace(CHAR_SEPARATOR, ' > ', $title)) . 
+		draw_title(str_replace(CHAR_SEPARATOR, ' &gt; ', $title)) . 
 		'<meta name="viewport" content="width=device-width, initial-scale=1.0">' . 
 		lib_get('bootstrap') . 
 		draw_css_src(DIRECTORY_BASE . 'css/global.css') .
