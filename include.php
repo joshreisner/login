@@ -153,14 +153,14 @@ function dbCheck() {
 	return true;
 }
 
-function drawFirst($title='CMS') {
+function drawFirst($title=false) {
 	global $_josh;
 	if (!$app = db_grab('SELECT link_color, ' . db_updated() . ' FROM app WHERE id = 1')) $app = array();
 	if (empty($app['link_color'])) $app['link_color'] = '336699';
 	if (empty($app['updated'])) $app['updated'] = 0;
 	$return = draw_doctype() . draw_container('head',
 		draw_meta_utf8() .
-		draw_title($title) . 
+		draw_title(str_replace(CHAR_SEPARATOR, ' > ', $title)) . 
 		'<meta name="viewport" content="width=device-width, initial-scale=1.0">' . 
 		lib_get('bootstrap') . 
 		draw_css_src(DIRECTORY_BASE . 'css/global.css') .
