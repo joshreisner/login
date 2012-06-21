@@ -120,21 +120,23 @@ function dbCheck() {
 		}
 	
 		//fix empty roles
-		if ($users = db_table('SELECT id, email, is_admin, role FROM app_users WHERE role IS NULL')) {
-			$known_programmers = array('josh@joshreisner.com', 'josh@bureaublank.com', 'deigo.o.lorenzo@gmail.com', 'diego@bureaublank.com', 'branch.michael@gmail.com', 'michael@bureaublank.com', 'john.hunter.sheridan@gmail.com', 'john@bureaublank.com', 'kristofer@bureaublank.com');
-			foreach ($users as $u) {
-				$role = 3;
-				if (in_array($u['email'], $known_programmers)) {
-					$role = 1;
-				} elseif ($u['is_admin']) {
-					$role = 2;
+		if (db_column_exists('app_users', 'is_admin')) {
+			if ($users = db_table('SELECT id, email, is_admin, role FROM app_users WHERE role IS NULL')) {
+				$known_programmers = array('josh@joshreisner.com', 'josh@bureaublank.com', 'deigo.o.lorenzo@gmail.com', 'diego@bureaublank.com', 'branch.michael@gmail.com', 'michael@bureaublank.com', 'john.hunter.sheridan@gmail.com', 'john@bureaublank.com', 'kristofer@bureaublank.com');
+				foreach ($users as $u) {
+					$role = 3;
+					if (in_array($u['email'], $known_programmers)) {
+						$role = 1;
+					} elseif ($u['is_admin']) {
+						$role = 2;
+					}
+					db_query('UPDATE app_users SET role = ' . $role . ' WHERE id = ' . $u['id']);
+					if ($_SESSION['email'] == $u['email']) $_SESSION['role'] = $role;
 				}
-				db_query('UPDATE app_users SET role = ' . $role . ' WHERE id = ' . $u['id']);
-				if ($_SESSION['email'] == $u['email']) $_SESSION['role'] = $role;
+				db_column_drop('app_users', 'is_admin');
 			}
-			db_column_drop('app_users', 'is_admin');
 		}
-		
+
 		if (db_table_exists('app') && !db_grab('SELECT COUNT(*) FROM app')) db_save('app', false, array('link_color'=>'0c4b85', 'banner_image'=>file_get(str_replace($_SERVER['SCRIPT_NAME'], '/login/images/banner-cms.jpg', $_SERVER['SCRIPT_FILENAME']))), false);
 		
 		if (db_table_exists('app_languages') && !db_grab('SELECT COUNT(*) FROM app_languages'))  {
