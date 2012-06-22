@@ -36,6 +36,6 @@ echo draw_javascript_ready('
 	$("div[contenteditable=true]").blur(function(){ contenteditable_focused = false; });
 
 	$(document).keypress(function(e) {
-		if (!contenteditable_focused && (e.which == 97)) location.href = $("li.new a").attr("href");
+		if (!contenteditable_focused && (e.which == 97)) location.href = $("div.nav a").last().attr("href");
 	});
 ');
