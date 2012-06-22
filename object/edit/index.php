@@ -20,10 +20,12 @@ if (url_action('undelete')) {
 		$result = db_query('SELECT id, type, field_name, width, height FROM app_fields WHERE is_active = 1 AND (type = "image" OR type = "file") AND object_id = ' . $_GET['object_id']);
 		while ($r = db_fetch($result)) {
 			if (file_exists($_FILES[$r['field_name']]['tmp_name'])) {
+				die('exists');
 				//get any file_types (can be for images or files)
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-type" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = file_ext($_FILES[$r['field_name']]['name']);
 
+				//file size fields
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-size" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = @filesize($_FILES[$r['field_name']]['tmp_name']);
 
@@ -48,10 +50,17 @@ if (url_action('undelete')) {
 					
 					$_POST[$r['field_name']] = $file;
 				}
+			} else {
+
+				die(draw_array($_FILES) . 'no longer exists');
 			}
 		}
+
+		die('ok here');
+		
 	}
 	
+
 	//postprocess latlon
 	$latlons = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "latlon" AND object_id = ' . $_GET['object_id']);
 	
@@ -178,7 +187,7 @@ while ($r = db_fetch($result)) {
 					//this needs to be a grouped select
 					$group = db_grab('SELECT o.order_by, o.direction, o.table_name, f.field_name field_name_from, (SELECT f2.field_name FROM app_fields f2 WHERE f2.object_id = o.id AND f2.visibility = "list" ORDER BY f2.precedence LIMIT 1) field_name_to FROM app_fields f JOIN app_objects o ON f.related_object_id = o.id WHERE f.id = ' . $rel_object['group_by_field']);
 					$sql = 'SELECT r.id, r.' . $rel_object['field_name'] . ', g.' . $group['field_name_to'] . ' optgroup FROM ' . $rel_object['table_name'] . ' r LEFT JOIN ' . $group['table_name'] . ' g ON r.' . $group['field_name_from'] . ' = g.id WHERE r.is_active = 1';
-					if (!$group['order_by']) $group['order_by'] = $group['field_name'];
+					if (!$group['order_by']) $group['order_by'] = $group['field_name_to'];
 					$sql .= ' ORDER BY g.' . $group['order_by'] . ' ' . $group['direction'];
 					if (!$rel_object['order_by']) $rel_object['order_by'] = $rel_object['field_name'];
 					$sql .= ', r.' . $rel_object['order_by'] . ' ' . $rel_object['direction'];
