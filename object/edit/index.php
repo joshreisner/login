@@ -20,7 +20,7 @@ if (url_action('undelete')) {
 		$result = db_query('SELECT id, type, field_name, width, height FROM app_fields WHERE is_active = 1 AND (type = "image" OR type = "file") AND object_id = ' . $_GET['object_id']);
 		while ($r = db_fetch($result)) {
 			if (file_exists($_FILES[$r['field_name']]['tmp_name'])) {
-				die('exists');
+				//die('exists');
 				//get any file_types (can be for images or files)
 				$related = db_query('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "file-type" AND object_id = ' . $_GET['object_id'] . ' AND related_field_id = ' . $r['id']);
 				while ($e = db_fetch($related)) $_POST[$e['field_name']] = file_ext($_FILES[$r['field_name']]['name']);
@@ -52,11 +52,11 @@ if (url_action('undelete')) {
 				}
 			} else {
 
-				die(draw_array($_FILES) . 'no longer exists');
+				//die(draw_array($_FILES) . 'no longer exists');
 			}
 		}
 
-		die('ok here');
+		//die('ok here');
 		
 	}
 	
