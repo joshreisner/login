@@ -234,6 +234,23 @@ form {
 			span.translation { display: block; font-size: 11px; }
 		}
 		&.thumbnail { border: 0; box-shadow: none; -webkit-box-shadow: none;  -moz-box-shadow: none; }
+
+		&.checkboxes {
+			overflow: auto;
+			ul {
+				float: left; width: 555px; margin: 0 0 0 -10px;
+				li { 
+					float: left; overflow: hidden; position: relative; padding: 0 0 0 15px; margin: 0 0 0px 10px;
+					width: 159px;
+					input { position: absolute; top: 4px; left: 1px; }
+					label {
+						overflow: hidden; padding: 0; font-size: 12px; line-height: 14px; width: auto; padding: 2px 3px; 
+						border: 1px solid transparent; max-height: 39px; 
+						&:hover { background-color: #f0f0f0; cursor: pointer; max-height: none; border-color: #ddd; }
+					}
+				}
+			}
+		}
 	}
 
 }
@@ -246,18 +263,6 @@ form div.datetime div.date		{ float: left; display: inline; }
 form div.datetime div.time		{ float: left; display: inline; margin-left: 7px; }
 form ul							{ margin: 0; padding: 0; list-style-type: none; }
 form ul li						{ width:164px; margin:2px 2px 6px 16px; float:left; font-size:11px; }
-
-form div.checkboxes {
-	margin-bottom: 10px; 
-	ul {
-		line-height:10px; margin-top:5px; float: left; width: 550px; 
-		label {
-			float: none; min-height: 0; padding: 0; margin: 0 0 0 3px; line-height: 12px; display: inline; 
-			&:hover	{ background-color: #f0f0f0; cursor: pointer; }
-		}
-		input { margin-left:-16px; }
-	}
-}
 
 form div.radio {
 	ul {

@@ -109,10 +109,15 @@ $f = new form($object['table_name'], @$_GET['id'], $button);
 
 if ($editing && $object['web_page']) echo draw_div('web_page_msg', draw_link($object['web_page'] . $_GET['id'], 'View Web Version'));
 if ($languages && db_grab('SELECT COUNT(*) FROM app_fields WHERE is_translated = 1 AND is_active = 1 AND object_id = ' . $_GET['object_id'])) {
-	echo draw_list(array(
-		draw_link(false, 'Show Translations', false, 'show_translations'),
-		draw_link(false, 'Translate Empty Fields', false, 'translate')
-	), 'nav');
+	$nav = array(
+			array('title'=>'Show Translations', 'class'=>'show_translations'),
+			array('title'=>'Translate Empty Fields', 'class'=>'translate'),
+		);
+	echo drawNav($nav);
+	// echo draw_list(array(
+	// 	draw_link(false, 'Show Translations', false, 'show_translations'),
+	// 	draw_link(false, 'Translate Empty Fields', false, 'translate')
+	// ), 'nav');
 }
 
 $order = array();
@@ -214,7 +219,7 @@ while ($r = db_fetch($result)) {
 				FROM app_objects o
 				WHERE o.id = ' . $r['related_object_id']);
 			if ($rel_object['permission'] || isAdmin()) $additional = draw_link(DIRECTORY_BASE . 'object/?id=' . $rel_object['id'], 'Edit ' . $rel_object['title']);
-			$f->set_field(array('label'=>$r['title'], 'maxlength'=>24, 'additional'=>$additional, 'name'=>$r['field_name'], 'type'=>'checkboxes', 'options_table'=>$rel_object['table_name'], 'linking_table'=>$r['field_name'], 'option_id'=>substr($rel_object['table_name'], 5) . '_id', 'object_id'=>substr($object['table_name'], 5) . '_id', 'option_title'=>$rel_object['field_name'], 'value'=>@$_GET['id']));
+			$f->set_field(array('label'=>$r['title'], 'additional'=>$additional, 'name'=>$r['field_name'], 'type'=>'checkboxes', 'options_table'=>$rel_object['table_name'], 'linking_table'=>$r['field_name'], 'option_id'=>substr($rel_object['table_name'], 5) . '_id', 'object_id'=>substr($object['table_name'], 5) . '_id', 'option_title'=>$rel_object['field_name'], 'value'=>@$_GET['id']));
 		} else {
 			$label = $r['title'];
 			$maxlength = false;
