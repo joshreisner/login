@@ -222,7 +222,7 @@ while ($r = db_fetch($result)) {
 			$f->set_field(array('label'=>$r['title'], 'additional'=>$additional, 'name'=>$r['field_name'], 'type'=>'checkboxes', 'options_table'=>$rel_object['table_name'], 'linking_table'=>$r['field_name'], 'option_id'=>substr($rel_object['table_name'], 5) . '_id', 'object_id'=>substr($object['table_name'], 5) . '_id', 'option_title'=>$rel_object['field_name'], 'value'=>@$_GET['id']));
 		} else {
 			$label = $r['title'];
-			$maxlength = false;
+			$maxlength = $options = false;
 			
 			if (($r['type'] == 'image') || ($r['type'] == 'file')) {
 				if ($r['type'] == 'image') $preview = true;
@@ -261,6 +261,8 @@ while ($r = db_fetch($result)) {
 				//todo form::set_field should support all these types
 			} elseif ($r['type'] == 'text') {
 				$maxlength = $r['width'];
+			} elseif ($r['type'] == 'typeahead') {
+				$options = db_array('SELECT DISTINCT ' . $r['field_name'] . ' FROM ' . $r['table_name'] . ' WHERE is_active = 1 ORDER BY ' . $r['field_name']);
 			} elseif ($r['type'] == 'url') {
 				//shortcut link, grab value
 				if (url_id()) {
@@ -281,7 +283,7 @@ while ($r = db_fetch($result)) {
 				}
 			}
 			
-			$array = array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview);
+			$array = array('name'=>$r['field_name'], 'type'=>$r['type'], 'class'=>$class, 'label'=>$label, 'required'=>$r['required'], 'additional'=>$additional, 'maxlength'=>$maxlength, 'preview'=>$preview, 'options'=>$options);
 			
 			if (!empty($_GET[$r['field_name']])) $array['value'] = $_GET[$r['field_name']];
 
