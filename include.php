@@ -35,7 +35,7 @@ if (url_action('show_deleted, hide_deleted') && isProgrammer()) {
 //languages
 $languages = ($languages = db_table('SELECT code, title FROM app_languages WHERE checked = 1 ORDER BY title')) ? array_key_promote($languages) : false;
 
-//sekurity
+//security
 if (!user()) {
 	if ($posting) {
 		//logging in
