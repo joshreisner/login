@@ -185,8 +185,10 @@ while ($r = db_fetch($result)) {
 								if ($j > $i && $j <= $i + $sql[$i]['children']) $sql[$j]['depth']++;
 							}
 						}
-						//echo $sql[$i]['depth'] . ' ' . $sql[$i]['title'] . BR;
-						if (!url_id() || (url_id() != $sql[$i]['id'])) $options[$sql[$i]['id']] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $sql[$i]['depth']) . $sql[$i]['title']; //can't be its own parent
+						
+						//you can't be your own parent
+						if (($rel_object['id'] == $_GET['object_id']) && (url_id() == $sql[$i]['id'])) continue;
+						$options[$sql[$i]['id']] = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $sql[$i]['depth']) . $sql[$i]['title']; //can't be its own parent
 					}
 				} elseif ($rel_object['group_by_field']) {
 					//this needs to be a grouped select
