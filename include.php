@@ -209,7 +209,7 @@ function drawNav($nav) {
 		if (!empty($n['icon'])) $n['title'] = '<i class="icon-' . $n['icon'] . '"></i> ' . $n['title'];
 		$n = draw_link($n['url'], $n['title'], false, $n['class']);
 	}
-	echo draw_div('btn-group nav', implode('', $nav));
+	return draw_div('btn-group nav', implode('', $nav));
 }
 
 function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax=false) {

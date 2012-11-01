@@ -26,7 +26,7 @@ echo drawFirst($object['title']);
 echo drawObjectList($_GET['id']);
 
 //help panel on right side, potentially editable
-$panel = str_ireplace("\n", '<br/>', $object['list_help']);
+$panel = str_ireplace("\n", BR, $object['list_help']);
 
 echo drawLast($panel, (isProgrammer() ? 'app_objects.list_help.' . $_GET['id'] : false));
 
