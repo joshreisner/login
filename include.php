@@ -438,7 +438,7 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 		if ($table = $t->draw($rows)) {
 			$return .= $table;
 		} else {
-			echo draw_div_class('alert', 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
+			$return .= draw_div_class('alert', 'No ' . strToLower($object['title']) . ' have been added' . $where_str . ' yet.');
 		}
 	}
 	
