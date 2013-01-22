@@ -72,8 +72,19 @@ if (url_action('undelete')) {
 	}
     
 	//postprocess urls
-	$fields = db_table('SELECT id, field_name FROM app_fields WHERE is_active = 1 AND type = "url" AND object_id = ' . $_GET['object_id']);
-	foreach ($fields as $f) if (isset($_POST[$f['field_name']]) && ($_POST[$f['field_name']] == 'http://')) $_POST[$f['field_name']] = '';
+	$fields = db_table('SELECT f1.id, f1.field_name, (SELECT COUNT(*) FROM app_fields f2 WHERE f2.related_field_id = f1.id AND f2.type = "image-alt" and f2.is_active = 1) has_thumbnail FROM app_fields f1 WHERE f1.is_active = 1 AND f1.type = "url" AND f1.object_id = ' . $_GET['object_id']);
+	foreach ($fields as $f) {
+		if (isset($_POST[$f['field_name']]) && ($_POST[$f['field_name']] == 'http://')) $_POST[$f['field_name']] = '';
+		
+		//it's now possible to relate an image-alt to a url (for thumbalizr thumbnails)
+		if ($f['has_thumbnail'] && !empty($_POST[$f['field_name']])) {
+			$related = db_table('SELECT id, width, field_name FROM app_fields WHERE is_active = 1 AND type = "image-alt" and related_field_id = ' . $f['id']);
+			foreach ($related as $r) {
+				if (empty($r['width'])) $r['width'] = false; //don't want to find out what url_thumbnail will do with an empty string for width
+				if ($image = url_thumbnail($_POST[$f['field_name']], $r['width'])) $_POST[$r['field_name']] = $image;
+			}
+		}
+	}
 	
 	//if coming from a page and changing the url, return user to the new url
 	if ($editing && !empty($_POST['return_to']) && ($local_url_field = db_grab('SELECT field_name FROM app_fields WHERE is_active = 1 AND type = "url-local" AND object_id = ' . $_GET['object_id']))) {
@@ -282,6 +293,7 @@ while ($r = db_fetch($result)) {
 				if (isAdmin()) {
 					echo lib_get('lorem_ipsum');
 					$label .= draw_link('#', 'Lorem Ipsum', false, array('class'=>'lorem_ipsum'));
+					$label .= draw_link('#', 'Hipster Ipsum', false, array('class'=>'hipster_ipsum'));
 				}
 			}
 			

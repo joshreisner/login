@@ -80,6 +80,16 @@ $(function(){
 		$(this).closest('div.field').find('textarea').tinymce().setContent(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));
 	});
 	
+	//new! hipster ipsum
+	$('a.hipster_ipsum').click(function(e){
+		e.preventDefault();
+		$field = $(this).closest('div.field').find('textarea');
+		$.getJSON('http://hipsterjesus.com/api/', { type: 'hipster-centric' }, function(data) {
+		    //$('#content').html( data.text );
+		    $field.tinymce().setContent(data.text)
+		});
+	});
+	
 	//placekitten for images
 	$('a.placekitten').click(function(e){
 		e.preventDefault();
