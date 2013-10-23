@@ -6,6 +6,9 @@ $(function(){
 		}
 	}
 	
+	//time picker
+	//$('input[type=time]').timepicker();
+
 	//show translations
 	$('a.show_translations').click(function(e){
 		if ($('div.translation:visible').size()) {

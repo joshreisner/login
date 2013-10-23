@@ -194,7 +194,7 @@ function drawLast($panel='', $contenteditable=false) {
 	$return = '';
 	if (user()) $return .= '</div>' . draw_div('span3 panel', draw_div('inner', $panel, $contenteditable)) . '</div>';
 	$return .= '</div>' . 
-		draw_javascript_src(DIRECTORY_BASE . 'js/jquery-ui-1.8.9.custom.min.js') . 
+		draw_javascript_src(DIRECTORY_BASE . 'js/jquery-ui-1.10.3.custom.min.js') . 
 		draw_javascript_src(DIRECTORY_BASE . 'js/jquery.ui.nestedSortable.js') .
 		draw_javascript_src(DIRECTORY_BASE . 'js/global.js') . 
 		draw_javascript_src() . 
@@ -412,6 +412,8 @@ function drawObjectList($object_id, $from_type=false, $from_id=false, $from_ajax
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
 				} elseif (($f['type'] == 'text') || ($f['type'] == 'typeahead') || ($f['type'] == 'email') || ($f['type'] == 'latlon')) {
 					$r[$f['field_name']] = format_string(strip_tags($r[$f['field_name']]), 50);
+				} elseif ($f['type'] == 'time') {
+					$r[$f['field_name']] = format_time($r[$f['field_name']]);
 				} else {
 					$r[$f['field_name']] = 'unhandled type';
 				}
